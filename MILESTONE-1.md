@@ -16,6 +16,18 @@ The companion Runtime branch is `agent/grok-router-m1-20260919` in
 `de20bf8f756e0fc2d8b276adb53893bc76066c51`.
 Neither branch is a live deployment or a change to Intelligence/D1/Cloudflare.
 
+The current source-only continuation adds the pinned Codex thread-local
+`toolIsolation:"dynamicOnly"` contract, Runtime schema-backed capability and
+effective-policy recovery checks. The 400 selected Codex tests passed, including
+enabled MCP refresh and Legacy/Paginated persistent resume/fork. This resolves
+the stock-API source blocker, not host compatibility or live acceptance. Current
+evidence is `DYNAMIC-ONLY-EVIDENCE-20260919.json`; the earlier
+`EVIDENCE-M1-20260919.json` remains a historical record of the previous candidate.
+
+The Runtime continuation preserves the subsequent docs-only commit `71eaefab...`
+already present after the saved `8b565576...` candidate. No branch/worktree or
+execution-plane replacement is introduced.
+
 ## Active source path
 
 `src/session.ts` retains the PromptSession/PromptExecutor interface. Its only
@@ -114,9 +126,9 @@ not the current proprietary host's anchor layout.
 
 ## Human Gate 1 boundary
 
-Gate 1 is **not requested yet**. Before opening it, obtain actual 0.53 source
-compatibility proof, complete the native exclusion contract described in
-`NATIVE-EXECUTION-POLICY.md`, pass all source/fixture tests, then record cloud-01
+Gate 1 is **not requested yet**. The native exclusion source contract is described
+in `NATIVE-EXECUTION-POLICY.md`; its source/local acceptance does not authorize
+deployment. Before opening Gate 1, obtain actual 0.53 compatibility proof and record cloud-01
 read-only acceptance: host version/SHA/size, router check, healthy ready Runtime,
 no UNKNOWN or pending inputs, Computer clear/CLEAR, and the existing user-facing
 Bot still `harness:"temporal"`.
@@ -137,8 +149,9 @@ The live `tests/vm-contract.test.ts` is deliberately not executed by the local t
 runner. Provider request/stream tests among the retained upstream tests are local
 serialization/fake event tests, not paid provider calls.
 
-Final counts and read-only acceptance observations are recorded in
-`EVIDENCE-M1-20260919.json`; absence or BLOCKED there must not be promoted to PASS.
+Current source/local results are recorded in `DYNAMIC-ONLY-EVIDENCE-20260919.json`.
+The original counts and read-only observations below belong to the historical
+`EVIDENCE-M1-20260919.json`; they are not fresh observations from this continuation.
 
 The final local suites passed 82 router tests, 95 Runtime Python tests and 19
 Runtime Node acceptance fixtures. Five generated wire envelopes also passed the
@@ -151,3 +164,8 @@ recent Computer observation was `pending_ack / SUCCESS_PENDING_ACK`, not clear.
 No receipt from another/unknown owner was acknowledged. The current user-facing
 Temporal profile and exact official createAgent payload were not freshly verified;
 the scoped retained createAgent source read was tool-blocked and not bypassed.
+
+This continuation performs no cloud-01 or Computer checks. The user-reported
+UNKNOWN host probe is not retried, replayed or acknowledged. The production
+manifest is unchanged with `anchorProof:"BLOCKED"`; the current seam/main-options
+hints supplied by the user are not promoted to fresh production anchor evidence.

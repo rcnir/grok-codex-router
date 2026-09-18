@@ -36,3 +36,28 @@ package entrypoint imports no private provider transport or control bootstrap.
 A standard Runtime CLI is still subject to process argument-size limits and argv
 visibility. Structured image/transcript payloads need bounded stdin input to the
 same CLI/MCP boundary, not a new transport or a second App Server.
+
+## 2026-09-19 — Dynamic-only source continuation
+
+A native-tool exclusion must constrain the executable handler registry, not only
+the displayed tool schemas. Build the isolated plan before native/MCP/extension
+sources merge, and prevent finalization from adding search, code-mode or child
+dispatchers. A refreshed MCP binding can remain available to other threads while
+the isolated thread's next plan still exposes only its dynamic catalog.
+
+Thread policy is immutable persisted metadata, not an ordinary recursive config
+field. Check both legacy/copied and paginated/reference-backed history paths.
+Derived TurnContexts and config refresh must preserve the effective policy.
+
+A request is not an effective-policy acknowledgement. Runtime must durably retain
+the actual acknowledged policy and verify it on recovery. Never re-echo the caller's
+request or clear a current policy fence using an old successful resume ACK.
+
+Codex 0.154 uses precomputed App Server schema exports. Regenerate stable and
+experimental artifacts from the Rust types; merely adding the Rust field would
+leave Runtime capability discovery stale. The API request can be optional while
+the persisted/core policy and effective response remain required typed values.
+
+Test event streams can contain legacy notifications between typed item events.
+A dynamic tool round-trip should match typed completion with exact call/Turn
+identity, not assume the next event is its completion.

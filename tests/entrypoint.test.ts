@@ -59,7 +59,7 @@ test("retained install/recover/verify/on verbs cannot call a provider, restart o
     const result = spawnSync(process.execPath, [cli, command], { encoding: "utf8",
       env: { ...process.env, SAND_DATA_ROOT: root } });
     assert.equal(result.status, 1);
-    assert.match(result.stderr, /HUMAN_GATE_CLOSED_NATIVE_POLICY_UNVERIFIED/);
+    assert.match(result.stderr, /HUMAN_GATE_CLOSED_HOST_COMPATIBILITY_UNVERIFIED/);
     assert.deepEqual(fs.readdirSync(root), []);
   }
   const installer = path.resolve(__dirname, "..", "..", "install.sh");

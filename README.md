@@ -6,14 +6,18 @@ routes through the **existing** ROCANIIRU Runtime CLI/MCP boundary, not the priv
 Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
 
 **Not deployed. Not Milestone-1 accepted. Human Gate 1 is closed.**
-The current-host 0.53 anchor proof and complete Codex 0.154.0 native-execution
-exclusion contract are unverified. Production patch/restore and production
-inference admission therefore fail closed. Successful fixture tests do not remove
-either gate. Do not run a live pilot, install, host restart or provider inference.
+The current-host 0.53 anchor proof remains unverified. A bounded, thread-local
+`toolIsolation:"dynamicOnly"` Codex source patch and Runtime/router capability
+wiring are now maintained separately from host compatibility. See the current
+source-validation evidence; nothing is deployed. Production admission requires
+the verified Runtime capability, an explicit isolated-session request and an
+exact effective-policy response. Stock Codex remains rejected. Do not run a live
+pilot, install, host restart or provider inference.
 
 See [`MILESTONE-1.md`](MILESTONE-1.md) for the implementation contract and status,
-[`NATIVE-EXECUTION-POLICY.md`](NATIVE-EXECUTION-POLICY.md) for the remaining native
-authority proof, and [`LEARNINGS.md`](LEARNINGS.md) for integration corrections.
+[`NATIVE-EXECUTION-POLICY.md`](NATIVE-EXECUTION-POLICY.md) for the thread policy,
+[`DYNAMIC-ONLY-EVIDENCE-20260919.json`](DYNAMIC-ONLY-EVIDENCE-20260919.json) for this
+source-only continuation, and [`LEARNINGS.md`](LEARNINGS.md) for corrections.
 
 Local development uses Node, Bun and the pinned dev dependencies. `npm run check`
 builds and runs **local fake/fixture tests only**, plus upstream local telemetry

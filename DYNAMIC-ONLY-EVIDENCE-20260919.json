@@ -1,0 +1,252 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-18T21:33:28.115292+00:00",
+  "scope": "M1 blocker 1 source/local continuation only",
+  "blocker_1_source_local_acceptance": "PASS",
+  "milestone_1": "NOT_ACCEPTED",
+  "human_gate_1": "CLOSED",
+  "live_operations_this_turn": 0,
+  "baselines": {
+    "router": {
+      "repository": "rcnir/grok-codex-router",
+      "branch": "rcnir/milestone-1-20260919",
+      "parent": "8ef30c035c7cf2a24424f677e88d260c60ea1bd7",
+      "primary_upstream": "IgorWarzocha/grok-codex-router",
+      "upstream_commit": "599a2013b15592d17fe897126f549974351e4c3f"
+    },
+    "runtime": {
+      "repository": "rcnir/execution-runtime",
+      "branch": "agent/grok-router-m1-20260919",
+      "saved_candidate": "8b565576ead1a17a4b7762a7473c90786e055810",
+      "preserved_docs_successor_parent": "71eaefab443f9e70608f666d9ff526acd84c269f",
+      "original_merged_baseline": "de20bf8f756e0fc2d8b276adb53893bc76066c51",
+      "candidate_commit": "72c80325e0a36c4068e8f02f4b750fc4bd8db26e"
+    }
+  },
+  "codex_patch": {
+    "upstream_commit": "6b9826e3aa83b1a5947db50f4332cb9c65f1b340",
+    "contract": "thread/toolIsolation:v1:default|dynamicOnly",
+    "patch_sha256": "3084657c327fe53af7ef55f0fe718ed4bca78f1a39a5b989959bde298e617465",
+    "patch_bytes": 749931,
+    "managed_files": 73,
+    "new_files": 3,
+    "manifest_sha256": "f4df53e67fc999d0cfafacef6caadf60d22be892420330b90c2a0a9b0be7406e",
+    "full_changed_file_list": "codex-runtime/upstream/codex-0.154.0/CHANGED_FILES.md",
+    "source_check": "PASS exact HEAD and all file hashes; git apply --check --reverse",
+    "deployment": "NOT_PERFORMED",
+    "build_only_cargo_lock_normalization_excluded": true
+  },
+  "contract": {
+    "wire_field": "toolIsolation",
+    "wire_values": [
+      "default",
+      "dynamicOnly"
+    ],
+    "omission_or_null": "Default at fresh creation only",
+    "core_policy": "required immutable enum",
+    "persistence": "SessionMeta; Legacy and Paginated, copied and reference-backed fork",
+    "resume": "restore persisted policy; no policy override field",
+    "normal_thread": "unchanged tool-plan and MCP refresh path",
+    "dynamic_only": "only dynamic catalog in model-visible and executable registry; no native search/code-mode reinsertion",
+    "runtime_field": "tool_isolation",
+    "capability": "runtime_status.capabilities.dynamic_only_tool_policy",
+    "capability_authority": "exact generated request enum plus required effective start/resume response enum; existing executable/schema verification remains required",
+    "runtime_recovery": "retained acknowledged policy, exact fresh resume comparison, exact-thread fence on missing/downgrade/invalid policy; stale ACK cannot clear; pending response/write boundary fenced",
+    "router_admission": "capability true AND explicit dynamicOnly AND matching effective session response; no fake-verifier injection"
+  },
+  "checks": {
+    "codex-policy-acceptance.log": {
+      "status": "PASS",
+      "tests_passed": 400,
+      "tests_failed": 0,
+      "log_sha256": "03ccc23382ff3494feb57573aa67e82423b8a1ba326808299fbfee99e70e9843",
+      "scope": "rust"
+    },
+    "runtime-dynamic-only.log": {
+      "status": "PASS",
+      "tests_passed": 114,
+      "tests_failed": 0,
+      "log_sha256": "442b02c6a1b083580953b1543110a90ccd01387b71dd9b26788cba1d2e7bf89c",
+      "scope": "python"
+    },
+    "router-dynamic-only.log": {
+      "status": "PASS",
+      "tests_passed": 83,
+      "tests_failed": 0,
+      "log_sha256": "f1798e5e8d6d315be3a74e45fe6f6f5256f997fb68f40d3c1727bc86dae64b9e",
+      "scope": "node"
+    },
+    "runtime-node-dynamic-only.log": {
+      "status": "PASS",
+      "tests_passed": 19,
+      "tests_failed": 0,
+      "log_sha256": "01f218809311d1ee05dcd99c55a319fb297796bf3d915d16c7fccbd0cda5c2c1",
+      "scope": "node"
+    },
+    "codex-schema-generate-stable.log": {
+      "status": "PASS",
+      "export_jobs": 1,
+      "log_sha256": "26eab9cf2f64375c162ed2a686d654ab45827b4a279171e92357ad0071fdc2d8"
+    },
+    "codex-schema-generate-experimental.log": {
+      "status": "PASS",
+      "export_jobs": 1,
+      "log_sha256": "043cac344bccf9290e4d7571d23dbfcec779a560477e9510b1ac52fa89f9f89b"
+    },
+    "codex-app-server-check.log": {
+      "status": "PASS",
+      "log_sha256": "21a7e2e132bc000634ece259de7e14ba9a5d3f7509dbe8a12667b19776ee80ba"
+    },
+    "codex-policy-clippy.log": {
+      "status": "PASS",
+      "log_sha256": "1bd981662dcfab12cf7bc34d3b4e1f2d46f1bd62e264e321e2305b1c90d57223"
+    }
+  },
+  "additional_checks": {
+    "router_knip": "PASS",
+    "router_build": "PASS",
+    "router_local_telemetry": "PASS",
+    "rustfmt_changed_files": "PASS; stable formatter reports upstream nightly-only imports_granularity warning",
+    "git_diff_check": "PASS all three checkouts",
+    "schema_fixture_consistency": "PASS within the 400 selected Rust tests",
+    "patch_manager_fixture_tests": "6 PASS included in Runtime Python total"
+  },
+  "coverage": {
+    "selected_codex_tests": 400,
+    "unrelated_or_ignored_codex_tests_not_run": 2747,
+    "new_policy_named_tests": [
+      "codex-app-server-protocol protocol::v2::tests::thread_start_tool_isolation_uses_typed_camel_case_wire_values",
+      "codex-core tools::handlers::dynamic::dynamic_only_tests::dynamic_only_tool_round_trip_preserves_call_and_turn_and_result",
+      "codex-core session::tests::mcp_config_refresh_preserves_tool_isolation_for_normal_and_dynamic_only_sessions",
+      "codex-core tools::spec_plan::tests::dynamic_only::dynamic_only_default_leaves_normal_surface_unchanged",
+      "codex-core tools::spec_plan::tests::dynamic_only::dynamic_only_deferred_dynamic_tools_remain_callable_without_tool_search",
+      "codex-core tools::spec_plan::tests::dynamic_only::dynamic_only_duplicate_tool_collision_validation_is_preserved",
+      "codex-core tools::spec_plan::tests::dynamic_only::dynamic_only_extension_and_hosted_web_sources_are_excluded",
+      "codex-core tools::spec_plan::tests::dynamic_only::dynamic_only_empty_catalog_excludes_every_native_and_external_source",
+      "codex-core tools::spec_plan::tests::dynamic_only::dynamic_only_mcp_resources_and_browser_computer_paths_have_no_runtime",
+      "codex-core tools::spec_plan::tests::dynamic_only::dynamic_only_namespaced_dynamic_tool_preserves_its_namespace",
+      "codex-core tools::spec_plan::tests::dynamic_only::dynamic_only_one_tool_keeps_exact_dynamic_schema",
+      "codex-core tools::spec_plan::tests::dynamic_only::dynamic_only_production_builder_excludes_globally_enabled_shell_and_controls",
+      "codex-core tools::spec_plan::tests::dynamic_only::dynamic_only_model_code_mode_and_global_features_cannot_add_dispatchers",
+      "codex-core tools::spec_plan::tests::dynamic_only::dynamic_only_refreshed_mcp_catalog_stays_excluded_while_normal_admits_it",
+      "codex-core thread_manager::tests::tool_isolation_persists_through_legacy_and_paginated_resume_and_fork",
+      "codex-history tests::copied_history_restores_persisted_tool_isolation",
+      "codex-protocol protocol::tests::tool_isolation_serde_accepts_only_typed_wire_values",
+      "codex-protocol protocol::tests::session_meta_tool_isolation_round_trips_and_legacy_omission_defaults"
+    ],
+    "required_invariants": [
+      "normal tool surface unchanged",
+      "empty dynamic catalog zero tools",
+      "one dynamic tool only",
+      "globally enabled native shell excluded",
+      "MCP configured/registered tools excluded",
+      "MCP resources excluded",
+      "extension tools excluded",
+      "hosted and standalone web excluded",
+      "collaboration/subagents excluded",
+      "model-selected code mode cannot add dispatchers",
+      "enabled local MCP added and actual refresh: normal sees tools, dynamicOnly does not",
+      "SessionMeta persists across recreated manager resume",
+      "legacy metadata default and invalid enum handling",
+      "actual DynamicToolHandler exact call/turn text/image success/failure round trip",
+      "normal MCP refresh retains original behavior",
+      "Legacy and Paginated/ref-backed fork restore policy and isolated next-Turn registry"
+    ]
+  },
+  "limits": {
+    "rust_test_scope": "selected affected suites, not the full Codex workspace",
+    "platform": "local macOS arm64 Rust 1.95.0; no Linux live acceptance",
+    "app_server_restart": "persistence tested by recreated in-process Core manager plus fake Runtime restart; no real App Server process started",
+    "supplemental_latest_extracted_schema_probe": "TOOL_BLOCKED_NOT_RETRIED; current official Rust exporter and generated/precomputed fixture consistency tests passed",
+    "stock_capability": "false in Runtime schema fixtures; original supplemental generated-vs-stock check passed before request became Option; old schema digest is not reported as current",
+    "paid_provider_inference": "NOT_PERFORMED"
+  },
+  "remaining_gate_prerequisites": {
+    "current_053_anchors": "BLOCKED, no fresh probe",
+    "router_live_check": "NOT_RUN",
+    "live_runtime_health_no_unknown_no_pending": "NOT_FRESHLY_CHECKED_THIS_TURN",
+    "computer_clear": "NOT_CONFIRMED; user reports pending_ack/SUCCESS_PENDING_ACK and unknown probe; no retry/ACK",
+    "current_temporal_bot": "NOT_FRESHLY_READ_THIS_TURN; no profile changes",
+    "official_createAgent_box_payload": "NOT_FRESHLY_VERIFIED; no creation"
+  },
+  "host_manifest": {
+    "anchorProof": "BLOCKED",
+    "unchanged_from_saved_router": true,
+    "sha256": "d63fe32ca360102b64cb8a9c529efab140e4cae5a2966b814ee4ca3628c0bb96",
+    "expected_user_supplied": {
+      "grok_bot": "0.53",
+      "version": "11dd264",
+      "bytes": 26361676,
+      "sha256": "bb7012d56e474375a879311eff1d91fbd389e098023f2856c376b963c5df3d83"
+    }
+  },
+  "unchanged_router_boundaries": [
+    "scripts/patch-host.ts",
+    "scripts/manifests/grok-bot-0.53-11dd264.ts",
+    "src/config.ts",
+    "src/pilot-policy.ts",
+    "src/runtime-client.ts",
+    "src/runtime-wire.ts",
+    "src/runtime-state.ts"
+  ],
+  "source_sha256": {
+    "runtime": {
+      "codex-runtime/rcnir_codex/engine.py": "86122c5db5ce5876d9318ff46ee2bdb19f9bac80e6f63f4b91dabf052c2e567e",
+      "codex-runtime/rcnir_codex/schema.py": "3069ea593a883001343dfe71562773c1da0733b934e9365a41ed692ab4c8546d",
+      "codex-runtime/rcnir_codex/server.py": "c4ff34a00e33c545df5466de3f8bc1cf200b8600771a8765fc311c9d7262b934",
+      "codex-runtime/rcnir_codex/state.py": "cdecdb62e26d2c670047e752f3e8f8af0e374728a2e27c4b778495b582ffc23e",
+      "codex-runtime/tests/fake_app_server.py": "07d059948f9d9b1fb57d48c6f6427d64d6a4b617892d40e9b96d3137215f2db7",
+      "codex-runtime/tests/test_codex_policy_patch.py": "d88b55a36f0be523796750907abcfa5f78099426324cf1f5e415cf4759bd997b",
+      "codex-runtime/tests/test_engine.py": "a2a7083fd553954b234f55d560a917e66284239335b07433786f82d0ba59c5ef",
+      "codex-runtime/tests/test_schema.py": "b3d946f29dfc54e8440eba879563c42810a66bb864af486508b6b9337f398d2c",
+      "codex-runtime/tests/test_server.py": "383c0129f13c25854c03d2ee453e0243834d8b0b80c292ab778da07db77eebd6",
+      "codex-runtime/upstream/codex-0.154.0/manage_patch.py": "3f168f38b3513de0c84db8a3e089dd47c2446ae84d466910195602219ebea664"
+    },
+    "router": {
+      "bin/grok-codex-router.ts": "a6591584c1682242e04591cadec56f3a58a3bc8d6a7574bc7ed167dae587d9dc",
+      "install.sh": "eb1906811b09a394762e867916864c79b1fb60dadc811b0f486fb100638ee8c7",
+      "src/native-execution-policy.ts": "dc394f3404d9ab5e3d75fc029bf560cc97e844c933264bb8630d83e7607a32e7",
+      "src/runtime-execution.ts": "63d32be10c02ce187aa3ac6a233f3b6dc43ce5dc000d840040e6325fad70fd8c",
+      "tests/entrypoint.test.ts": "d23661c8c07fb7cfb077052a5e65f6a85190a7b0f5846a1bbc8b01dacd64604b",
+      "tests/runtime-router.test.ts": "9d64649f93992da34cf214c8276c2a3cbbd00412dc067a8fb6113f5de08ce1e6"
+    }
+  },
+  "source_changed_files": {
+    "runtime": [
+      "LEARNINGS.md",
+      "codex-runtime/DYNAMIC-ONLY-20260919.md",
+      "codex-runtime/GROK-M1-20260919.md",
+      "codex-runtime/OPERATIONS.md",
+      "codex-runtime/rcnir_codex/engine.py",
+      "codex-runtime/rcnir_codex/schema.py",
+      "codex-runtime/rcnir_codex/server.py",
+      "codex-runtime/rcnir_codex/state.py",
+      "codex-runtime/tests/fake_app_server.py",
+      "codex-runtime/tests/test_codex_policy_patch.py",
+      "codex-runtime/tests/test_engine.py",
+      "codex-runtime/tests/test_schema.py",
+      "codex-runtime/tests/test_server.py",
+      "codex-runtime/upstream/codex-0.154.0/.gitattributes",
+      "codex-runtime/upstream/codex-0.154.0/CHANGED_FILES.md",
+      "codex-runtime/upstream/codex-0.154.0/LICENSE.upstream",
+      "codex-runtime/upstream/codex-0.154.0/NOTICE.upstream",
+      "codex-runtime/upstream/codex-0.154.0/README.md",
+      "codex-runtime/upstream/codex-0.154.0/dynamic-only.patch",
+      "codex-runtime/upstream/codex-0.154.0/manage_patch.py",
+      "codex-runtime/upstream/codex-0.154.0/manifest.json"
+    ],
+    "router": [
+      ".agents/skills/grok-codex-router/SKILL.md",
+      "LEARNINGS.md",
+      "MILESTONE-1.md",
+      "NATIVE-EXECUTION-POLICY.md",
+      "README.md",
+      "bin/grok-codex-router.ts",
+      "install.sh",
+      "src/native-execution-policy.ts",
+      "src/runtime-execution.ts",
+      "tests/entrypoint.test.ts",
+      "tests/runtime-router.test.ts"
+    ]
+  }
+}

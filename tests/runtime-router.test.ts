@@ -33,6 +33,7 @@ class FakeRuntime implements RuntimeBoundary {
   replies = 0;
   fault: RuntimeTool | undefined;
   faultCode = "UNKNOWN_OUTCOME";
+  openToolIsolation: unknown = "dynamicOnly";
   alterStatus: ((status: JsonObject) => void) | undefined;
   onStart: (runtime: FakeRuntime) => void = (runtime) => runtime.complete();
   afterReplies: (runtime: FakeRuntime) => void = (runtime) => runtime.complete();
@@ -71,7 +72,8 @@ class FakeRuntime implements RuntimeBoundary {
     if (name === this.fault) throw new RuntimeFault(this.faultCode, true);
     if (name === "runtime_status") {
       const result: JsonObject = { ok: true, capabilities: { developer_instructions: true, dynamic_tools: true,
-        inject_items: true, structured_input: true, reasoning_summary: true, operation_result: true },
+        inject_items: true, structured_input: true, reasoning_summary: true, operation_result: true,
+        dynamic_only_tool_policy: true },
       persistence: { state: "healthy", fenced: false, uncertain: false },
       runtime: { started: true, ready: true, generation: this.generation, latest_event: this.sequence || null,
         unknown_operations: [], pending_inputs: [...this.pending.values()] } };
@@ -80,7 +82,8 @@ class FakeRuntime implements RuntimeBoundary {
     }
     if (name === "runtime_session_open") {
       this.session = String(args.session_id);
-      return { ok: true, session_id: this.session, thread_id: this.thread };
+      return { ok: true, session_id: this.session, thread_id: this.thread,
+        tool_isolation: this.openToolIsolation };
     }
     if (name === "runtime_session_inject_items") return { ok: true, session_id: this.session, thread_id: this.thread,
       operation_id: args.operation_id, injected: true };
@@ -128,9 +131,7 @@ function fixture(t: TestContext, runtime = new FakeRuntime(), stateDirectory?: s
   const directory = stateDirectory ?? fs.mkdtempSync(path.join(os.tmpdir(), "grok-m1-runtime-"));
   if (!stateDirectory) t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
   const execution = new RuntimeExecution({ boundary: runtime, stateDirectory: directory,
-    conversationId: "pilot", transcriptId: "transcript-fixture", executorOrdinal: ordinal, route,
-    // This fixture explicitly assumes native exclusion. It does NOT prove it.
-    policyVerifier: { verify(status) { assert.equal(status.ok, true); } } });
+    conversationId: "pilot", transcriptId: "transcript-fixture", executorOrdinal: ordinal, route });
   return { runtime, execution, directory };
 }
 
@@ -164,6 +165,7 @@ test("lazy thread, transcript injection, structured current user, final, officia
     cacheWriteTokens: 0, maxTokens: 272_000 });
   const open = runtime.calls.find((row) => row.name === "runtime_session_open")!;
   assert.equal(open.args.developer_instructions, "DEVELOPER_SHOULD_NOT_PERSIST");
+  assert.equal(open.args.tool_isolation, "dynamicOnly");
   assert.equal((open.args.dynamic_tools as JsonObject[])[0]!.type, "function");
   assert.deepEqual((open.args.dynamic_tools as JsonObject[])[0]!.inputSchema, definition.parameters);
   assert.equal(runtime.calls.filter((row) => row.name === "runtime_session_inject_items").length, 1);
@@ -318,21 +320,20 @@ test("completed invocation cannot be replayed through a replacement executor ord
   assert.equal(fresh.runtime.calls.filter((row) => row.name === "runtime_session_open").length, 1);
 });
 
-test("production native policy remains closed: fake lifecycle success is not native-permission proof", async (t) => {
-  const { runtime, directory } = fixture(t);
-  const execution = new RuntimeExecution({ boundary: runtime, stateDirectory: directory, route,
-    conversationId: "pilot", transcriptId: "transcript-fixture", executorOrdinal: 0 });
-  await assert.rejects(execution.run(user, [definition], "not-authorized"), /NATIVE_TOOL_CONTRACT_UNVERIFIED/);
-  assert.deepEqual(runtime.calls.map((row) => row.name), ["runtime_status"]);
-  assert.equal(fs.readdirSync(directory).length, 0);
-  assert.throws(() => productionThreadPolicy.verify({ arbitrary_override: true }), /NATIVE_TOOL_CONTRACT_UNVERIFIED/);
+test("production native policy requires verified Runtime capability and explicit dynamicOnly request", () => {
+  const status = { capabilities: { dynamic_only_tool_policy: true } };
+  assert.doesNotThrow(() => productionThreadPolicy.verify(status, "dynamicOnly"));
+  assert.throws(() => productionThreadPolicy.verify(status, "default"), /NATIVE_TOOL_CONTRACT_UNVERIFIED/);
+  assert.throws(() => productionThreadPolicy.verify({ capabilities: {} }, "dynamicOnly"), /NATIVE_TOOL_CONTRACT_UNVERIFIED/);
 });
 
 test("missing Runtime capabilities, unknown operations and pending inputs fail before session open", async (t) => {
-  for (const mode of ["capability", "unknown", "pending", "persistence"]) {
+  for (const mode of ["capability", "dynamic-policy", "legacy-policy", "unknown", "pending", "persistence"]) {
     const { runtime, execution } = fixture(t);
     runtime.alterStatus = (status) => {
       if (mode === "capability") (status.capabilities as JsonObject).inject_items = false;
+      if (mode === "dynamic-policy") (status.capabilities as JsonObject).dynamic_only_tool_policy = false;
+      if (mode === "legacy-policy") delete (status.capabilities as JsonObject).dynamic_only_tool_policy;
       if (mode === "unknown") (status.runtime as JsonObject).unknown_operations = ["unknown-operation"];
       if (mode === "pending") (status.runtime as JsonObject).pending_inputs = [{ request_id: 1 }];
       if (mode === "persistence") (status.persistence as JsonObject).fenced = true;
@@ -340,6 +341,15 @@ test("missing Runtime capabilities, unknown operations and pending inputs fail b
     await assert.rejects(execution.run(user, [definition], mode), RuntimeFault);
     assert.equal(runtime.calls.some((row) => row.name === "runtime_session_open"), false);
   }
+});
+
+test("dynamicOnly open echo mismatch fails before turn admission", async (t) => {
+  const { runtime, execution } = fixture(t);
+  runtime.openToolIsolation = "default";
+  await assert.rejects(execution.run(user, [definition], "policy-echo"), /TOOL_ISOLATION_ECHO_MISMATCH/);
+  const open = runtime.calls.find((row) => row.name === "runtime_session_open");
+  assert.equal(open?.args.tool_isolation, "dynamicOnly");
+  assert.equal(runtime.calls.some((row) => row.name === "runtime_turn_start"), false);
 });
 
 test("wire rejects tool-name collisions, preserves raw call IDs, images and failure", () => {

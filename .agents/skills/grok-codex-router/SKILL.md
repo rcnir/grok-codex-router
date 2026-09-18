@@ -21,9 +21,12 @@ Run `npm run knip` and `npm run check` locally. Those checks do not authorize
 live VM acceptance, installation or inference. Do not run the archived
 `vm-contract` suite as a substitute for the scoped read-only acceptance.
 
-Production host anchor proof is BLOCKED; production native-tool policy is
-UNVERIFIED. Neither a custom fixture manifest nor a test-only verifier is
-deployment evidence. Do not bypass these guards or infer readiness from tests.
+Production host anchor proof is BLOCKED. The native policy is a pinned Codex
+source patch, not a stock feature flag. Require Runtime's executable/schema-backed
+`dynamic_only_tool_policy` capability, request `tool_isolation:"dynamicOnly"`
+explicitly, and verify the actual returned policy before admission. There is no
+test verifier in the production path. Source tests are not deployment evidence;
+do not replace/restart live Runtime or touch the host to manufacture acceptance.
 
 No UNKNOWN operation may be retried, replayed or assigned a replacement operation
 ID. Keep pending durable state blocked after restart. Do not delete journals to

@@ -33,7 +33,7 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
   if (["on", "install", "recover", "verify", "restart", "restart-host", "control"].includes(command)) {
     // No OAuth lookup, private transport, package install, host restart, or
     // provider inference can be reached through retained upstream CLI verbs.
-    throw new RuntimeFault("HUMAN_GATE_CLOSED_NATIVE_POLICY_UNVERIFIED");
+    throw new RuntimeFault("HUMAN_GATE_CLOSED_HOST_COMPATIBILITY_UNVERIFIED");
   }
   if (args.length) throw new RuntimeFault("UNEXPECTED_ARGUMENTS");
   if (command === "init") {

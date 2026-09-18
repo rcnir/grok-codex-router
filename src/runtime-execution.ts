@@ -1,7 +1,7 @@
 import type { ResolvedRoute } from "./config.js";
 import type { RouterResult, StreamPart, NormalizedUsage } from "./response.js";
 import { RuntimeFault, type RuntimeBoundary, type RuntimeTool } from "./runtime-client.js";
-import { productionThreadPolicy, type ThreadPolicyVerifier } from "./native-execution-policy.js";
+import { productionThreadPolicy } from "./native-execution-policy.js";
 import { RunJournal, canonicalJson, fingerprint, type PendingToolIdentity } from "./runtime-state.js";
 import { dynamicTools, initialRuntimeInput, hostToolResults, type RuntimeToolSet } from "./runtime-wire.js";
 import { isRecord, type JsonObject } from "./sand-values.js";
@@ -27,8 +27,6 @@ export interface RuntimeExecutionOptions {
   transcriptId: string;
   executorOrdinal: number;
   route: ResolvedRoute;
-  /** Explicit dependency for fake-Runtime tests; production always uses the closed verifier. */
-  policyVerifier?: ThreadPolicyVerifier;
 }
 
 function identifier(value: unknown, code: string): string {
@@ -111,7 +109,8 @@ export class RuntimeExecution {
       if (!this.isStarted()) {
         const input = initialRuntimeInput(messages);
         const status = await this.readStatus(true);
-        (this.options.policyVerifier ?? productionThreadPolicy).verify(status);
+        const requestedToolIsolation = "dynamicOnly" as const;
+        productionThreadPolicy.verify(status, requestedToolIsolation);
         this.sessionId = this.journal.begin(invocationId, this.options.executorOrdinal);
         const runtime = status.runtime as JsonObject;
         this.generation = count(runtime.generation);
@@ -122,9 +121,13 @@ export class RuntimeExecution {
         const opened = await this.mutate(`open_session:${this.sessionId}`, "runtime_session_open", {
           session_id: this.sessionId, model: this.options.route.model,
           sandbox: "read-only", approval_policy: "never",
-          developer_instructions: input.developerInstructions, dynamic_tools: mappedTools.definitions
+          developer_instructions: input.developerInstructions, dynamic_tools: mappedTools.definitions,
+          tool_isolation: requestedToolIsolation
         });
         if (opened.session_id !== this.sessionId) throw new RuntimeFault("SESSION_ID_MISMATCH", true);
+        if (opened.tool_isolation !== requestedToolIsolation) {
+          throw new RuntimeFault("TOOL_ISOLATION_ECHO_MISMATCH");
+        }
         this.threadId = identifier(opened.thread_id, "THREAD_ID_MISSING");
         this.journal.bind({ threadId: this.threadId });
         if (signal?.aborted) return await this.closeWithoutTurn(invocationId);

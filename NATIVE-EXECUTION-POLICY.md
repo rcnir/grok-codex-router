@@ -1,99 +1,113 @@
-# Codex 0.154.0 thread-local native execution exclusion
+# Codex 0.154.0 thread-local dynamic-only contract
 
-## Result
+## Scope and status
 
-**UNVERIFIED. No production Grok-owned thread is admitted.**
-`productionThreadPolicy.verify()` in `src/native-execution-policy.ts` rejects before
-`runtime_session_open`. No configuration flag or environment variable turns it on.
-Fake tests explicitly inject a verifier to test lifecycle mechanics; that injection
-is not proof that Codex native execution has been disabled. Do not remove the gate
-because `sandbox:"read-only"` or `approval_policy:"never"` was supplied. Neither is
-a dynamic-tools-only contract; read-only native shell/web/MCP activity can still be
-a second execution authority.
+This source candidate adds a bounded patch to exact upstream Codex commit
+`6b9826e3aa83b1a5947db50f4332cb9c65f1b340` (`rust-v0.154.0`). It does not
+change shared Codex configuration or managed requirements. It does not install
+a second App Server, a new service or a different execution plane.
 
-## Pinned primary source
+The patch is owned by the existing Runtime repository at
+`codex-runtime/upstream/codex-0.154.0/`. Its manifest binds the upstream commit,
+patch digest and exact before/after source-file hashes. Generated schema changes
+are included. The current local validation result is recorded separately in
+`DYNAMIC-ONLY-EVIDENCE-20260919.json`; implementation alone is not acceptance.
 
-Official repository `openai/codex`, tag `rust-v0.154.0`, peeled source commit
-`6b9826e3aa83b1a5947db50f4332cb9c65f1b340`. This is public source inspection,
-not a fresh live installed-binary fingerprint or a real thread execution test.
+**Not deployed. Human Gate 1 remains closed.** The current Grok 0.53 production
+manifest remains `anchorProof:"BLOCKED"`. No fresh VM/Computer/host probes, unknown
+operation retries or acknowledgements are part of this source-only continuation.
 
-Evidence paths below are relative to that pinned repository:
+## Typed, immutable thread policy
 
-- `codex-rs/app-server/src/config_manager.rs:186-198,216-254`: `thread/start.config`
-  request overrides are converted to TOML and appended after process CLI overrides
-  when loading the thread's effective configuration. They are a real per-thread
-  configuration layer, not a process-wide config-file edit.
-- `codex-rs/config/src/overrides.rs:9-14,17-98` and
-  `codex-rs/config/src/merge.rs:57-59,95-134`: dotted override construction and
-  recursive table merge. In particular **`mcp_servers:{}` does not clear inherited
-  configured servers**. Treating an empty table as global MCP denial is incorrect.
-- `codex-rs/core/src/tools/spec_plan.rs:1079-1087,1202-1204,1255-1258,1269-1280`:
-  environment presence gates shell, request_permissions, apply_patch and view_image.
-  Explicit empty environments are materially different from omission/defaults.
-- `codex-rs/core/src/tools/spec_plan.rs:1128-1133`: native MCP resource tools depend
-  on the MCP catalog, not only environment access.
-- `codex-rs/app-server/src/extensions.rs:75-134`: the thread registry installs
-  multiple extension contributors, including MCP/executor plugins, web search,
-  image generation, skills, guardian and memory-related contributors. Registration
-  alone does not prove activity, but each applicable execution path needs a real
-  effective-config exclusion proof.
+`ToolIsolation` has two wire values: `default` and `dynamicOnly`.
+`thread/start.toolIsolation` selects it for a newly created thread. Omission keeps
+the default normal tool surface. It is not an ordinary recursive config override.
 
-## Acceptance still required
+The typed value passes through `ThreadStartParams`, `StartThreadOptions`,
+`SessionSpawnArgs`, `SessionConfiguration`, and each derived `TurnContext`.
+It is persisted in the existing `SessionMeta` record through the thread-store and
+rollout recorder. Resume restores the stored value; copied and reference-backed
+forks inherit the source metadata. Old metadata with an omitted value remains
+`default`. Unknown enum values are rejected instead of silently becoming default.
 
-### Bounded source review findings
+There is no resume/turn/config setter that downgrades a stored dynamic-only thread.
+Model changes, review contexts and MCP configuration refresh do not change the
+thread's immutable policy. A fresh, independently host-created thread has its own
+policy; this is not a new process-wide or transitive global authorization system.
+Model-initiated native collaboration tools are absent from the isolated registry.
 
-The source-proven generic MCP deny-all is an **empty managed-requirements
-`mcp_servers` allowlist**, not an empty ordinary configuration map.
-`core/src/config/mod.rs:2088-2110` disables every effective unmatched MCP server;
-`1643-1680` applies the top-level requirements to plugin MCP too. Normal thread
-config overrides do not author this managed-requirements layer.
+The legacy `thread/resume.history` input creates a **new history-derived thread**;
+it does not overwrite the policy of the persisted thread identified by its normal
+resume path. The router does not use this input as a recovery mechanism.
 
-Enumerating current MCP names and setting each `enabled:false` is not a stable
-substitute: `app-server/src/mcp_refresh.rs:191-237` tests a later global MCP entry
-being merged alongside preserved thread overrides. Also, disabling apps does not
-hide ordinary MCP (`core/src/mcp_tool_exposure.rs:75-145`).
-`orchestrator.mcp.enabled` is a CODEX_APPS special case
-(`core/src/tools/handlers/mcp_resource.rs:43-56`), and `features.tool_registry`
-is metadata/collision configuration (`features/src/feature_configs.rs:9-18`),
-not a generic native-tool deny-all.
+## Tool-plan enforcement
 
-Other source-proven exclusions would still need to be part of an enforced, pinned
-thread profile before admission. They are **not currently installed or forwarded**
-by the M1 production path:
+`core/src/tools/spec_plan.rs::build_tool_router` checks the policy before adding
+native, MCP, resource, extension or hosted tools. Its dynamic-only path starts with
+an empty registry and calls only `append_dynamic_tool_runtimes` with Grok's supplied
+catalog. This constrains both the model-visible schemas and the executable handler
+registry; hiding a schema while leaving a callable native handler is insufficient.
 
-| Authority | Relevant thread-local contract / evidence |
-| --- | --- |
-| Shell/file/environment tools | Explicit `environments:[]`; `app-server-protocol/src/protocol/thread.rs:129-137` and environment-gated tool construction cited above. |
-| Native subagents | `agents.enabled:false`, `features.multi_agent_v2:false`, defensively `multi_agent:false`; v2 otherwise takes precedence (`config/src/config_toml.rs:680-685`, `core/src/config/mod.rs:1544-1571`, `core/src/tools/spec_plan.rs:648-659`). |
-| Hosted web search | Top-level `web_search:"disabled"`; explicit mode precedence (`core/src/config/mod.rs:2628-2639`) and no hosted spec when disabled (`core/src/tools/hosted_spec.rs:14-20`). |
-| Command hooks | `features.hooks:false`; hooks include SessionStart/UserPromptSubmit and default enabled (`features/src/lib.rs:1167-1170`, `config/src/hook_config.rs:35-60,161-174`). Feature false reaches `HooksConfig` and an empty registry (`core/src/session/mod.rs:4705-4733`, `hooks/src/registry.rs:304-307`). |
-| Memory helpers | `memories.generate_memories:false`, `use_memories:false`, `dedicated_tools:false`, `features.memories:false`; defaults and persisted memory mode in `config/src/types.rs:289-346`, `core/src/session/session.rs:886-923`. |
-| Apps/plugins/image generation | Review and pin `features.apps`, `plugins`, `remote_plugin`, `tool_suggest`, `recommended_plugins`, `image_generation` false (`features/src/lib.rs:1283-1365,1457-1460`; `core/src/tools/spec_plan.rs:699-735`). This does not solve generic MCP. |
-| Code-mode execution | Feature flags alone do not override model `tool_mode` (`core/src/tools/mod.rs:68-89`). `code_mode_host:false` with `code_mode.disable_in_process_fallback:false` selects the disabled provider (`core/src/thread_manager.rs:472-479`, `code-mode/src/remote_session.rs:92-102`). |
+Finalization preserves existing dynamic schema conversion and collision checks,
+but does not add native tool search, code-mode dispatchers or child-management
+tools. The effective tool mode is Direct even if model metadata selects code mode.
+Deferred dynamic tools become directly exposed so they remain callable without
+introducing a native discovery tool. Dynamic namespaces remain supported.
 
-Browser/computer are also a separate host/managed-policy boundary in this source:
-the feature comments describe requirements-only gates (`features/src/lib.rs:236-271`)
-and `allow_browser_and_computer_use` is a managed requirements field
-(`config/src/config_requirements.rs:1000-1013`). Do not claim ordinary thread
-`features.browser_use:false/computer_use:false` proves that boundary.
+Consequently the isolated plan has no native shell/exec, apply_patch, view_image,
+MCP tools/resources, apps/plugins/extensions, hosted or standalone web search,
+image generation, native request_input/permissions, sleep/clock, subagents,
+tool search or code-mode entrypoints. Browser/computer MCP tools such as
+`node_repl` and `cua_repl` are excluded by the same boundary, not by an invented
+second browser policy. Grok-supplied dynamic tools retain their existing response
+and call-ID contract.
 
-For a Grok dynamic-only thread, `dynamicTools` must explicitly contain the mapped
-Grok tool catalog (or an empty list when Grok supplied no tools). Do not copy an
-empty-catalog research example into an actual tool-using Grok run.
+Shared MCP connections and refresh behavior remain intact. A new global MCP server
+can be present internally without entering an isolated thread's next tool plan.
+The normal thread still uses the original construction path and normal refresh.
 
-Thus this task has **not established an operational thread-local native-exclusion
-configuration**. Changing shared managed requirements or adding a dedicated
-App Server thread-local deny-all capability is a separate reviewed design/change;
-neither was performed to bypass the user's unchanged-live/shared-process constraint.
+## Runtime capability and effective-policy proof
 
-Identify and validate an exact thread-local contract excluding inherited MCP,
-plugin/application tools, native web/browser/computer and subagent execution, plus
-any execution-capable extension contributors. Verify the *effective* contract,
-including defaults, model-dependent tool eligibility and config refresh semantics;
-do not rely solely on requested flags or on an instruction telling the model not
-to call native tools. Keep harmless non-execution utilities distinct from actual
-execution authority instead of inventing a nonexistent universal tool switch.
+`runtime_session_open(..., tool_isolation="dynamicOnly")` maps to the typed
+App Server creation field. Supplied policy participates in the existing canonical
+creation fingerprint. Old callers that omit it retain their prior fingerprint.
 
-No shared App Server process configuration or Runtime live installation was changed
-for this research. No separate App Server, paid model turn, native tool invocation,
-global MCP disabling or Secret Broker change is permitted by the current task gate.
+`runtime_status.capabilities.dynamic_only_tool_policy` is derived from the verified
+App Server schema: the start request must have the exact policy enum and the start
+and resume responses must require the effective `toolIsolation` field with the
+same enum. The existing Runtime executable/schema verification remains mandatory.
+An unmodified 0.154 schema does not advertise this capability. Merely installing
+new Runtime Python code cannot turn stock Codex into a dynamic-only provider.
+
+Start/resume/fork response fields are read from the actual session configuration,
+not copied from the request. Runtime must retain acknowledged effective policy and
+check resumed effective policy before allowing that thread to run. Missing or
+different effective policy is a thread-level failure, never permission to retry a
+creation, replay an operation or silently select another execution path.
+
+## Router admission
+
+The production verifier requires both the explicit requested policy `dynamicOnly`
+and `capabilities.dynamic_only_tool_policy === true`. It otherwise stops with
+`NATIVE_TOOL_CONTRACT_UNVERIFIED` before opening a session. After opening, the router
+also requires the exact effective `tool_isolation:"dynamicOnly"` response before
+injecting transcript or starting a Turn. There is no injectable fake verifier in
+the production path. Fake Runtime tests use the same capability/request/echo checks.
+
+The actual Grok dynamic catalog is still supplied. Existing model selection,
+transcript injection, structured current input, exact request_id/generation and
+callId correlation, same-Turn tool responses, cancellation and no-replay journal
+remain in place. No source change permits raw/private reasoning to be exposed.
+
+## Why the earlier stock alternatives stay rejected
+
+Ordinary `mcp_servers:{}` recursively merges with inherited configuration, and
+later refresh can add global entries. Sandbox/approval settings are not a native
+tool deny-all. Enumerating currently known MCP names does not constrain future
+servers. The patch therefore enforces the invariant at tool construction instead
+of disabling many feature flags or changing global managed requirements.
+
+The earlier stock-source investigation is preserved in Git history at router
+commit `8ef30c035c7cf2a24424f677e88d260c60ea1bd7`. Its inability to prove a stock
+contract must not be confused with acceptance of this separately tested source
+patch, or with future live deployment acceptance.
