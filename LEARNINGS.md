@@ -61,3 +61,26 @@ the persisted/core policy and effective response remain required typed values.
 Test event streams can contain legacy notifications between typed item events.
 A dynamic tool round-trip should match typed completion with exact call/Turn
 identity, not assume the next event is its completion.
+
+## 2026-09-19 — Grok Bot 0.57 host compatibility port
+
+Host compatibility must be versioned independently from the router/runtime policy.
+Keep old manifests as fail-closed historical targets and add a new exact fingerprint
+plus structural proof for each upstream host revision. A host version string or SHA
+alone is not enough to authorize a patch.
+
+Anchor validation should prove the exact seam and ordering, but must not count a
+generic field name across the whole proprietary bundle. Grok Bot 0.57 already had
+many unrelated `conversationId` properties, so the safe invariant is one versioned
+router marker block containing the exact three inserted identity fields, not one
+global occurrence of those field spellings.
+
+For 0.57 the narrow inference seam is the unique stock fallback after
+`inferenceOptions` is fully assembled. Inserting the opt-in hook immediately before
+that fallback preserves mock/model experiment/requested-model behavior. The main
+identity seam can likewise prepend fields to the unique `mainSessionOptions` object
+without changing its executor-profile/model selection or dispatch path.
+
+Pin both the pristine stock fingerprint and the deterministic patched fingerprint.
+That makes read-only `--check` able to authenticate either exact state while partial
+markers, stale backups or hand-edited patched images still fail closed.

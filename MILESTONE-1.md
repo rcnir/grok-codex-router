@@ -2,7 +2,8 @@
 
 ## Status and ownership
 
-Source candidate only. **Milestone 1 incomplete; Human Gate 1 BLOCKED.**
+Source candidate only. **Milestone 1 is ready for the Human Gate 1 pilot-create
+decision; Human Gate 1 is OPEN for that one decision only.**
 No live router package was installed, no pilot created, no pristine backup written
 to the VM, no host source patched/restarted, no live Runtime replaced and no real
 App Server process or provider/model inference started by this task.
@@ -16,13 +17,13 @@ The companion Runtime branch is `agent/grok-router-m1-20260919` in
 `de20bf8f756e0fc2d8b276adb53893bc76066c51`.
 Neither branch is a live deployment or a change to Intelligence/D1/Cloudflare.
 
-The current source-only continuation adds the pinned Codex thread-local
+The source-only continuation adds the pinned Codex thread-local
 `toolIsolation:"dynamicOnly"` contract, Runtime schema-backed capability and
 effective-policy recovery checks. The 400 selected Codex tests passed, including
-enabled MCP refresh and Legacy/Paginated persistent resume/fork. This resolves
-the stock-API source blocker, not host compatibility or live acceptance. Current
-evidence is `DYNAMIC-ONLY-EVIDENCE-20260919.json`; the earlier
-`EVIDENCE-M1-20260919.json` remains a historical record of the previous candidate.
+enabled MCP refresh and Legacy/Paginated persistent resume/fork. The current 0.57
+host compatibility port is independently accepted read-only in
+`HOST-057-EVIDENCE-20260919.json`; `DYNAMIC-ONLY-EVIDENCE-20260919.json` remains
+the Blocker 1 source record, and `EVIDENCE-M1-20260919.json` remains historical.
 
 The Runtime continuation preserves the subsequent docs-only commit `71eaefab...`
 already present after the saved `8b565576...` candidate. No branch/worktree or
@@ -95,51 +96,71 @@ an explicitly blank final. Commentary cannot replace a blank final. Usage is
 mapped from cumulative totals into segment deltas; reasoning-output tokens are
 not counted a second time.
 
-## 0.53 patcher and current-host blocker
+## 0.57 production compatibility and retained 0.53 support
 
-The manifest binds the user-supplied current-host contract:
+The current production contract was freshly measured read-only:
 
 ```
-Grok Bot: 0.53
-Host version: 11dd264
-Bytes: 26361676
-SHA256: bb7012d56e474375a879311eff1d91fbd389e098023f2856c376b963c5df3d83
+Grok Bot: 0.57.0
+Host version: 18cd065
+Bytes: 26438264
+SHA256: c667b530962bbf94a2ba77659b0440f20dd553dfdbabdd4a2cd157e4335bba29
 Path: /home/box/sand-host/host-main.cjs
+Router markers: all zero (stock)
 ```
 
-These current-host values were supplied by the user; they have **not** been
-independently remeasured successfully during this task. A read-only source
-transfer returned truncated data and no snapshot was accepted/written. A later
-bounded source read was explicitly tool-blocked. It was not repeated through
-another route. Do not claim current-host anchors or `--check` passed.
+`scripts/manifests/grok-bot-0.57-18cd065.ts` is a built-in fingerprint-bound
+compatibility target with `routerMarkerVersion:1`, exact stock and deterministic
+patched fingerprints, an explicit 0600 pristine-backup SHA policy, and four
+required structural anchors. Fresh actual-host counts were exactly one each and
+in order: `inferenceOwner`, the stock inference fallback `inferenceHook`,
+`mainSessionOptions`, and its `mainSessionDispatch`. Only after that live
+structural proof passed was `anchorProof:"VERIFIED"` recorded.
 
-The production manifest therefore has `anchorProof:"BLOCKED"`. Its candidate
-anchors come from retained prior-version source, not verified 0.53 source.
-Fingerprint-only `--check` cannot report full compatibility, and any production
-patch/restore is refused before backup or host writes. Custom fixture manifests
-cannot target the canonical live host or a symlink/realpath alias.
+The 0.57 hook is inserted immediately before the unique stock fallback
+`return createCursorInferencePromptSession(inferenceOptions);`. It does not alter
+mock handling, model experiments, requested-model resolution or inference option
+construction. The identity patch adds only `conversationId`,
+`transcriptId: host.getTranscriptId()` and `isGroupMemberTurn` at the unique main
+session-options seam. The existing executor-profile/model-ID choice and all other
+turn logic remain stock.
 
-The deterministic algorithm and temporary fixtures cover SHA/size, unique anchors,
-single hook/identity insertion, idempotence, partial/tampered markers, backup
-mismatch, exact restore and stock policy passthrough. These validate the algorithm,
-not the current proprietary host's anchor layout.
+The deterministic reviewed patched image is:
+
+```
+Bytes: 26439011
+SHA256: 07835cd847c027aa2628741c2fb93a7c2ebbcb67a55c4861254dfc51af522b1d
+```
+
+The built read-only check passed on the actual current host with
+`--compat grok-bot-0.57-18cd065`. No backup or host write occurred. Unknown
+fingerprints, zero/duplicate required anchors, partial markers, missing/mismatched
+backup, and a non-deterministic marked image remain fail-closed.
+
+The 0.53/`11dd264` manifest is retained as a separate built-in compatibility
+target and remains `anchorProof:"BLOCKED"`; its legacy insertion seam is still
+covered by the original fixture suite. A custom fixture manifest still cannot
+override the canonical production host or an alias to it.
 
 ## Human Gate 1 boundary
 
-Gate 1 is **not requested yet**. The native exclusion source contract is described
-in `NATIVE-EXECUTION-POLICY.md`; its source/local acceptance does not authorize
-deployment. Before opening Gate 1, obtain actual 0.53 compatibility proof and record cloud-01
-read-only acceptance: host version/SHA/size, router check, healthy ready Runtime,
-no UNKNOWN or pending inputs, Computer clear/CLEAR, and the existing user-facing
-Bot still `harness:"temporal"`.
+Gate 1 is **OPEN for explicit Human approval to create one isolated BOX pilot**.
+This does not authorize host patching, Runtime/Codex deployment, App Server
+replacement, provider/model inference, Temporal profile changes or any other Bot.
 
-Only then present a concrete official `createAgent` request for ONE new isolated
-pilot with `harness:"box"`; capture its returned immutable ID and independently
-read back its profile. The existing Temporal agent, existing conversations,
-automations, groups, other BOX agents and model routes are unchanged. Creation
-approval is not package-install/host-restart/inference approval. Do not fabricate
-the exact createAgent payload or claim the official current path has been verified
-until its current schema/handler has been read.
+Fresh read-only prerequisites passed: current 0.57 host fingerprint/anchors and
+router check, healthy/ready Runtime with persistence healthy and no fence or
+uncertainty, UNKNOWN 0, pending input 0, Computer 0.2.3 on the same service identity
+with `clear/CLEAR`, and the existing user-facing Bot still
+`harness:"temporal"`. The current 0.57 coordinator's `createAgent` validator and
+BOX branch were read directly: explicit `creationRoute:{kind:"box"}` stays on the
+host-mediated BOX path and `harness:"box"` is a valid field.
+
+The proposed single pilot request is recorded in
+`HOST-057-EVIDENCE-20260919.json`. Creation must stop after returning its immutable
+agent ID and profile readback; subsequent host patch/provider acceptance remains a
+separate Human decision. Existing Temporal agents, conversations, automations,
+groups, other BOX agents and model routes are unchanged.
 
 ## Local checks
 
@@ -149,23 +170,16 @@ The live `tests/vm-contract.test.ts` is deliberately not executed by the local t
 runner. Provider request/stream tests among the retained upstream tests are local
 serialization/fake event tests, not paid provider calls.
 
-Current source/local results are recorded in `DYNAMIC-ONLY-EVIDENCE-20260919.json`.
-The original counts and read-only observations below belong to the historical
-`EVIDENCE-M1-20260919.json`; they are not fresh observations from this continuation.
+Blocker 1 source/local evidence remains in `DYNAMIC-ONLY-EVIDENCE-20260919.json`;
+the 0.57 port and fresh Gate evidence are in `HOST-057-EVIDENCE-20260919.json`.
 
-The final local suites passed 82 router tests, 95 Runtime Python tests and 19
-Runtime Node acceptance fixtures. Five generated wire envelopes also passed the
-retained Codex 0.154.0 JSON schemas without generating schemas from a new binary.
+Current regression acceptance passed 88 router tests plus telemetry ingestion and
+`knip`, 219 Runtime Node tests, and 114 Runtime Python tests. The Runtime source was
+not changed by the 0.57 port. `git diff --check` passed.
 
-The live Runtime read-only observation at `2026-09-19 05:10:57 JST` was healthy,
-ready, generation 12, UNKNOWN count 0 and pending input count 0. It still advertised
-only its existing capabilities; the source extensions remain undeployed. The most
-recent Computer observation was `pending_ack / SUCCESS_PENDING_ACK`, not clear.
-No receipt from another/unknown owner was acknowledged. The current user-facing
-Temporal profile and exact official createAgent payload were not freshly verified;
-the scoped retained createAgent source read was tool-blocked and not bypassed.
-
-This continuation performs no cloud-01 or Computer checks. The user-reported
-UNKNOWN host probe is not retried, replayed or acknowledged. The production
-manifest is unchanged with `anchorProof:"BLOCKED"`; the current seam/main-options
-hints supplied by the user are not promoted to fresh production anchor evidence.
+Fresh live read-only Runtime status is generation 12 / PID 883943,
+`started=true`, `ready=true`, persistence healthy, `fenced=false`,
+`uncertain=false`, UNKNOWN 0 and pending input 0. The current user-facing Bot
+readback remains `harness:"temporal"`. Final Computer status is 0.2.3 on
+service identity `a6299bb2e1242f491855fd38608b0dc5f65c6f5f956f734cf5ba16aaf9527e41`
+with `clear/CLEAR`.

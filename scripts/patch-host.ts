@@ -3,9 +3,13 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import {
-  GROK_BOT_053_11DD264_MANIFEST,
-  type GrokBotHostCompatibilityManifest
+  GROK_BOT_053_11DD264_MANIFEST
 } from "./manifests/grok-bot-0.53-11dd264.js";
+import { GROK_BOT_057_18CD065_MANIFEST } from "./manifests/grok-bot-0.57-18cd065.js";
+import type {
+  GrokBotHostCompatibilityManifest,
+  HostFingerprint
+} from "./manifests/types.js";
 
 const SESSION_START = "/* GROK_CODEX_ROUTER_SESSION_START */";
 const SESSION_END = "/* GROK_CODEX_ROUTER_SESSION_END */";
@@ -24,6 +28,7 @@ interface CliOptions {
   host?: string | undefined;
   backup?: string | undefined;
   manifest?: string | undefined;
+  compat?: string | undefined;
   check: boolean;
   restore: boolean;
 }
@@ -59,19 +64,35 @@ function parseArgs(argv: string[]): CliOptions {
       options.restore = true;
       continue;
     }
-    if (argument === "--host" || argument === "--backup" || argument === "--manifest") {
+    if (argument === "--host" || argument === "--backup" || argument === "--manifest" || argument === "--compat") {
       const value = argv[index + 1];
-      if (!value || value.startsWith("--")) fail(`${argument} requires a path`);
+      if (!value || value.startsWith("--")) fail(`${argument} requires a value`);
       if (argument === "--host") options.host = value;
       if (argument === "--backup") options.backup = value;
       if (argument === "--manifest") options.manifest = value;
+      if (argument === "--compat") options.compat = value;
       index += 1;
       continue;
     }
     fail(`unknown argument: ${argument}`);
   }
   if (options.check && options.restore) fail("--check and --restore are mutually exclusive");
+  if (options.manifest && options.compat) fail("--manifest and --compat are mutually exclusive");
   return options;
+}
+
+const BUILTIN_MANIFESTS = Object.freeze<Record<string, GrokBotHostCompatibilityManifest>>({
+  "grok-bot-0.53-11dd264": GROK_BOT_053_11DD264_MANIFEST,
+  "grok-bot-0.57-18cd065": GROK_BOT_057_18CD065_MANIFEST
+});
+
+function validateFingerprint(value: HostFingerprint | undefined, label: string): void {
+  if (!value || !Number.isInteger(value.bytes) || value.bytes <= 0) {
+    fail(`${label}.bytes must be a positive integer`);
+  }
+  if (typeof value.sha256 !== "string" || !/^[a-f0-9]{64}$/.test(value.sha256)) {
+    fail(`${label}.sha256 must be a lowercase SHA-256 digest`);
+  }
 }
 
 function validateManifest(raw: unknown): GrokBotHostCompatibilityManifest {
@@ -89,22 +110,59 @@ function validateManifest(raw: unknown): GrokBotHostCompatibilityManifest {
   if (manifest.anchorProof !== "VERIFIED" && manifest.anchorProof !== "BLOCKED") {
     fail("manifest.anchorProof must be VERIFIED or BLOCKED");
   }
-  if (!manifest.stockHost || !Number.isInteger(manifest.stockHost.bytes) || manifest.stockHost.bytes <= 0) {
-    fail("manifest.stockHost.bytes must be a positive integer");
+  if (manifest.routerMarkerVersion !== 1) fail("manifest.routerMarkerVersion must be 1");
+  validateFingerprint(manifest.stockHost, "manifest.stockHost");
+  const stockHost = manifest.stockHost;
+  if (!stockHost) fail("manifest.stockHost is required");
+  if (manifest.deterministicPatchedHost !== undefined) {
+    validateFingerprint(manifest.deterministicPatchedHost, "manifest.deterministicPatchedHost");
   }
-  if (typeof manifest.stockHost.sha256 !== "string" || !/^[a-f0-9]{64}$/.test(manifest.stockHost.sha256)) {
-    fail("manifest.stockHost.sha256 must be a lowercase SHA-256 digest");
+  if (manifest.pristineBackup !== undefined) {
+    if (manifest.pristineBackup.sha256 !== stockHost.sha256) {
+      fail("manifest.pristineBackup.sha256 must equal manifest.stockHost.sha256");
+    }
+    if (manifest.pristineBackup.mode !== 0o600) {
+      fail("manifest.pristineBackup.mode must be 0600");
+    }
   }
   if (!manifest.anchors || typeof manifest.anchors !== "object") fail("manifest.anchors must be an object");
-  for (const name of ["servicePrelude", "inferenceOwner", "nativeSession", "mainSessionOptions"] as const) {
-    const anchor = manifest.anchors[name];
-    if (typeof anchor !== "string" || !anchor) fail(`manifest anchor ${name} must be a non-empty string`);
+  const anchorEntries = Object.entries(manifest.anchors).filter((entry): entry is [string, string] =>
+    typeof entry[1] === "string" && entry[1].length > 0
+  );
+  for (const [name, anchor] of anchorEntries) {
+    if (!anchor) fail(`manifest anchor ${name} must be a non-empty string`);
+  }
+  if (typeof manifest.anchors.inferenceOwner !== "string" || !manifest.anchors.inferenceOwner) {
+    fail("manifest anchor inferenceOwner must be a non-empty string");
+  }
+  if (typeof manifest.anchors.mainSessionOptions !== "string" || !manifest.anchors.mainSessionOptions) {
+    fail("manifest anchor mainSessionOptions must be a non-empty string");
+  }
+  const hookAnchors = [manifest.anchors.nativeSession, manifest.anchors.inferenceHook]
+    .filter((anchor): anchor is string => typeof anchor === "string" && anchor.length > 0);
+  if (hookAnchors.length !== 1) {
+    fail("manifest must define exactly one inference hook anchor: nativeSession or inferenceHook");
+  }
+  const requiredAnchorCounts = manifest.requiredAnchorCounts ?? Object.fromEntries(
+    anchorEntries.map(([name]) => [name, 1])
+  );
+  for (const [name, expected] of Object.entries(requiredAnchorCounts)) {
+    const anchor = (manifest.anchors as Record<string, string | undefined>)[name];
+    if (typeof anchor !== "string" || !anchor) fail(`required anchor ${name} is not defined`);
+    if (!Number.isInteger(expected) || expected !== 1) fail(`required anchor count ${name} must be exactly 1`);
+  }
+  for (const [name] of anchorEntries) {
+    if (requiredAnchorCounts[name] !== 1) fail(`manifest anchor ${name} must have required count 1`);
   }
   return manifest as GrokBotHostCompatibilityManifest;
 }
 
-function loadManifest(manifestPath: string | undefined): GrokBotHostCompatibilityManifest {
-  if (!manifestPath) return validateManifest(GROK_BOT_053_11DD264_MANIFEST);
+function loadManifest(manifestPath: string | undefined, compat: string | undefined): GrokBotHostCompatibilityManifest {
+  if (!manifestPath) {
+    const selected = compat ? BUILTIN_MANIFESTS[compat] : GROK_BOT_053_11DD264_MANIFEST;
+    if (!selected) fail(`unknown built-in compatibility: ${compat}`);
+    return validateManifest(selected);
+  }
   let raw: unknown;
   try {
     raw = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
@@ -112,6 +170,12 @@ function loadManifest(manifestPath: string | undefined): GrokBotHostCompatibilit
     fail(`failed to read compatibility manifest ${manifestPath}: ${error instanceof Error ? error.message : String(error)}`);
   }
   return validateManifest(raw);
+}
+
+function inferenceHookAnchor(manifest: GrokBotHostCompatibilityManifest): string {
+  const anchor = manifest.anchors.inferenceHook ?? manifest.anchors.nativeSession;
+  if (!anchor) fail("manifest inference hook anchor is unavailable");
+  return anchor;
 }
 
 function resolvedPath(file: string): string {
@@ -171,17 +235,30 @@ function validateStockFingerprint(
 
 function validateAnchors(source: string, manifest: GrokBotHostCompatibilityManifest): void {
   if (manifest.anchorProof !== "VERIFIED") fail("ANCHOR_PROOF_BLOCKED");
-  for (const [name, anchor] of Object.entries(manifest.anchors)) {
+  const requiredAnchorCounts = manifest.requiredAnchorCounts ?? Object.fromEntries(
+    Object.entries(manifest.anchors)
+      .filter((entry): entry is [string, string] => typeof entry[1] === "string" && entry[1].length > 0)
+      .map(([name]) => [name, 1])
+  );
+  for (const [name, expected] of Object.entries(requiredAnchorCounts)) {
+    const anchor = (manifest.anchors as Record<string, string | undefined>)[name];
+    if (!anchor) fail(`host anchor ${name} is not defined`);
     const matches = count(source, anchor);
-    if (matches !== 1) fail(`host anchor ${name} occurred ${matches} times; expected exactly 1`);
+    if (matches !== expected) fail(`host anchor ${name} occurred ${matches} times; expected exactly ${expected}`);
   }
   const owner = source.indexOf(manifest.anchors.inferenceOwner);
-  const nativeSession = source.indexOf(manifest.anchors.nativeSession);
+  const inferenceHook = source.indexOf(inferenceHookAnchor(manifest));
   const mainSession = source.indexOf(manifest.anchors.mainSessionOptions);
-  const servicePrelude = source.indexOf(manifest.anchors.servicePrelude);
-  if (servicePrelude < 0 || servicePrelude > owner) fail("reviewed service prelude does not precede the inference seam");
-  if (owner < 0 || nativeSession <= owner) fail("native inference session is not inside the reviewed inference seam order");
-  if (mainSession <= nativeSession) fail("main session options do not follow the reviewed inference seam");
+  const servicePrelude = manifest.anchors.servicePrelude === undefined ? -1 : source.indexOf(manifest.anchors.servicePrelude);
+  const mainSessionDispatch = manifest.anchors.mainSessionDispatch === undefined ? -1 : source.indexOf(manifest.anchors.mainSessionDispatch);
+  if (manifest.anchors.servicePrelude !== undefined && (servicePrelude < 0 || servicePrelude > owner)) {
+    fail("reviewed service prelude does not precede the inference seam");
+  }
+  if (owner < 0 || inferenceHook <= owner) fail("stock inference hook is not inside the reviewed inference seam order");
+  if (mainSession <= inferenceHook) fail("main session options do not follow the reviewed inference seam");
+  if (manifest.anchors.mainSessionDispatch !== undefined && mainSessionDispatch <= mainSession) {
+    fail("main session dispatch does not follow the reviewed main session options");
+  }
 }
 
 function requireAnchorProof(manifest: GrokBotHostCompatibilityManifest): void {
@@ -216,22 +293,46 @@ function routerHook(): string {
   ].join("\n");
 }
 
+function identityMarkerBlock(anchor: string): string {
+  const newline = anchor.indexOf("\n");
+  if (newline < 0) fail("main session-options anchor must span at least two lines");
+  const firstLine = anchor.slice(0, newline);
+  const indentation = firstLine.match(/^\s*/)?.[0] ?? "";
+  const propertyIndentation = `${indentation}  `;
+  return [
+    `${propertyIndentation}${IDENTITY_START}`,
+    `${propertyIndentation}conversationId,`,
+    `${propertyIndentation}transcriptId: host.getTranscriptId(),`,
+    `${propertyIndentation}isGroupMemberTurn: options2.isGroupMemberTurn === true,`,
+    `${propertyIndentation}${IDENTITY_END}`
+  ].join("\n");
+}
+
 function identityReplacement(anchor: string): string {
   const newline = anchor.indexOf("\n");
   if (newline < 0) fail("main session-options anchor must span at least two lines");
   const firstLine = anchor.slice(0, newline);
   const rest = anchor.slice(newline + 1);
-  const indentation = firstLine.match(/^\s*/)?.[0] ?? "";
-  const propertyIndentation = `${indentation}  `;
   return [
     firstLine,
-    `${propertyIndentation}${IDENTITY_START}`,
-    `${propertyIndentation}conversationId,`,
-    `${propertyIndentation}transcriptId: host.getTranscriptId(),`,
-    `${propertyIndentation}isGroupMemberTurn: options2.isGroupMemberTurn === true,`,
-    `${propertyIndentation}${IDENTITY_END}`,
+    identityMarkerBlock(anchor),
     rest
   ].join("\n");
+}
+
+function validateDeterministicPatchedFingerprint(
+  bytes: Buffer,
+  manifest: GrokBotHostCompatibilityManifest
+): void {
+  const expected = manifest.deterministicPatchedHost;
+  if (!expected) return;
+  if (bytes.length !== expected.bytes) {
+    fail(`deterministic patched byte size ${bytes.length} is not the reviewed ${expected.bytes}`);
+  }
+  const digest = sha256(bytes);
+  if (digest !== expected.sha256) {
+    fail(`deterministic patched SHA-256 ${digest} is not the reviewed ${expected.sha256}`);
+  }
 }
 
 function patchStockSource(source: string, manifest: GrokBotHostCompatibilityManifest): string {
@@ -239,22 +340,18 @@ function patchStockSource(source: string, manifest: GrokBotHostCompatibilityMani
   validateAnchors(source, manifest);
 
   const hook = routerHook();
-  let patched = source.replace(manifest.anchors.nativeSession, `${hook}\n${manifest.anchors.nativeSession}`);
+  const inferenceHook = inferenceHookAnchor(manifest);
+  let patched = source.replace(inferenceHook, `${hook}\n${inferenceHook}`);
   patched = patched.replace(
     manifest.anchors.mainSessionOptions,
     identityReplacement(manifest.anchors.mainSessionOptions)
   );
 
   if (markerState(patched) !== "complete") fail("deterministic patch did not produce one complete marker set");
-  if (count(patched, "          conversationId,") !== 1) {
-    fail("deterministic patch did not insert exactly one main conversation identity");
+  if (count(patched, identityMarkerBlock(manifest.anchors.mainSessionOptions)) !== 1) {
+    fail("deterministic patch did not insert exactly one reviewed main identity block");
   }
-  if (count(patched, "          transcriptId: host.getTranscriptId(),") !== 1) {
-    fail("deterministic patch did not insert exactly one main transcript identity");
-  }
-  if (count(patched, "          isGroupMemberTurn: options2.isGroupMemberTurn === true,") !== 1) {
-    fail("deterministic patch did not insert exactly one group-member guard");
-  }
+  validateDeterministicPatchedFingerprint(Buffer.from(patched, "utf8"), manifest);
   return patched;
 }
 
@@ -262,10 +359,14 @@ function verifiedBackup(file: string, manifest: GrokBotHostCompatibilityManifest
   if (!fs.existsSync(file)) fail(`pristine stock backup is missing: ${file}`);
   const backup = readCanonicalUtf8(file);
   validateStockFingerprint(backup.bytes, manifest, "stock backup");
+  if (manifest.pristineBackup && sha256(backup.bytes) !== manifest.pristineBackup.sha256) {
+    fail("stock backup SHA-256 does not match manifest.pristineBackup.sha256");
+  }
   if (markerState(backup.source) !== "none") fail("pristine stock backup contains router markers");
   validateAnchors(backup.source, manifest);
-  if ((fs.statSync(file).mode & 0o777) !== 0o600) {
-    fail("pristine stock backup must have mode 0600");
+  const requiredMode = manifest.pristineBackup?.mode ?? 0o600;
+  if ((fs.statSync(file).mode & 0o777) !== requiredMode) {
+    fail(`pristine stock backup must have mode 0${requiredMode.toString(8)}`);
   }
   return backup.bytes;
 }
@@ -310,9 +411,9 @@ function fsyncDirectory(directory: string): void {
   }
 }
 
-function writeExclusiveBackup(file: string, bytes: Buffer): void {
+function writeExclusiveBackup(file: string, bytes: Buffer, mode = 0o600): void {
   fs.mkdirSync(path.dirname(file), { recursive: true });
-  const backupFd = fs.openSync(file, "wx", 0o600);
+  const backupFd = fs.openSync(file, "wx", mode);
   try {
     fs.writeFileSync(backupFd, bytes);
     fs.fsyncSync(backupFd);
@@ -363,7 +464,7 @@ function install(
     const backupBytes = verifiedBackup(backupFile, manifest);
     if (!backupBytes.equals(inspection.stockBytes)) fail("existing pristine backup does not match the reviewed live stock host");
   } else {
-    writeExclusiveBackup(backupFile, inspection.stockBytes);
+    writeExclusiveBackup(backupFile, inspection.stockBytes, manifest.pristineBackup?.mode ?? 0o600);
   }
   assertFileBytesUnchanged(backupFile, inspection.stockBytes, "stock backup");
   assertFileBytesUnchanged(hostFile, inspection.hostBytes, "host");
@@ -413,7 +514,7 @@ function defaultBackupPath(hostFile: string): string {
 
 function main(): void {
   const options = parseArgs(process.argv.slice(2));
-  const manifest = loadManifest(options.manifest);
+  const manifest = loadManifest(options.manifest, options.compat);
   const hostFile = options.host ||
     (process.env.SAND_HOST_DIR ? path.join(process.env.SAND_HOST_DIR, "host-main.cjs") : manifest.hostPath);
   rejectCustomManifestOnProductionHost(options.manifest, hostFile);

@@ -69,8 +69,11 @@ function writeFixtureManifest(file: string, source: string, anchors = FIXTURE_AN
     hostVersion: "fixture-host",
     hostPath: "/fixture/host-main.cjs",
     anchorProof: "VERIFIED",
+    routerMarkerVersion: 1,
     stockHost: { bytes: bytes.length, sha256: sha256(bytes) },
-    anchors
+    pristineBackup: { sha256: sha256(bytes), mode: 0o600 },
+    anchors,
+    requiredAnchorCounts: Object.fromEntries(Object.keys(anchors).map((name) => [name, 1]))
   }));
 }
 

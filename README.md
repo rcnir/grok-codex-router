@@ -5,19 +5,22 @@ It retains the upstream source layout and wire helpers, but its package entrypoi
 routes through the **existing** ROCANIIRU Runtime CLI/MCP boundary, not the private
 Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
 
-**Not deployed. Not Milestone-1 accepted. Human Gate 1 is closed.**
-The current-host 0.53 anchor proof remains unverified. A bounded, thread-local
+**Not deployed. Human Gate 1 is open only for explicit approval to create one
+isolated BOX pilot.** The current production host is Grok Bot `0.57.0`, host
+`18cd065`; its exact stock fingerprint, structural anchors and deterministic
+patched image are verified read-only. The older 0.53 compatibility manifest is
+retained and remains fail-closed. The bounded, thread-local
 `toolIsolation:"dynamicOnly"` Codex source patch and Runtime/router capability
-wiring are now maintained separately from host compatibility. See the current
-source-validation evidence; nothing is deployed. Production admission requires
-the verified Runtime capability, an explicit isolated-session request and an
-exact effective-policy response. Stock Codex remains rejected. Do not run a live
-pilot, install, host restart or provider inference.
+wiring remain separate from host compatibility. No host patch, Runtime/Codex
+deploy, pilot creation, provider/model inference or Temporal profile change has
+been performed.
 
 See [`MILESTONE-1.md`](MILESTONE-1.md) for the implementation contract and status,
 [`NATIVE-EXECUTION-POLICY.md`](NATIVE-EXECUTION-POLICY.md) for the thread policy,
 [`DYNAMIC-ONLY-EVIDENCE-20260919.json`](DYNAMIC-ONLY-EVIDENCE-20260919.json) for this
-source-only continuation, and [`LEARNINGS.md`](LEARNINGS.md) for corrections.
+source-only continuation, [`HOST-057-EVIDENCE-20260919.json`](HOST-057-EVIDENCE-20260919.json)
+for the fresh 0.57 compatibility/Gate evidence, and [`LEARNINGS.md`](LEARNINGS.md)
+for corrections.
 
 Local development uses Node, Bun and the pinned dev dependencies. `npm run check`
 builds and runs **local fake/fixture tests only**, plus upstream local telemetry
@@ -29,7 +32,8 @@ modules; lint entry declarations do not put retained transports on the live path
 
 The following original description and commands are retained for upstream
 comparison. They are **not current installation or operation instructions** for
-this ROCANIIRU candidate. In particular, do not apply upstream `install.sh` to 0.53.
+this ROCANIIRU candidate. In particular, do not apply upstream `install.sh` to the
+production 0.57 host or the retained 0.53 compatibility target.
 
 > [!WARNING]
 > This is an unofficial experimental project. It patches Grok Bot and uses a private ChatGPT Codex endpoint that can change without notice. It may break your VM, lose work, violate service terms, or get an account restricted or banned. You use it entirely at your own risk. The author accepts no responsibility for broken installations, lost data, account action, or anything else that goes sideways.

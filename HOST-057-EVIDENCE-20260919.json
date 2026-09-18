@@ -1,0 +1,141 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-18T22:59:59Z",
+  "scope": "Milestone 1 Grok Bot 0.57 compatibility port and fresh Human Gate 1 read-only acceptance",
+  "human_gate_1": "OPEN_AWAITING_EXPLICIT_BOX_PILOT_CREATE_APPROVAL",
+  "production_mutations": {
+    "host_writes": 0,
+    "host_backup_writes": 0,
+    "host_restarts": 0,
+    "runtime_or_codex_deploys": 0,
+    "new_app_servers": 0,
+    "provider_or_model_inference_calls": 0,
+    "pilot_creations": 0,
+    "temporal_profile_changes": 0
+  },
+  "host": {
+    "grok_bot_version": "0.57.0",
+    "host_version": "18cd065",
+    "path": "/home/box/sand-host/host-main.cjs",
+    "stock": {
+      "bytes": 26438264,
+      "sha256": "c667b530962bbf94a2ba77659b0440f20dd553dfdbabdd4a2cd157e4335bba29"
+    },
+    "router_marker_version": 1,
+    "router_marker_counts": {
+      "session_start": 0,
+      "session_end": 0,
+      "identity_start": 0,
+      "identity_end": 0,
+      "legacy_service_start": 0,
+      "legacy_service_end": 0
+    },
+    "required_anchor_counts": {
+      "inferenceOwner": 1,
+      "inferenceHook": 1,
+      "mainSessionOptions": 1,
+      "mainSessionDispatch": 1
+    },
+    "anchor_positions": {
+      "inferenceOwner": 22839042,
+      "inferenceHook": 22841878,
+      "mainSessionOptions": 25992800,
+      "mainSessionDispatch": 25994062
+    },
+    "anchor_order": "PASS",
+    "anchor_proof": "VERIFIED",
+    "pristine_backup_policy": {
+      "mode_octal": "0600",
+      "sha256_must_equal_stock": "c667b530962bbf94a2ba77659b0440f20dd553dfdbabdd4a2cd157e4335bba29"
+    },
+    "deterministic_patched": {
+      "bytes": 26439011,
+      "sha256": "07835cd847c027aa2628741c2fb93a7c2ebbcb67a55c4861254dfc51af522b1d",
+      "session_markers": 1,
+      "identity_markers": 1
+    },
+    "actual_host_router_check": {
+      "status": "PASS",
+      "state": "stock",
+      "compat": "grok-bot-0.57-18cd065",
+      "exit_code": 0
+    },
+    "retained_053_support": {
+      "manifest": "grok-bot-0.53-11dd264",
+      "anchor_proof": "BLOCKED",
+      "fixture_regression": "PASS"
+    }
+  },
+  "source_local_validation": {
+    "router_tests": 88,
+    "router_tests_failed": 0,
+    "router_telemetry": "PASS",
+    "router_knip": "PASS",
+    "host_patch_057_focused_tests": 16,
+    "runtime_node_tests": 219,
+    "runtime_node_tests_failed": 0,
+    "runtime_python_tests": 114,
+    "runtime_python_tests_failed": 0,
+    "git_diff_check": "PASS",
+    "runtime_source_changed_for_057_port": false
+  },
+  "routing_contract": {
+    "router_enabled_required": true,
+    "pilot_allowlist_required": true,
+    "profile_harness_required": "box",
+    "stock_passthrough": [
+      "non-allowlisted agents",
+      "temporal profiles",
+      "summarization",
+      "subagents",
+      "browser",
+      "computer",
+      "automation",
+      "group turns"
+    ]
+  },
+  "current_create_agent": {
+    "app_version": "0.57.0",
+    "host_main": "dist/node-agent-coordinator/main.cjs",
+    "validator_fingerprint": "6fc3051afc608b0f916bdc240d64d7d5f00dd20b53c805e91782897227752adb",
+    "box_route": "creationRoute.kind=box -> host-mediated dispatchCommand(createAgent), not server-owned Temporal creation",
+    "proposed_request": {
+      "name": "ROCANIIRU Codex BOX M1 Pilot",
+      "description": "Isolated Milestone 1 BOX pilot for ROCANIIRU Grok Codex Router acceptance.",
+      "creationRoute": {
+        "kind": "box"
+      },
+      "origin": "user",
+      "clientNonce": "rocaniiru-grok-codex-m1-box-pilot-20260919",
+      "supportsTemporalHarness": true,
+      "harness": "box"
+    }
+  },
+  "fresh_gate_readback": {
+    "current_user_facing_bot": {
+      "id": "139771d1-4e7d-4a8b-80a0-eddc438bccfc",
+      "name": "Bot",
+      "harness": "temporal",
+      "is_running": false
+    },
+    "runtime": {
+      "started": true,
+      "ready": true,
+      "child_pid": 883943,
+      "generation": 12,
+      "restart_count": 0,
+      "persistence": "healthy",
+      "fenced": false,
+      "uncertain": false,
+      "unknown_operation_count": 0,
+      "pending_input_count": 0,
+      "last_failure_reason": null
+    },
+    "computer": {
+      "computer_version": "0.2.3",
+      "service_identity": "a6299bb2e1242f491855fd38608b0dc5f65c6f5f956f734cf5ba16aaf9527e41",
+      "mutation_state": "clear",
+      "execution_state": "CLEAR"
+    }
+  }
+}

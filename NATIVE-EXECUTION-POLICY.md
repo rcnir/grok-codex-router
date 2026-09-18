@@ -13,9 +13,11 @@ patch digest and exact before/after source-file hashes. Generated schema changes
 are included. The current local validation result is recorded separately in
 `DYNAMIC-ONLY-EVIDENCE-20260919.json`; implementation alone is not acceptance.
 
-**Not deployed. Human Gate 1 remains closed.** The current Grok 0.53 production
-manifest remains `anchorProof:"BLOCKED"`. No fresh VM/Computer/host probes, unknown
-operation retries or acknowledgements are part of this source-only continuation.
+**Not deployed.** Human Gate 1 is now open only for explicit approval to create
+one isolated BOX pilot after the separate Grok Bot 0.57 / host `18cd065`
+compatibility port passed fresh read-only acceptance. This document still records
+only the Codex dynamic-only boundary; it does not authorize host patching,
+Runtime/Codex deployment or provider/model inference.
 
 ## Typed, immutable thread policy
 

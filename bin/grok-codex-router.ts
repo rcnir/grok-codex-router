@@ -12,7 +12,7 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
   const [command = "help", ...args] = argv;
   if (command === "help" || command === "--help") {
     console.log("grok-codex-router (ROCANIIRU M1 source candidate)\n" +
-      "  --check [--host PATH]    read-only fingerprint/compatibility inspection\n" +
+      "  --check [--host PATH] [--compat NAME]  read-only fingerprint/structural compatibility inspection\n" +
       "  status                  local config and admission status (no provider calls)\n" +
       "  runtime-status          read-only existing Runtime MCP status\n" +
       "  routes                  configured routes, not an opt-in allowlist\n" +
@@ -22,8 +22,12 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
     return;
   }
   if (command === "--check" || command === "check") {
-    if (args.length && !(args.length === 2 && args[0] === "--host" && args[1])) {
-      throw new RuntimeFault("CHECK_ARGUMENTS_INVALID");
+    for (let index = 0; index < args.length; index += 2) {
+      const flag = args[index];
+      const value = args[index + 1];
+      if ((flag !== "--host" && flag !== "--compat") || !value || value.startsWith("--")) {
+        throw new RuntimeFault("CHECK_ARGUMENTS_INVALID");
+      }
     }
     const script = path.resolve(__dirname, "..", "scripts", "patch-host.js");
     const result = spawnSync(process.execPath, [script, "--check", ...args], { stdio: "inherit", shell: false });
