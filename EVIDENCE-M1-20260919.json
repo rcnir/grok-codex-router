@@ -1,0 +1,185 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-18T20:18:55.674766+00:00",
+  "milestone": "1",
+  "status": "SOURCE_CANDIDATE_NOT_ACCEPTED",
+  "human_gate_1": "CLOSED",
+  "upstream": {
+    "repository": "IgorWarzocha/grok-codex-router",
+    "commit": "599a2013b15592d17fe897126f549974351e4c3f"
+  },
+  "fork": {
+    "repository": "rcnir/grok-codex-router",
+    "branch": "rcnir/milestone-1-20260919"
+  },
+  "runtime": {
+    "repository": "rcnir/execution-runtime",
+    "branch": "agent/grok-router-m1-20260919",
+    "baseline": "de20bf8f756e0fc2d8b276adb53893bc76066c51",
+    "deployed": false,
+    "candidate_commit": "8b565576ead1a17a4b7762a7473c90786e055810"
+  },
+  "expected_host_user_supplied": {
+    "grok_bot_version": "0.53",
+    "host_version": "11dd264",
+    "bytes": 26361676,
+    "sha256": "bb7012d56e474375a879311eff1d91fbd389e098023f2856c376b963c5df3d83",
+    "independently_remeasured": false
+  },
+  "local_checks": {
+    "router": {
+      "passed": 82,
+      "failed": 0,
+      "kind": "node",
+      "local_log_sha256": "28d6402e0bf71840788c5e839f9e55fd02421395323d9e7fb3cbedce4e819035"
+    },
+    "runtime_python": {
+      "passed": 95,
+      "failed": 0,
+      "kind": "python",
+      "local_log_sha256": "4565c73580d91f8ef933ffa6131ae2a93d2f9a58040314788839460b9f804b16"
+    },
+    "runtime_node": {
+      "passed": 19,
+      "failed": 0,
+      "kind": "node",
+      "local_log_sha256": "fcaa9aa15b74d133c89219395e5c5b088738e46ccf811eec5771450a63fe01e3"
+    },
+    "knip": "PASS",
+    "telemetry": "PASS",
+    "retained_schema_validation": {
+      "source": "retained generated codex 0.154.0 schema; no new binary/schema generation",
+      "checks": [
+        {
+          "schema": "v2/ThreadStartParams.json",
+          "sha256": "25f490368ec6df52a2a3b82a5469d2413307eb93439121b309f415b5648eee7a",
+          "result": "PASS"
+        },
+        {
+          "schema": "v2/ThreadInjectItemsParams.json",
+          "sha256": "8d7e754402a2bb71bd817882076d2f8ac4cd75d4573306db082a83b841aa3532",
+          "result": "PASS"
+        },
+        {
+          "schema": "v2/TurnStartParams.json",
+          "sha256": "b36fb37326b1cf69f75c8b306f1f886d53a57c4b1b985e08e298e2407ea2ad02",
+          "result": "PASS"
+        },
+        {
+          "schema": "DynamicToolCallParams.json",
+          "sha256": "401bba20cfbd95762bef0467d840430c46be53369093ad9f26425ba757e34efc",
+          "result": "PASS"
+        },
+        {
+          "schema": "DynamicToolCallResponse.json",
+          "sha256": "abb082cad67f11fcc98ba75f2eff75d7d1723af0c657655329b83ff160451a02",
+          "result": "PASS"
+        }
+      ],
+      "live_inference": false
+    }
+  },
+  "read_only_acceptance": {
+    "runtime_status": {
+      "read_only": "runtime_status",
+      "observed_at": "2026-09-18T20:10:57.229547+00:00",
+      "ok": true,
+      "contract_version": "1",
+      "persistence": {
+        "state": "healthy",
+        "stage": null,
+        "reason": null,
+        "fenced": false,
+        "uncertain": false
+      },
+      "capabilities": {
+        "operation_result": true,
+        "reasoning_summary": true
+      },
+      "runtime": {
+        "started": true,
+        "ready": true,
+        "generation": 12
+      },
+      "unknown_operation_count": 0,
+      "pending_input_count": 0
+    },
+    "host_fingerprint_and_version": "UNVERIFIED_SOURCE_READ_UNAVAILABLE",
+    "router_current_host_check": "BLOCKED_ANCHOR_PROOF",
+    "computer_last_observation": {
+      "version": "0.2.3",
+      "mutation_state": "pending_ack",
+      "execution_state": "SUCCESS_PENDING_ACK",
+      "clear_acceptance": "NOT_PASSED",
+      "unknown_receipt_acknowledged": false
+    },
+    "current_user_facing_temporal_profile": "NOT_FRESHLY_VERIFIED",
+    "official_createAgent_current_payload": "UNVERIFIED_SOURCE_READ_TOOL_BLOCKED"
+  },
+  "native_authority": {
+    "codex_version": "0.154.0",
+    "official_source_commit": "6b9826e3aa83b1a5947db50f4332cb9c65f1b340",
+    "status": "UNVERIFIED_PRODUCTION_ADMISSION_CLOSED",
+    "blockers": [
+      "Inherited MCP deny-all is source-proven in managed requirements, not normal thread config; ordinary empty maps merge and later refresh can add servers.",
+      "Browser/computer requires host/managed policy evidence."
+    ],
+    "partial_exclusion_config_installed": false
+  },
+  "not_performed": [
+    "live pilot creation",
+    "router VM package install",
+    "VM pristine backup write",
+    "host-main.cjs modification",
+    "Sand host restart",
+    "live Runtime replacement",
+    "new real App Server process",
+    "paid/provider/model inference",
+    "Temporal profile modification",
+    "UNKNOWN retry or replay",
+    "D1/Cloudflare/Secret Broker/Intelligence changes"
+  ],
+  "source_sha256": {
+    "router": {
+      "bin/grok-codex-router.ts": "fccb9e4fef4f26d23356b7004fdce56c02354ffeb1f3fbbcb8a420c427a44e6c",
+      "bun.lock": "a1fe3113b6ca71f5b9d0b4317db2a46c69df0662cd0297bc47e01f35de5f5ad9",
+      "install.sh": "7adc933ea232c95899ace1310ef105be8440c47c1db44354ebc1109baa0333f9",
+      "knip.json": "eda8ada342681f09cb17e2081bec90e36cb5827c9f2a1a24db692b682f70e3e1",
+      "package.json": "280f9c4a64e7b85f681bf2e6c9e480bc96a11b2efdeb175800258aa238ba6077",
+      "scripts/manifests/grok-bot-0.53-11dd264.ts": "d63fe32ca360102b64cb8a9c529efab140e4cae5a2966b814ee4ca3628c0bb96",
+      "scripts/patch-host.ts": "2fe2403cd41b92c31c9dbb9e5d32190b3fdc074c4637b0edf6233d0d3341988c",
+      "scripts/test-local.ts": "9b7a8b090e8eef40ac1dd5a53828b3a2d826b00f5c81e3b7ab7041cfb29235b3",
+      "src/config.ts": "f1f82d89cb2c28e462fe36549eb02f56cbd444b2db420cfab112d2d2e7c82b3e",
+      "src/native-execution-policy.ts": "4f226ea1a8c84a3649203ed3efc533af9e1d01225286ecd19eafcee1c9a79a40",
+      "src/pilot-policy.ts": "666bc7a9db3b1b7135a10f154593b613947e37fdcab5c8f1f7e22d078b5cce8d",
+      "src/runtime-client.ts": "a12bf823cbb3296ad4b0b8950f774b2fb456b276e23389447fba6b62c52e120d",
+      "src/runtime-execution.ts": "15b9f56f75aabf4cbb59c8c988c28d1b701143fc2f029ac1a3898b94d79963c8",
+      "src/runtime-state.ts": "c634ddec822ebce3e9eaca41a6cfe657b1e01786f47286f3e3a503c1d02bcb1d",
+      "src/runtime-wire.ts": "928e126f5d9d2617204e212b4aed6a48027fe968ebaaebc51c62e22f40112869",
+      "src/session.ts": "242696ceb2543619b8b58e73ae4f568f9336875598571ffb621087f135755dda",
+      "tests/entrypoint.test.ts": "1d0f4979917c0e13ad526169107822916187e35345c1d8ea4d5675857542ed5f",
+      "tests/host-patch.test.ts": "6e56c4191031cc87d8231e249cd1674acf0a2e590027032e9850880933e7c5fa",
+      "tests/pilot-policy.test.ts": "46bfd8c2c4eb982310d543f4e6e7973a675e7bf7217701a2b87ec75ccad3028a",
+      "tests/routing.test.ts": "8dbc96de521f23be9006bc6691a9c15fe824b6ee5cca9b4a3cc53b521caa4043",
+      "tests/runtime-cli.test.ts": "bf2e9b10200f5682551f736ed987a9d1b66c9b24a43bd9805fc70a72b91b4df4",
+      "tests/runtime-router.test.ts": "b135fa2d061f53d7e1f1defc122af3a1f5487a5ff2cc1491703c3b6b5ea414a3"
+    },
+    "runtime": {
+      "codex-runtime/client/grok_runtime_tool.py": "374d6fcde4ccb40f7df54764d8cc63a7ba119a0a6b55908efe10e5a8b58add05",
+      "codex-runtime/rcnir_codex/client.py": "8df4da21c0726a208fecea6bf827d7093cca6d3a34004c2ba9f38b415c0aa4e0",
+      "codex-runtime/rcnir_codex/engine.py": "9d5b03121db94a51e8aba90ba39477da4ed5ad9ebacda9b13d541b13b0e8e324",
+      "codex-runtime/rcnir_codex/server.py": "5c39e96c9613a6ad7e723cdd9eb621a7e40db8dea54258745fc3418d36db371b",
+      "codex-runtime/tests/fake_app_server.py": "02f2d42d3c6be2158cfcad163973b84994bf65eb9a2d28cad2975f533c3871db",
+      "codex-runtime/tests/test_client.py": "2bac779dde6b21f759617013d29e7cf7523dfedff835f88d8c10d8dbcaad16d3",
+      "codex-runtime/tests/test_engine.py": "abe89806f4151812588b2a1bcd495db73f6ada01f004c1ab659f3637c4465340",
+      "codex-runtime/tests/test_server.py": "57505145a6586db7669943b0803bf12cbf3bc8fff72aa776a53e4bbd2dd5eb7c",
+      "codex-runtime/tests/test_state_transaction.py": "1e9427c391523851e20d9df2efc17366aa88da3d7daa184eba41c884e3153071"
+    }
+  },
+  "limitations": [
+    "Synthetic host fixtures validate the algorithm, not proprietary current 0.53 anchors.",
+    "Fake Runtime policy injection validates lifecycle only, not effective native-tool exclusion.",
+    "Raw test logs and proprietary host source are not published.",
+    "Runtime root TypeScript adapter suite was not rerun; its source is unchanged."
+  ]
+}

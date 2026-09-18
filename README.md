@@ -1,4 +1,31 @@
-# Grok Codex Router
+# ROCANIIRU Grok Codex Router — Milestone 1 source candidate
+
+This fork starts at `IgorWarzocha/grok-codex-router@599a2013b15592d17fe897126f549974351e4c3f`.
+It retains the upstream source layout and wire helpers, but its package entrypoint
+routes through the **existing** ROCANIIRU Runtime CLI/MCP boundary, not the private
+Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
+
+**Not deployed. Not Milestone-1 accepted. Human Gate 1 is closed.**
+The current-host 0.53 anchor proof and complete Codex 0.154.0 native-execution
+exclusion contract are unverified. Production patch/restore and production
+inference admission therefore fail closed. Successful fixture tests do not remove
+either gate. Do not run a live pilot, install, host restart or provider inference.
+
+See [`MILESTONE-1.md`](MILESTONE-1.md) for the implementation contract and status,
+[`NATIVE-EXECUTION-POLICY.md`](NATIVE-EXECUTION-POLICY.md) for the remaining native
+authority proof, and [`LEARNINGS.md`](LEARNINGS.md) for integration corrections.
+
+Local development uses Node, Bun and the pinned dev dependencies. `npm run check`
+builds and runs **local fake/fixture tests only**, plus upstream local telemetry
+ingestion. The old live `vm-contract` test is not part of that command.
+`npm run knip` checks both the active modules and deliberately retained upstream
+modules; lint entry declarations do not put retained transports on the live path.
+
+## Archived upstream README — not the M1 runbook
+
+The following original description and commands are retained for upstream
+comparison. They are **not current installation or operation instructions** for
+this ROCANIIRU candidate. In particular, do not apply upstream `install.sh` to 0.53.
 
 > [!WARNING]
 > This is an unofficial experimental project. It patches Grok Bot and uses a private ChatGPT Codex endpoint that can change without notice. It may break your VM, lose work, violate service terms, or get an account restricted or banned. You use it entirely at your own risk. The author accepts no responsibility for broken installations, lost data, account action, or anything else that goes sideways.

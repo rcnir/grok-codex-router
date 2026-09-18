@@ -1,7 +1,7 @@
 {
-  "name": "@howaboua/grok-codex-router",
-  "version": "0.1.0",
-  "description": "First-party Codex Responses transport and per-agent model router for Grok Bot",
+  "name": "@rcnir/grok-codex-router",
+  "version": "0.1.0-rcnir-m1.0",
+  "description": "Allowlisted Grok BOX inference through the existing ROCANIIRU Runtime boundary; M1 source candidate",
   "type": "commonjs",
   "main": "dist/src/session.js",
   "bin": {
@@ -13,10 +13,11 @@
     "ui/"
   ],
   "scripts": {
-    "build": "rm -rf dist && bun node_modules/typescript/bin/tsc -p tsconfig.json && chmod +x dist/bin/grok-codex-router.js dist/scripts/*.js",
-    "check": "bun run knip && bun run build && node --test dist/tests/*.test.js && bun dist/control/telemetry-check.js",
+    "build": "node node_modules/typescript/bin/tsc -p tsconfig.json && chmod +x dist/bin/grok-codex-router.js dist/scripts/*.js",
+    "check": "npm run build && npm run test:local && bun dist/control/telemetry-check.js",
     "knip": "node node_modules/knip/bin/knip.js",
-    "test": "node --test dist/tests/*.test.js"
+    "test": "npm run test:local",
+    "test:local": "node dist/scripts/test-local.js"
   },
   "dependencies": {
     "ws": "8.21.3"
@@ -32,12 +33,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/IgorWarzocha/grok-codex-router.git"
+    "url": "https://github.com/rcnir/grok-codex-router.git"
   },
   "bugs": {
-    "url": "https://github.com/IgorWarzocha/grok-codex-router/issues"
+    "url": "https://github.com/rcnir/grok-codex-router/issues"
   },
-  "homepage": "https://github.com/IgorWarzocha/grok-codex-router#readme",
+  "homepage": "https://github.com/rcnir/grok-codex-router#readme",
+  "rcnirUpstream": {
+    "repository": "IgorWarzocha/grok-codex-router",
+    "commit": "599a2013b15592d17fe897126f549974351e4c3f"
+  },
   "publishConfig": {
     "access": "public"
   },

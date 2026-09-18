@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "@howaboua/grok-codex-router",
+      "name": "@rcnir/grok-codex-router",
       "dependencies": {
         "ws": "8.21.3",
       },

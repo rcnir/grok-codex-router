@@ -41,9 +41,10 @@ test("root agents route by immutable ID while workload classes stay explicit", (
   });
 });
 
-test("router state defaults on for existing configs and preserves an explicit switch off", () => {
+test("M1 defaults off even for legacy configs; only an explicit enabled flag can opt in", () => {
   const { enabled: _enabled, ...existingConfig } = structuredClone(DEFAULT_CONFIG);
-  assert.equal(validateConfig(existingConfig).enabled, true);
+  assert.equal(validateConfig(existingConfig).enabled, false);
+  assert.equal(validateConfig({ ...existingConfig, enabled: true }).enabled, true);
   assert.equal(validateConfig({ ...existingConfig, enabled: false }).enabled, false);
   assert.throws(
     () => validateConfig({ ...existingConfig, enabled: "false" }),
