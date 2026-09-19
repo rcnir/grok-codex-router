@@ -143,6 +143,13 @@ export function createExecutor(
         try {
           return await execution.run([...state.messages], tools, invocationId, ctx?.signal);
         } catch (error) {
+          if (error instanceof RuntimeFault) {
+            console.error(
+              `[grok-codex-router] runtime-fault code=${error.code} uncertain=${error.uncertain}`
+            );
+          } else {
+            console.error("[grok-codex-router] runtime-fault code=RUNTIME_EXECUTION_FAILED uncertain=true");
+          }
           return errorResult(session.route.model, invocationId, error);
         }
       })();
