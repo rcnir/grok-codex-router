@@ -565,29 +565,56 @@ separate Human decision after the fully activated system was read back with zero
 pending/UNKNOWN state. That separate approval was subsequently granted and exactly
 one pilot Turn was attempted.
 
-The transcript returned the expected acceptance token, but Runtime event/thread
-state remained unchanged, proving stock fallback rather than M1 routing. No retry
-was sent. The mismatch is now source-proven: ordinary 0.57 main-session options
-omit `isSummarizationSession`; dedicated summarization sessions explicitly set it
-to `true`; the live router policy rejected the omitted ordinary-root value.
+The first Turn returned the expected acceptance token, but Runtime event/thread
+state remained unchanged, proving stock fallback rather than M1 routing. The
+mismatch was source-proven: ordinary 0.57 main-session options omit
+`isSummarizationSession`; dedicated summarization sessions explicitly set it to
+`true`; the old router policy rejected the omitted ordinary-root value.
 
-Source commit `3274d1781c8a1dd4ec670e6885c55bb57de7d037` is validated at 102/102 router tests plus telemetry/knip/
-diff-check. Candidate package: 157422 bytes / SHA-256
-`42ca75a055d93094d6e03c52bf90e3d3c23221cf3282d14bd89abb75068da6c5`.
-It is not live. The currently resident pilot worker remains PID `1609817`, so a
-future live package replacement must be followed by one supervisor restart before
-any retry Turn. That live hotfix/restart and any retry Turn require new Human
-approval.
+Source commit `3274d1781c8a1dd4ec670e6885c55bb57de7d037` was validated at
+102/102 router tests plus telemetry/knip/diff-check and packaged as 157422 bytes /
+SHA-256 `42ca75a055d93094d6e03c52bf90e3d3c23221cf3282d14bd89abb75068da6c5`.
+That exact artifact was installed live. Production config remained unchanged at
+SHA-256 `e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f`.
+Exactly one supervisor restart
+`grok-codex-router-1789817756783-e163ca36` replaced the resident worker; no host
+patch or Runtime mutation was performed.
+
+Post-restart routing readback passed: only the replacement BOX pilot routes and
+summarization/subagent/browser/computer/automation/group plus retired/user-facing
+Temporal identities remain stock. Host SHA stayed `abdd0acc...dfb30`, Runtime
+stayed generation 13 / 25 Threads / idle and Computer stayed `clear/CLEAR`.
+
+Exactly one retry Turn was then accepted. The router selected
+`chatgpt-web/extra-high / xhigh`, but the Turn failed before the first Runtime
+mutation: Runtime cursor stayed `55834575072`, no Runtime session/thread was
+created, no assistant reply was appended and Sand settled the Turn as
+`SAND-E0406` retryable. No client resend or second retry occurred.
+
+The new defect is the retained signed assistant reasoning part from the first stock
+Turn. Current `initialRuntimeInput()` rejected that prior private part before
+`journal.begin`. Source-only commit
+`e7206a4483478e072c63e3b6c3386e45ab5a5295` now omits assistant
+reasoning/thinking from Runtime injection while still rejecting private reasoning
+from user input. It passes 39/39 focused Runtime-router tests and 102/102 complete
+router tests plus telemetry/knip/diff-check. The **not-live** next candidate is
+158036 bytes / SHA-256
+`64689d1efdbe612d034244fe679ed1fdb08a594a32d53c5cfad7be12f69719aa`.
+
+The next Human gate is limited to deploying that exact router-only candidate,
+performing one supervisor restart, verifying no automatic resume/provider activity
+and all retained invariants, and only then separately sending at most one further
+pilot acceptance Turn.
 
 ## Approval boundaries
 
 Gate 2A produced the required Runtime/Codex hashes. The Human then authorized exactly one replacement
-BOX pilot. `507d1f34-56d5-4085-9b48-23d40cb9c914` is durably `harness:"box"`, has
-no Turn, and is now the singleton M1 allowlist identity. The retired Temporal pilot
-and user-facing Temporal Bot are unchanged. Gate 2B subsequently completed. The
-provider-owned host is now stock `a5b5d79`, whose exact fingerprint, four M1
-anchors and deterministic patch image have independently passed fresh compatibility
-acceptance. Gate 2C remains separate and is not implied by Gate 2B.
+BOX pilot. `507d1f34-56d5-4085-9b48-23d40cb9c914` is durably `harness:"box"`
+and remains the singleton M1 allowlist identity; it had no Turn at replacement
+creation. The later first-Turn and retry evidence are recorded separately. The
+retired Temporal pilot and user-facing Temporal Bot are unchanged. Gate 2B and
+Gate 2C subsequently completed. The current host remains patched `a5b5d79` at
+SHA-256 `abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30`.
 
 ### Completed: Gate 2A
 
@@ -642,5 +669,7 @@ active/blocked work, and Computer `clear/CLEAR`.
 Read-only route evaluation confirms only replacement BOX pilot
 `507d1f34-56d5-4085-9b48-23d40cb9c914` routes. Retired and user-facing Temporal
 agents plus summarization/subagent/browser/computer/automation/group remain stock.
-The router state directory contains zero files: **the first pilot Turn remains
-unstarted and separately gated**.
+At the Gate-2C postflight snapshot the router state directory contained zero files
+and the first pilot Turn was still unstarted. Subsequent separately approved pilot
+acceptance attempts are recorded in `PILOT-FIRST-TURN-EVIDENCE-20260919.json` and
+`PILOT-RETRY-EVIDENCE-20260919.json`.

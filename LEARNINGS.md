@@ -204,3 +204,20 @@ presence/absence shape, not only an equivalent logical value. Here the safe cont
 is asymmetric: missing `isSummarizationSession` is the known ordinary-root shape;
 explicit `true` is summarization and stays stock; explicit non-boolean remains
 invalid and fail-closed. Other root classifiers remain required booleans.
+
+## 2026-09-19 — Private stock reasoning may exist in prior transcript without being model input
+
+After the root-shape repair was deployed, the retry proved routing selection but
+still failed before Runtime admission. The first stock Turn had persisted an
+assistant `reasoning` part with a private signature alongside its delivery tool
+call. Rejecting that part merely because it existed made a safe cross-provider
+continuation impossible even though the router never intended to expose the private
+reasoning to Codex.
+
+The correct boundary is to distinguish **presence in Sand history** from
+**model-visible Runtime input**. Assistant reasoning/thinking is omitted entirely
+from Runtime/Codex transcript injection; it is neither copied nor summarized.
+Historical tool-call/result identities remain exact. Private reasoning supplied as
+user/tool content remains invalid and fail-closed. A production-shaped regression
+must include the signed assistant reasoning part so this boundary cannot silently
+regress back to fixture-only behavior.

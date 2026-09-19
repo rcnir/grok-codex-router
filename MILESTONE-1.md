@@ -351,13 +351,49 @@ sessions explicitly set `isSummarizationSession:true`. The live pilot policy
 incorrectly required the omitted root value to be a boolean and therefore rejected
 every ordinary root Turn before routing.
 
-Source commit `3274d1781c8a1dd4ec670e6885c55bb57de7d037` now treats absent `isSummarizationSession` as the
-documented ordinary-root shape, still rejects explicit `true` to stock and
-fail-closes on an explicit non-boolean value. All other root classifiers remain
-required booleans. Focused tests pass 11/11 and the full router suite passes
-102/102 plus telemetry, knip and diff-check. The candidate package is 157422 bytes
-/ SHA-256 `42ca75a055d93094d6e03c52bf90e3d3c23221cf3282d14bd89abb75068da6c5`.
-It has **not** been installed live. See `PILOT-FIRST-TURN-EVIDENCE-20260919.json`.
+Source commit `3274d1781c8a1dd4ec670e6885c55bb57de7d037` treats absent
+`isSummarizationSession` as the documented ordinary-root shape, still rejects
+explicit `true` to stock and fail-closes on an explicit non-boolean value. All
+other root classifiers remain required booleans. That fix was packaged as 157422
+bytes / SHA-256
+`42ca75a055d93094d6e03c52bf90e3d3c23221cf3282d14bd89abb75068da6c5`,
+installed as the live router without rewriting the production config, and loaded
+with exactly one supervisor restart
+`grok-codex-router-1789817756783-e163ca36`. Host SHA, Runtime generation 13 /
+25-Thread state and Computer `clear/CLEAR` remained unchanged.
+
+### Pilot retry after root-shape repair
+
+Exactly one retry send was accepted as transcript entry `t1u`. The repaired live
+policy now selected the intended route: live logs recorded
+`agent=507d1f34-56d5-4085-9b48-23d40cb9c914 workload=agent
+model=chatgpt-web/extra-high effort=xhigh`. Sand internally re-entered that session
+four times while handling the same retryable Turn, but there was only one accepted
+client send and no resend by this task.
+
+The retry still **did not pass M1 acceptance**. No assistant transcript entry was
+produced, Runtime event cursor stayed `55834575072`, the retained Thread count
+stayed 25, no `grok:` Runtime session appeared and router state remained empty.
+The durable Turn settlement is `SAND-E0406 / retryable=true`. Therefore routing
+selection is proven, but Runtime traversal is not.
+
+The second defect is independently reproduced in source. The previous stock Turn
+left a signed/private assistant `reasoning` part before its `SendToUser`
+tool-call/result. `initialRuntimeInput()` rejected that production-shaped history
+with `PRIVATE_REASONING_TRANSCRIPT_FORBIDDEN` before `journal.begin`, exactly
+matching the live absence of any Runtime mutation.
+
+Source-only follow-up commit
+`e7206a4483478e072c63e3b6c3386e45ab5a5295` omits assistant
+reasoning/thinking from Runtime/Codex transcript injection while preserving exact
+historical tool-call/result identities; private reasoning in user input and other
+unsupported content still fail closed. Focused Runtime-router tests pass 39/39 and
+the complete router suite remains 102/102 plus telemetry, knip and diff-check.
+The next candidate package is 158036 bytes / SHA-256
+`64689d1efdbe612d034244fe679ed1fdb08a594a32d53c5cfad7be12f69719aa`.
+It is **not live**. No second retry Turn, additional live fix or additional restart
+was performed. See `PILOT-FIRST-TURN-EVIDENCE-20260919.json` and
+`PILOT-RETRY-EVIDENCE-20260919.json`.
 
 ## Local checks
 
@@ -374,7 +410,7 @@ in `PILOT-REPLACEMENT-EVIDENCE-20260919.json` and
 `GATE-2B-EVIDENCE-20260919.json`. The production plan is
 `PRODUCTION-ACTIVATION-PREP-20260919.md`.
 
-Current regression acceptance passed 101 router tests plus telemetry ingestion and
+Current regression acceptance passed 102 router tests plus telemetry ingestion and
 `knip`, 219 Runtime Node tests, and 114 Runtime Python tests. The Runtime source was
 not changed by the host port. `git diff --check` passed.
 
