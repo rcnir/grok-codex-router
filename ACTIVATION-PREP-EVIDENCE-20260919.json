@@ -1,6 +1,6 @@
 {
   "format_version": 1,
-  "recorded_at_utc": "2026-09-19T00:41:59Z",
+  "recorded_at_utc": "2026-09-19T01:06:22Z",
   "scope": "Milestone 1 production activation preparation; source/local plus live read-only only",
   "live_mutations_performed": 0,
   "pilot": {
@@ -18,7 +18,7 @@
     }
   },
   "routing_acceptance": {
-    "router_tests": 89,
+    "router_tests": 93,
     "router_tests_failed": 0,
     "telemetry": "PASS",
     "knip": "PASS",
@@ -41,15 +41,15 @@
   "router_artifacts": {
     "stage_transfer_manifest": {
       "path": "M1-STAGE-TRANSFER-MANIFEST-20260919.json",
-      "sha256": "ade1ecc8fa5a8ec305903b885e54ff48d9409966c1f90c2405e92719d26f872f",
+      "sha256": "d80df970f0b02f4eb840f295bcb55908eedb0f52dcadb0ffa5c847d332e8937a",
       "max_part_base64_text_bytes": 48000,
       "runtime_part_count": 21,
       "router_part_count": 5
     },
     "package": {
       "name": "rcnir-grok-codex-router-0.1.0-rcnir-m1.0.tgz",
-      "bytes": 151817,
-      "sha256": "78f29798c6fceef7a4fcb494f5ebf3767e60e13d0e42e2e1a4dd5438796c88b5"
+      "bytes": 154140,
+      "sha256": "b720fc269d047f05cce7ce9d5cf1fe0b20c5fda9807f79242216dbf868262f5f"
     },
     "production_config": {
       "path_in_source": "M1-PRODUCTION-CONFIG-20260919.json",
@@ -143,6 +143,7 @@
     "status": "HISTORICAL_ACCEPTED_BASELINE_SUPERSEDED_BY_EXTERNAL_HOST_UPDATE"
   },
   "current_live_host_readback": {
+    "grok_bot_version": "0.57.0",
     "host_version": "251860d",
     "path": "/home/box/sand-host/host-main.cjs",
     "bytes": 26453384,
@@ -150,12 +151,29 @@
     "router_markers": 0,
     "host_state": "stock_unpatched",
     "reviewed_057_manifest_check": {
-      "status": "FAIL_CLOSED_EXPECTED_FINGERPRINT_MISMATCH",
-      "compat": "grok-bot-0.57-18cd065",
-      "expected_bytes": 26438264,
+      "status": "PASS_STATE_STOCK",
+      "compat": "grok-bot-0.57-251860d",
+      "expected_bytes": 26453384,
       "observed_bytes": 26453384,
-      "exit_code": 1
+      "expected_sha256": "2354d46da4304d11110645f4e7fa565a15de1b30cd1d80971db2b8934a278161",
+      "exit_code": 0
     },
+    "required_anchor_counts": {
+      "inferenceOwner": 1,
+      "inferenceHook": 1,
+      "mainSessionOptions": 1,
+      "mainSessionDispatch": 1
+    },
+    "anchor_positions": {
+      "inferenceOwner": 22850049,
+      "inferenceHook": 22852885,
+      "mainSessionOptions": 26007642,
+      "mainSessionDispatch": 26008904
+    },
+    "anchor_order": "PASS",
+    "anchor_proof": "VERIFIED",
+    "deterministic_patched_bytes": 26454131,
+    "deterministic_patched_sha256": "8d8c2c239667e38f421d6b96af994c279b69fdbaddbb91bed927f16a02aef5ea",
     "supervisor": {
       "host_running": true,
       "host_version": "251860d",
@@ -164,7 +182,7 @@
       "pending_upgrade_version": null
     },
     "activation_paths_still_absent": true,
-    "compatibility_status": "BLOCKED_PENDING_EXPLICIT_RESCOPE_AND_FRESH_COMPATIBILITY_VERIFICATION"
+    "compatibility_status": "VERIFIED_CURRENT_PRODUCTION_TARGET"
   },
   "other_live_gate_readback": {
     "user_facing_bot_id": "139771d1-4e7d-4a8b-80a0-eddc438bccfc",
@@ -175,11 +193,10 @@
     "computer_execution_state": "CLEAR"
   },
   "next_human_gates": {
-    "status": "CLOSED_CURRENT_HOST_DRIFT",
-    "blocker": "current stock host 251860d / 2354d46d... no longer matches the reviewed 0.57 host 18cd065 / c667b530...; no new compatibility port was authorized",
-    "2A": "PREPARED_BUILD_AND_STAGE_ONLY_NOT_REQUESTED_WHILE_END_TO_END_HOST_GATE_IS_BLOCKED",
+    "status": "GATE_2A_READY_FOR_EXPLICIT_HUMAN_APPROVAL",
+    "2A": "BUILD_AND_STAGE_ONLY",
     "2B": "RUNTIME_CODEX_PROMOTION_AFTER_2A_HASH_ACCEPTANCE",
-    "2C": "BLOCKED_UNTIL_CURRENT_HOST_COMPATIBILITY_IS_EXPLICITLY_RESCOPED_AND_VERIFIED",
+    "2C": "ROUTER_CONFIG_AND_VERIFIED_251860D_HOST_PATCH_AFTER_2B_PASS",
     "first_pilot_turn": "SEPARATE_LATER_APPROVAL"
   },
   "gate_2a_create_new_preflight": {

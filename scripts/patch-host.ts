@@ -6,6 +6,7 @@ import {
   GROK_BOT_053_11DD264_MANIFEST
 } from "./manifests/grok-bot-0.53-11dd264.js";
 import { GROK_BOT_057_18CD065_MANIFEST } from "./manifests/grok-bot-0.57-18cd065.js";
+import { GROK_BOT_057_251860D_MANIFEST } from "./manifests/grok-bot-0.57-251860d.js";
 import type {
   GrokBotHostCompatibilityManifest,
   HostFingerprint
@@ -83,7 +84,8 @@ function parseArgs(argv: string[]): CliOptions {
 
 const BUILTIN_MANIFESTS = Object.freeze<Record<string, GrokBotHostCompatibilityManifest>>({
   "grok-bot-0.53-11dd264": GROK_BOT_053_11DD264_MANIFEST,
-  "grok-bot-0.57-18cd065": GROK_BOT_057_18CD065_MANIFEST
+  "grok-bot-0.57-18cd065": GROK_BOT_057_18CD065_MANIFEST,
+  "grok-bot-0.57-251860d": GROK_BOT_057_251860D_MANIFEST
 });
 
 function validateFingerprint(value: HostFingerprint | undefined, label: string): void {

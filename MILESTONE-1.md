@@ -102,7 +102,7 @@ an explicitly blank final. Commentary cannot replace a blank final. Usage is
 mapped from cumulative totals into segment deltas; reasoning-output tokens are
 not counted a second time.
 
-## 0.57 production compatibility and retained 0.53 support
+## 0.57 production compatibility and retained earlier support
 
 The production contract accepted at Human Gate 1 was freshly measured read-only:
 
@@ -143,6 +143,28 @@ The built read-only check passed on the then-current host with
 fingerprints, zero/duplicate required anchors, partial markers, missing/mismatched
 backup, and a non-deterministic marked image remain fail-closed.
 
+The later automatic Sand upgrade to host `251860d` was re-verified under the same
+M1 semantics and added as a separate built-in compatibility target rather than
+overwriting `18cd065`:
+
+```text
+Grok Bot: 0.57.0
+Host version: 251860d
+Bytes: 26453384
+SHA256: 2354d46da4304d11110645f4e7fa565a15de1b30cd1d80971db2b8934a278161
+Router markers: all zero (stock)
+Patched bytes: 26454131
+Patched SHA256: 8d8c2c239667e38f421d6b96af994c279b69fdbaddbb91bed927f16a02aef5ea
+```
+
+Fresh actual-host proof found exactly one `inferenceOwner`, one stock inference
+fallback, one `mainSessionOptions` seam and one `mainSessionDispatch`, in that
+order. The built read-only check now passes on the current production host with
+`--compat grok-bot-0.57-251860d`. The insertion algorithm is unchanged: one opt-in
+hook immediately before the stock inference fallback and one exact three-field
+identity block inside the main session options. Existing `18cd065` and 0.53
+artifacts remain unchanged.
+
 The 0.53/`11dd264` manifest is retained as a separate built-in compatibility
 target and remains `anchorProof:"BLOCKED"`; its legacy insertion seam is still
 covered by the original fixture suite. A custom fixture manifest still cannot
@@ -180,13 +202,10 @@ changing a current pointer or process; 2B promotes the patched Codex + Runtime;
 a later separate Human decision.
 
 The final activation-preparation readback found an external Sand host upgrade that
-this task did not initiate: live host version is now `251860d`, stock
-`host-main.cjs` is 26,453,384 bytes / SHA-256
-`2354d46da4304d11110645f4e7fa565a15de1b30cd1d80971db2b8934a278161`,
-with zero router markers. The reviewed `grok-bot-0.57-18cd065` manifest fails
-closed on the byte fingerprint as intended. No `251860d` compatibility port is
-authorized by this milestone continuation, so the production activation Human
-Gate is **CLOSED** pending explicit current-host compatibility re-scope.
+this task did not initiate. That current `251860d` stock host is now independently
+VERIFIED as above, so the drift blocker is cleared. Production activation remains
+split into Gate 2A build/stage, Gate 2B Runtime/Codex promotion and Gate 2C
+router/config + deterministic host patch/restart; none has yet been executed.
 
 ## Local checks
 
@@ -202,7 +221,7 @@ production-activation preparation and fresh read-only baselines are in
 `ACTIVATION-PREP-EVIDENCE-20260919.json` and
 `PRODUCTION-ACTIVATION-PREP-20260919.md`.
 
-Current regression acceptance passed 89 router tests plus telemetry ingestion and
+Current regression acceptance passed 93 router tests plus telemetry ingestion and
 `knip`, 219 Runtime Node tests, and 114 Runtime Python tests. The Runtime source was
 not changed by the 0.57 port. `git diff --check` passed.
 

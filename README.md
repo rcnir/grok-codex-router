@@ -7,20 +7,19 @@ Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
 
 **Not deployed.** Human Gate 1 created exactly one isolated BOX pilot,
 `97cf83a0-0401-4481-9f3f-8b321921f8b0`, whose authoritative profile is
-`harness:"box"`; no Turn has been started. Host `18cd065` was the verified 0.57
-compatibility baseline, but the final read-only pre-activation check observed an
-external Sand host upgrade to stock/unpatched `251860d`. The retained 0.57
-manifest correctly fails closed against that new fingerprint, so production
-activation is blocked until current-host compatibility is explicitly re-scoped
-and verified. The older 0.53 compatibility manifest is retained and remains
-fail-closed. The bounded, thread-local
+`harness:"box"`; no Turn has been started. The current production host is Grok
+Bot `0.57.0` / host `251860d`; its exact stock fingerprint, structural anchors and
+deterministic patched image are now verified read-only. The earlier verified
+`18cd065` target remains supported as a separate fingerprint-bound manifest, and
+the older 0.53 compatibility manifest remains fail-closed. The bounded, thread-local
 `toolIsolation:"dynamicOnly"` Codex source patch and Runtime/router capability
 wiring remain separate from host compatibility. The pilot is now the only source
 allowlist identity and its fixed route is `chatgpt-web/extra-high / xhigh`, while
 the source default remains `enabled:false`. No host patch, Runtime/Codex deploy,
-provider/model inference or Temporal profile change has been performed. No live
-mutation approval is currently open; the prepared mutation boundaries and the
-current blocker are documented in `PRODUCTION-ACTIVATION-PREP-20260919.md`.
+provider/model inference or Temporal profile change has been performed. The next
+live mutation boundary is Gate 2A build/stage only; Gate 2B/2C remain separately
+approved later steps. Exact actions and rollback are documented in
+`PRODUCTION-ACTIVATION-PREP-20260919.md`.
 
 See [`MILESTONE-1.md`](MILESTONE-1.md) for the implementation contract and status,
 [`NATIVE-EXECUTION-POLICY.md`](NATIVE-EXECUTION-POLICY.md) for the thread policy,

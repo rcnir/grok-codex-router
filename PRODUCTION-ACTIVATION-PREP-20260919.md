@@ -26,8 +26,8 @@ The current packed router artifact and activation config are:
 ```text
 router tarball
   rcnir-grok-codex-router-0.1.0-rcnir-m1.0.tgz
-  bytes   151817
-  sha256  78f29798c6fceef7a4fcb494f5ebf3767e60e13d0e42e2e1a4dd5438796c88b5
+  bytes   154140
+  sha256  b720fc269d047f05cce7ce9d5cf1fe0b20c5fda9807f79242216dbf868262f5f
 
 production config
   M1-PRODUCTION-CONFIG-20260919.json
@@ -52,7 +52,7 @@ is 960,620 bytes (still below the 1 MiB decoded file-write limit) with SHA-256
 
 Exact bounded transfer parts are recorded in
 `M1-STAGE-TRANSFER-MANIFEST-20260919.json` (manifest SHA-256
-`ade1ecc8fa5a8ec305903b885e54ff48d9409966c1f90c2405e92719d26f872f`).
+`d80df970f0b02f4eb840f295bcb55908eedb0f52dcadb0ffa5c847d332e8937a`).
 It contains 21 Runtime archive parts and 5 router-package parts, each at most
 48,000 base64-text bytes, plus every per-part SHA-256.
 
@@ -102,7 +102,7 @@ switch changes only future launches; already-running unrelated processes keep
 their open executable inode. This shared future-launch effect is an explicit
 impact of the existing `run-codex.sh` deployment path and is not widened here.
 
-The **previously accepted** Grok host compatibility target was:
+The earlier verified Grok host compatibility target remains supported:
 
 ```text
 Grok Bot             0.57.0
@@ -114,28 +114,27 @@ patched SHA-256      07835cd847c027aa2628741c2fb93a7c2ebbcb67a55c4861254dfc51af5
 marker version       1
 ```
 
-That fingerprint is no longer the current live host. During the final fresh
-read-only acceptance, the Sand supervisor had already performed an external
-upgrade that was not initiated by this task:
+The Sand supervisor later performed an external upgrade that was not initiated by
+this task. The new current target has now completed the same source/local plus
+actual-host read-only acceptance:
 
 ```text
 current host version   251860d
 current stock bytes    26453384
 current stock SHA-256  2354d46da4304d11110645f4e7fa565a15de1b30cd1d80971db2b8934a278161
+current patched bytes  26454131
+current patched SHA    8d8c2c239667e38f421d6b96af994c279b69fdbaddbb91bed927f16a02aef5ea
 router marker count    0
 supervisor command     upgrade-251860d / upgrade
 host running           true
 pending upgrade        none
 ```
 
-The retained `grok-bot-0.57-18cd065` production manifest correctly fails closed
-against this host (`expected 26438264`, observed `26453384`, exit 1). No router,
-config, journal directory, pristine backup, candidate Runtime/Codex release or
-activation scratch path exists. The stock Codex/Runtime pointers are unchanged.
-
-**Gate 2C is therefore blocked.** This document does not infer that `251860d` is
-compatible and does not port the host patch to it. A new compatibility verification
-for `251860d` requires an explicit scope change from the Human.
+`grok-bot-0.57-251860d` is now `anchorProof:"VERIFIED"`. Fresh actual-host anchor
+counts were 1/1/1/1 in the reviewed order, all router markers were zero, and the
+built read-only `--check` passed with `state=stock`. No router, config, journal
+directory, pristine backup, candidate Runtime/Codex release or activation scratch
+path exists. The stock Codex/Runtime pointers are unchanged.
 
 ## Gate 2A — build and stage only
 
@@ -410,12 +409,8 @@ Server, and never restore the saved pre-promotion journal over the current one.
 
 ## Gate 2C — router install, config, host patch and Sand restart
 
-This gate is currently **BLOCKED before Gate 2B ordering even matters**, because
-the live host changed externally from reviewed `18cd065` to unreviewed `251860d`.
-It does not include any provider or model inference. The steps below are the
-retained exact `18cd065` procedure only; they are not valid against the current
-host until a separately authorized compatibility verification produces a new
-reviewed current-host identity.
+This gate remains closed until Gate 2B passes. It does not include any provider or
+model inference. The exact current-host target is `grok-bot-0.57-251860d`.
 
 Preflight rechecks:
 
@@ -423,7 +418,8 @@ Preflight rechecks:
 - pilot profile is still `harness:"box"`; user-facing Bot is still
   `harness:"temporal"`.
 - Computer is the same service identity and `clear/CLEAR`.
-- `patch-host --check --compat grok-bot-0.57-18cd065` reports stock.
+- `patch-host --check --compat grok-bot-0.57-251860d` reports stock with SHA
+  `2354d46da4304d11110645f4e7fa565a15de1b30cd1d80971db2b8934a278161`.
 - `/home/box/grok-codex-router`, live router config/journal directory and pristine
   host backup are still absent.
 - Sand supervisor is fresh/running and has no pending command.
@@ -443,14 +439,16 @@ Then, and only then:
 
    ```sh
    node /home/box/grok-codex-router/dist/scripts/patch-host.js \
-     --compat grok-bot-0.57-18cd065 \
+     --compat grok-bot-0.57-251860d \
      --host /home/box/sand-host/host-main.cjs \
      --backup /home/box/sand-host/host-main.cjs.grok-codex-router-bak
    ```
 
    This must create the pristine backup exclusively at mode 0600 with stock
-   SHA-256 `c667...` and replace the host atomically with exact patched SHA-256
-   `07835...`. A follow-up `--check` must report `state=patched` before restart.
+   SHA-256 `2354d46da4304d11110645f4e7fa565a15de1b30cd1d80971db2b8934a278161`
+   and replace the host atomically with exact patched bytes `26454131` / SHA-256
+   `8d8c2c239667e38f421d6b96af994c279b69fdbaddbb91bed927f16a02aef5ea`.
+   A follow-up `--check` must report `state=patched` before restart.
 5. Restart through the existing Sand supervisor only:
 
    ```sh
@@ -458,7 +456,7 @@ Then, and only then:
    ```
 
    No `pkill`, alternate host, alternate runtime or second process tree is allowed.
-6. Postflight: host still version `18cd065`, exact patched SHA, complete version-1
+6. Postflight: host still version `251860d`, exact patched SHA, complete version-1
    markers, supervisor host running, pilot/Temporal profiles unchanged, Runtime
    still healthy dynamic-only capable, Computer still clear. Do **not** start the
    pilot Turn.
@@ -466,7 +464,7 @@ Then, and only then:
 Rollback before the Sand restart: run the same patcher with `--restore`; because
 the running host has not loaded the patched file yet, no restart is needed after a
 successful pre-restart restore. Rollback after a Sand restart: restore the exact
-pristine backup with `--restore`, verify stock SHA `c667...`, then request one
+pristine backup with `--restore`, verify stock SHA `2354d46d...`, then request one
 supervisor-controlled restart back onto stock. Disable/remove the router config
 and package only after the host file is stock again. The pristine backup remains
 evidence unless a later separately approved cleanup removes it.
@@ -479,18 +477,13 @@ pending/UNKNOWN state.
 
 ## Approval boundaries
 
-No live mutation approval is open at the current readback. The end-to-end
-activation precondition failed when the Sand host advanced externally to
-`251860d`. Approval is intentionally not bundled across the whole activation;
-after current-host compatibility is explicitly re-scoped and verified, Gate 2B
-must still consume hashes that exist only after Gate 2A has built and staged the
-actual x86_64 artifact on the assigned VM.
+The current-host compatibility precondition is now satisfied. Approval remains
+intentionally split because Gate 2B must consume hashes that exist only after Gate
+2A has built and staged the actual x86_64 artifact on the assigned VM.
 
-### Prepared first mutation boundary: Gate 2A only
+### Next approval: Gate 2A only
 
-Gate 2A is fully specified but is **not being requested while the current-host
-compatibility blocker remains open**. When that blocker is explicitly resolved,
-an approval for Gate 2A authorizes only:
+Gate 2A is the first live mutation boundary. An approval for Gate 2A authorizes only:
 
 - creation of `/workspace/rcnir-m1-activation-20260919` and scratch toolchain/build
   files below it;
@@ -520,8 +513,6 @@ touches the Grok host/router and does not start a Turn.
 
 ### Later approval: Gate 2C
 
-Only after both fresh current-host compatibility acceptance and Gate 2B acceptance,
-Gate 2C may authorize router/config installation, one pristine host backup, the
-newly reviewed deterministic current-host patch, and one supervisor-owned Sand
-restart. The historical `18cd065` mutation commands above must not be replayed on
-`251860d`. Gate 2C still does not start the pilot Turn.
+Only after Gate 2B acceptance, Gate 2C may authorize router/config installation,
+one pristine host backup, the reviewed deterministic `251860d` patch and one
+supervisor-owned Sand restart. Gate 2C still does not start the pilot Turn.

@@ -105,3 +105,13 @@ Keep build/stage, Runtime/Codex promotion, and Grok-host patch/restart as separa
 gates. Staging can be rolled back by deleting new versioned paths; Runtime rollback
 restores pointers without overwriting a newer durable journal; host rollback uses
 the verified pristine backup and the same supervisor-controlled restart path.
+
+## 2026-09-19 — Automatic host drift can be ported without weakening old support
+
+When Sand upgrades the stock host between gates, keep the old verified manifest as
+an exact historical compatibility target and add the new host as another
+fingerprint-bound target. Do not relax a prior manifest to accept multiple hashes.
+For `251860d`, the M1 insertion seams remained structurally identical to `18cd065`,
+but verification still required a fresh stock SHA/size, exact anchor counts/order,
+zero router markers, deterministic patched-image SHA and an actual-host read-only
+`--check` before `anchorProof` could be promoted.

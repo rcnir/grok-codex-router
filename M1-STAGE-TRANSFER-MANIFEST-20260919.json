@@ -120,36 +120,36 @@
     },
     {
       "name": "router.tgz",
-      "raw_bytes": 151817,
-      "raw_sha256": "78f29798c6fceef7a4fcb494f5ebf3767e60e13d0e42e2e1a4dd5438796c88b5",
-      "base64_text_bytes": 202424,
-      "base64_text_sha256": "28c27a286a0dfdb52ca2e1e3a8d8854eba80b3a1130fb4e17d71bceda78c6272",
+      "raw_bytes": 154140,
+      "raw_sha256": "b720fc269d047f05cce7ce9d5cf1fe0b20c5fda9807f79242216dbf868262f5f",
+      "base64_text_bytes": 205520,
+      "base64_text_sha256": "f6ddd32aef563845be69b7c1147080f5ad1e52caadd25f0c72ee29ec4d8164cf",
       "part_size_max": 48000,
       "parts": [
         {
           "index": 0,
           "bytes": 48000,
-          "sha256": "ecab0cdbf44e66eb55aeb01bdf39c032060bd3d1ad6ce02615b86a87f16aacfd"
+          "sha256": "1d6bb7157d4bdc373de89737edeb99febbba4e8006a78b1307006a168a204381"
         },
         {
           "index": 1,
           "bytes": 48000,
-          "sha256": "cb18bd16b643592ec4d4b566e927dff32539500d2a79575c1cf62bf15ac173cc"
+          "sha256": "16b1729b1aea0e9d6abe838b215d4809584a1dec09b9d2bca31c47777514eb24"
         },
         {
           "index": 2,
           "bytes": 48000,
-          "sha256": "812c4f28a3f49ba80ba470582c2e9a005708af6d8e4348fc8769db18f6b9f2ca"
+          "sha256": "82834edec09684863d9e31cefd3cf36875b393971d945c7814e08d7a93e356d8"
         },
         {
           "index": 3,
           "bytes": 48000,
-          "sha256": "2219a84af9bcc314f152ade3fdcd306664b04f93b5b10341a687f3d107f6f79f"
+          "sha256": "c1885cca6cabe13e7253830c0061bf5c530f3d2a24be3220f4666ac3e7b409a2"
         },
         {
           "index": 4,
-          "bytes": 10424,
-          "sha256": "3981483cb4fb4a1b35ecc823dc8fce6061f2e9e7e3bb22a73cb4a4f2dd2a1bbb"
+          "bytes": 13520,
+          "sha256": "4fd5fe17540dd64036363047796624559e08459cd08805ef27f42062d43c7d5c"
         }
       ]
     },
