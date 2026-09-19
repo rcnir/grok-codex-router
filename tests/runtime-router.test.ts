@@ -104,6 +104,8 @@ class FakeRuntime implements RuntimeBoundary {
       const pending = this.pending.get(key);
       assert.ok(pending, "must reply to a pending exact JSON-RPC request");
       assert.equal(args.generation, pending.generation);
+      this.emit("engine/serverRequestResponded",
+        { requestId: pending.request_id, method: "item/tool/call" }, pending.request_id as string | number);
       this.pending.delete(key);
       this.replies++;
       if (this.replies === this.requiredReplies) this.afterReplies(this);
@@ -456,6 +458,22 @@ test("host-only non-JSON metadata is excluded from transcript and assistant-echo
   assert.equal(final.response.finishReason, "stop");
   assert.equal(runtime.calls.filter((row) => row.name === "runtime_respond").length, 1);
 });
+
+for (const mode of ["wrong-confirmation-request-id", "wrong-confirmation-method", "unseen-confirmation-request"]) {
+  test(`reject ${mode} as a native execution request`, async (t) => {
+    const { runtime, execution } = fixture(t);
+    runtime.onStart = (rt) => {
+      if (mode === "wrong-confirmation-request-id") {
+        rt.emit("engine/serverRequestResponded", { requestId: 43, method: "item/tool/call" }, 42);
+      } else if (mode === "wrong-confirmation-method") {
+        rt.emit("engine/serverRequestResponded", { requestId: 42, method: "item/commandExecution/requestApproval" }, 42);
+      } else {
+        rt.emit("engine/serverRequestResponded", { requestId: 42, method: "item/tool/call" }, 42);
+      }
+    };
+    await assert.rejects(execution.run(user, [definition], mode), /NATIVE_EXECUTION_REQUEST_FORBIDDEN/);
+  });
+}
 
 test("unrecognized current-user content part is not silently dropped", async (t) => {
   const { runtime, execution } = fixture(t);

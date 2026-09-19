@@ -297,6 +297,17 @@ export class RuntimeExecution {
       tool, hostTool, arguments: params.arguments, argumentsSha256: fingerprint(params.arguments) };
   }
 
+  private isAnsweredDynamicToolConfirmation(event: RuntimeEvent): boolean {
+    if (event.method !== "engine/serverRequestResponded") return false;
+    const requestId = event.request_id;
+    const paramsRequestId = event.params.requestId;
+    if (!(typeof requestId === "string" && requestId.length > 0 || Number.isSafeInteger(requestId)) ||
+        paramsRequestId !== requestId || event.params.method !== "item/tool/call") {
+      return false;
+    }
+    return this.seenRequests.has(canonicalJson([event.generation, requestId]));
+  }
+
   private async observe(invocationId: string, signal?: AbortSignal): Promise<RouterResult> {
     const parts: StreamPart[] = [];
     let summary = "";
@@ -315,6 +326,7 @@ export class RuntimeExecution {
         if (event.known === false) continue;
         const p = event.params;
         if (event.request_id != null && event.method !== "item/tool/call") {
+          if (this.isAnsweredDynamicToolConfirmation(event)) continue;
           throw new RuntimeFault("NATIVE_EXECUTION_REQUEST_FORBIDDEN", true);
         }
         if (event.method === "item/tool/call") {
