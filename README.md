@@ -5,7 +5,7 @@ It retains the upstream source layout and wire helpers, but its package entrypoi
 routes through the **existing** ROCANIIRU Runtime CLI/MCP boundary, not the private
 Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
 
-**Activated through Gate 2B.** Human Gate 1 originally created isolated BOX pilot
+**Activated through Gate 2C; first pilot Turn not started.** Human Gate 1 originally created isolated BOX pilot
 `97cf83a0-0401-4481-9f3f-8b321921f8b0`; it later drifted durably Temporal. After
 same-ID repair was exhausted, the Human authorized exactly one replacement BOX
 pilot, `507d1f34-56d5-4085-9b48-23d40cb9c914`. Its durable profile is
@@ -22,18 +22,16 @@ thread-local
 `toolIsolation:"dynamicOnly"` Codex source patch and Runtime/router capability
 wiring remain separate from host compatibility. The pilot is now the only source
 allowlist identity and its fixed route is `chatgpt-web/extra-high / xhigh`, while
-the source default remains `enabled:false`. No host patch, router live install,
-provider/model inference or profile correction has been performed. Gate 2B has
-promoted the Gate-2A patched Codex/Runtime candidate successfully. A later Gate-2C
-attempt stopped fail-closed at the mandatory actual-host check before any live
-mutation when the provider advanced the host to `a5b5d79`. That host is now
-compatibility-VERIFIED, but Gate 2C remains closed pending separate Human approval.
-The prior Gate-2C router package SHA-256
-`b0716767531a13e1b97b1617ebcbc4271b7569eb69c741c46c249b6844e496fc` predates
-the `a5b5d79` compatibility source and must be repacked/reaccepted before any
-future activation. Gate 2A/2B artifacts, current host proof and harness authority
+the source default remains `enabled:false`; the live production config alone enables
+the singleton pilot route. Gate 2B promoted the patched Codex/Runtime successfully.
+After the first Gate-2C attempt failed closed on provider host drift, `a5b5d79`
+compatibility was VERIFIED, current source was freshly repacked/reaccepted, and
+Gate 2C completed: router/config installed, pristine stock backup written, exact
+host patch applied, and one supervisor restart completed. No pilot Turn or
+provider/model inference was started. Gate artifacts, current host proof and harness authority
 are documented in `GATE-2A-EVIDENCE-20260919.json`,
 `GATE-2B-EVIDENCE-20260919.json`,
+`GATE-2C-EVIDENCE-20260919.json`,
 `HOST-5EC1E7D-EVIDENCE-20260919.json`, `HOST-A5B5D79-EVIDENCE-20260919.json`,
 `PILOT-HARNESS-EVIDENCE-20260919.json`,
 `PILOT-REPLACEMENT-EVIDENCE-20260919.json` and

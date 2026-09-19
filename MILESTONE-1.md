@@ -2,13 +2,12 @@
 
 ## Status and ownership
 
-Source candidate only. **Human Gate 1 is complete: one isolated BOX pilot was
-created and independently read back. The next boundary is production activation
-Gate 2A (build/stage only).**
-No live router package was installed and no pilot Turn was started. No pristine backup was written
-to the VM, no host source patched/restarted, no live Runtime replaced and no real
-provider/model inference started by this task. The existing persistent App Server
-remains the stock Codex 0.154.0 process.
+**Production activation is complete through Gate 2C.** Gate 1 created the isolated
+BOX pilot; Gate 2A staged the patched Codex/Runtime; Gate 2B promoted them; Gate 2C
+installed the router/config, wrote the pristine host backup, applied the verified
+`a5b5d79` host patch and performed exactly one Sand-supervisor restart.
+The first pilot Turn remains a separate Human decision and has **not** been started.
+No Gate-2C provider/model inference was performed.
 
 The fork is `rcnir/grok-codex-router`, with `upstream` pointing to
 `IgorWarzocha/grok-codex-router`. The implementation branch is
@@ -17,7 +16,9 @@ The fork is `rcnir/grok-codex-router`, with `upstream` pointing to
 The companion Runtime branch is `agent/grok-router-m1-20260919` in
 `rcnir/execution-runtime`, based exactly on merged
 `de20bf8f756e0fc2d8b276adb53893bc76066c51`.
-Neither branch is a live deployment or a change to Intelligence/D1/Cloudflare.
+The accepted router package built from this branch is now live through Gate 2C,
+and the Gate-2B Runtime/Codex candidate remains live. Intelligence/D1/Cloudflare
+were not changed by M1 activation.
 
 The source-only continuation adds the pinned Codex thread-local
 `toolIsolation:"dynamicOnly"` contract, Runtime schema-backed capability and
@@ -291,18 +292,9 @@ input 0, active turn 0, blocked thread 0, and
 signaled or adopted. No provider/model Turn was started and no host/router mutation
 occurred.
 
-Gate 2C was then authorized. Steps 1-3 passed: current router source was repacked,
-the package contains only replacement pilot
-`507d1f34-56d5-4085-9b48-23d40cb9c914`, the retired Temporal pilot is absent from
-the route map, and 97 router tests plus telemetry/knip/diff-check passed. The new
-package is 155624 bytes / SHA-256
-`b0716767531a13e1b97b1617ebcbc4271b7569eb69c741c46c249b6844e496fc`; the
-current production config SHA-256 is
-`e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f`.
-
-The mandatory actual-host check then failed closed **before any Gate-2C live
-mutation** because Sand had automatically advanced again from verified `5ec1e7d`
-to stock/unpatched `a5b5d79`:
+The first Gate-2C attempt repacked current source but then failed closed
+**before any live mutation** because Sand had automatically advanced from verified
+`5ec1e7d` to stock/unpatched `a5b5d79`:
 
 ```text
 version  a5b5d79
@@ -311,23 +303,32 @@ sha256   2fd89dc7097ef9eb9f6df8b7d77823f9b4b237b96556a6ae408c33927d0045c7
 markers  0
 ```
 
-The `5ec1e7d` manifest rejected the current host on exact byte fingerprint as
-intended. Router install, production config, router state, pristine backup, host
-patch and supervisor restart were all skipped; rollback was not required. Gate 2B
-remains live. `a5b5d79` compatibility has since been VERIFIED as above, but Gate 2C
-has not been resumed. The previously accepted Gate-2C router package
-`b0716767531a13e1b97b1617ebcbc4271b7569eb69c741c46c249b6844e496fc` predates
-the `a5b5d79` built-in manifest/patcher import. It is stale for the current host
-and **must be repacked and reaccepted from current source** before any future
-Gate-2C activation. No such repack or live install is part of this compatibility
-port. See `GATE-2C-EVIDENCE-20260919.json`.
+The `5ec1e7d` manifest rejected that drift as intended. After `a5b5d79`
+compatibility was independently VERIFIED, the Human re-approved Gate 2C. Current
+source commit `164cea8d795f54d7cb09bd7608f6fa62d3341a98` was freshly repacked and
+reaccepted: 101/101 router tests plus telemetry/knip/diff-check passed, the package
+contains only replacement pilot `507d1f34-56d5-4085-9b48-23d40cb9c914`, and the
+retired Temporal pilot is absent from the route map. The accepted package is:
 
-The earlier activation-preparation readback found external Sand upgrades to
-`251860d` and later `5ec1e7d`; both were independently VERIFIED as above. Gate 2A
-completed build/stage and Gate 2B is now live. Gate 2C remains separately gated:
-the historical Gate-2A router tarball predates the replacement-pilot binding and
-must be repacked/reaccepted from the current source before any router install or
-host patch is authorized.
+```text
+bytes   156879
+sha256  3790c70e9acfd7a9a4ba375973c1c4e8032c9f7ba72dc865e6652e1dcb303dd2
+```
+
+Gate 2C then installed that package and production config, created the 0700 router
+state directory, wrote the pristine 0600 host backup, applied the exact deterministic
+`a5b5d79` patch and completed one Sand-supervisor restart
+`grok-codex-router-1789816115688-f91a02e8`.
+
+Postflight is PASS: host version remains `a5b5d79`, patched bytes/SHA are
+`26463887` /
+`abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30`,
+all four router markers occur exactly once, Runtime remains generation 13 with the
+same 25 Threads and zero pending/UNKNOWN/active/blocked work, and Computer remains
+`clear/CLEAR`. Read-only routing evaluation returns true only for the replacement
+BOX pilot; retired/user-facing Temporal agents and all auxiliary workloads remain
+stock. Router state remains empty, so no pilot Turn/provider inference was started.
+See `GATE-2C-EVIDENCE-20260919.json`.
 
 ## Local checks
 

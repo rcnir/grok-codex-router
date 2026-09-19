@@ -497,10 +497,9 @@ retained Thread set stayed identical. Full evidence is in
 
 ## Gate 2C — router install, config, host patch and Sand restart
 
-Gate 2B has passed and the replacement pilot is authoritatively BOX. Gate 2C is
-the next production mutation boundary but remains **closed pending separate Human
-approval**. It does not include any provider or model inference. Host compatibility
-is now established for current target `grok-bot-0.57-a5b5d79`.
+Gate 2B passed and the replacement pilot is authoritatively BOX. Gate 2C was later
+explicitly Human-approved and has now completed successfully for current target
+`grok-bot-0.57-a5b5d79`. It did not include any provider or model inference.
 
 Preflight rechecks:
 
@@ -605,16 +604,28 @@ Gate 2B completed successfully with the candidate Runtime/Codex live, the same 2
 retained Threads, zero pending/UNKNOWN work and `dynamic_only_tool_policy=true`.
 It did not touch the Grok host/router or start a Turn.
 
-### Later approval: Gate 2C
+### Completed: Gate 2C
 
 The prior Gate-2C attempt stopped fail-closed at the mandatory actual-host check
 before any live mutation after the provider advanced the host from `5ec1e7d` to
-`a5b5d79`. Current `a5b5d79` compatibility is now VERIFIED, but Gate 2C has not
-been resumed and requires a new explicit Human approval.
+`a5b5d79`. After the compatibility port was VERIFIED, the Human explicitly
+re-approved Gate 2C.
 
-The previous Gate-2C router package SHA-256
-`b0716767531a13e1b97b1617ebcbc4271b7569eb69c741c46c249b6844e496fc` was built
-before the `a5b5d79` compatibility source existed. It **must be repacked and
-reaccepted from current source before any future Gate-2C live install**. This
-compatibility-port task does not perform that repack, router/config installation,
-pristine backup write, host patch, Sand restart or pilot Turn.
+Current source commit `164cea8d795f54d7cb09bd7608f6fa62d3341a98` was freshly
+repacked/reaccepted. The accepted router tarball is 156879 bytes / SHA-256
+`3790c70e9acfd7a9a4ba375973c1c4e8032c9f7ba72dc865e6652e1dcb303dd2`.
+The previous package `b0716767...496fc` remains historical/stale.
+
+The live package/config/state paths were installed, the pristine stock backup was
+written at mode 0600, the exact `a5b5d79` deterministic patch was applied, and
+Sand supervisor completed restart
+`grok-codex-router-1789816115688-f91a02e8`. Postflight shows patched SHA
+`abdd0acc...dfb30`, all four markers exactly once, supervisor running with no
+pending command, Runtime healthy with the same 25 Threads and zero pending/UNKNOWN/
+active/blocked work, and Computer `clear/CLEAR`.
+
+Read-only route evaluation confirms only replacement BOX pilot
+`507d1f34-56d5-4085-9b48-23d40cb9c914` routes. Retired and user-facing Temporal
+agents plus summarization/subagent/browser/computer/automation/group remain stock.
+The router state directory contains zero files: **the first pilot Turn remains
+unstarted and separately gated**.

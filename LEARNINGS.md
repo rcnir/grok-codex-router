@@ -174,3 +174,18 @@ package accepted before a new built-in host manifest is added cannot be reused j
 because the routing code itself is unchanged. Gate-2C package
 `b0716767531a13e1b97b1617ebcbc4271b7569eb69c741c46c249b6844e496fc` predates
 `a5b5d79` support and must be repacked/reaccepted before any future activation.
+
+## 2026-09-19 — Gate 2C activation keeps compatibility and inference as separate gates
+
+After the `a5b5d79` compatibility port, Gate 2C was explicitly re-approved. The
+router was repacked from the exact current source commit rather than reusing the
+stale pre-port artifact. The accepted package was 156879 bytes / SHA-256
+`3790c70e9acfd7a9a4ba375973c1c4e8032c9f7ba72dc865e6652e1dcb303dd2`.
+
+Activation was still staged as distinct fail-close boundaries: final stock host
+check, live router/config install, pristine backup, deterministic patch verification,
+then one supervisor restart. The post-restart read-only routing check proved that
+only the replacement BOX pilot is admitted while every retired/Temporal or auxiliary
+workload remains stock. Keeping the router state directory empty until the separate
+pilot-Turn approval provides a simple observable boundary between **activation**
+and **provider inference**.
