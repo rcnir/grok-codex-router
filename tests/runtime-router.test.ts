@@ -478,14 +478,22 @@ test("prior transcript rejects unsupported content and preserves exact historica
   const { runtime, execution } = fixture(t);
   const rawId = "exact-history:id/" + "long".repeat(40);
   const previous = [user[0], { role: "assistant", content: [
+    { type: "reasoning", text: "", signature: "private-stock-signature",
+      providerOptions: { cursor: { modelName: "cursor-grok-4.5-high-fast" } } },
     { type: "tool-call", toolCallId: rawId, toolName: "grok_lookup", args: { query: "old" } }
   ] }, { role: "tool", content: [{ type: "tool-result", toolCallId: rawId, result: "old answer" }] }, user[1]];
   await execution.run(previous, [definition], "history-tool");
   const items = runtime.calls.find((row) => row.name === "runtime_session_inject_items")!.args.items as JsonObject[];
   assert.equal(items[0]!.call_id, rawId);
   assert.equal(items[1]!.call_id, rawId);
+  assert.equal(items.some((item) => item.type === "reasoning" || item.type === "thinking"), false);
   const invalid = fixture(t);
   await assert.rejects(invalid.execution.run([{ role: "user", content: [{ type: "audio", data: "old-unsupported" }] }, user[1]],
     [], "bad-history"), /UNSUPPORTED_TRANSCRIPT_CONTENT/);
   assert.equal(invalid.runtime.calls.length, 0);
+  const privateUserReasoning = fixture(t);
+  await assert.rejects(privateUserReasoning.execution.run([
+    { role: "user", content: [{ type: "reasoning", text: "private" }] }, user[1]
+  ], [], "bad-private-history"), /PRIVATE_REASONING_TRANSCRIPT_FORBIDDEN/);
+  assert.equal(privateUserReasoning.runtime.calls.length, 0);
 });

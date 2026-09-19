@@ -73,6 +73,11 @@ function validateTranscript(messages: JsonObject[]): Map<string, string> {
       } else if (message.role === "assistant" &&
           (["tool-call", "tool_use", "function_call"].includes(String(type)) || isRecord(raw.function))) {
         addId(rawCallId(raw));
+      } else if (message.role === "assistant" && ["reasoning", "thinking"].includes(String(type))) {
+        // Current Sand transcripts can retain signed/private reasoning parts from
+        // a prior stock turn. Never forward them into Runtime/Codex; the
+        // preserved converter below already omits them from model-visible input.
+        continue;
       } else if (["reasoning", "thinking"].includes(String(type))) {
         throw new RuntimeFault("PRIVATE_REASONING_TRANSCRIPT_FORBIDDEN");
       } else throw new RuntimeFault("UNSUPPORTED_TRANSCRIPT_CONTENT");

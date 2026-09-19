@@ -28,14 +28,23 @@ the singleton pilot route. Gate 2B promoted the patched Codex/Runtime successful
 After the first Gate-2C attempt failed closed on provider host drift, `a5b5d79`
 compatibility was VERIFIED, current source was freshly repacked/reaccepted, and
 Gate 2C completed: router/config installed, pristine stock backup written, exact
-host patch applied, and one supervisor restart completed. The Human then approved
-exactly one first pilot Turn. It returned the expected text, but Runtime event/thread
-state did not move, proving that Turn fell through to stock inference instead of the
-M1 router. No retry was sent. Root cause is the live policy treating omitted
-`isSummarizationSession` as invalid even though ordinary 0.57 main-session options
-omit that field; dedicated summarization sessions set it explicitly to `true`.
-A tested source-only fix is prepared but is **not live**. Gate artifacts, current
-host proof and harness authority
+host patch applied, and one supervisor restart completed. The first approved pilot
+Turn returned the expected text but fell through to stock inference because ordinary
+0.57 main-session options omit `isSummarizationSession`; source fix `3274d17`
+corrected that exact shape. Package SHA-256
+`42ca75a055d93094d6e03c52bf90e3d3c23221cf3282d14bd89abb75068da6c5`
+was then installed and one supervisor restart applied it.
+
+Exactly one retry Turn was subsequently accepted. The live router now selected the
+pilot route (`chatgpt-web/extra-high / xhigh`), but the Turn failed before the
+first Runtime mutation: Runtime event cursor and the retained 25-Thread set did not
+move, no assistant reply was appended, and Sand settled the Turn as retryable
+`SAND-E0406`. The prior stock Turn had retained a signed assistant
+`reasoning` part; current router validation rejected that private part before
+`journal.begin`. A second source-only fix now drops assistant reasoning from
+Runtime/Codex transcript injection while continuing to reject private reasoning in
+user/tool input. That second fix is validated locally but is **not live**. No
+second retry was sent. Gate artifacts, current host proof and harness authority
 are documented in `GATE-2A-EVIDENCE-20260919.json`,
 `GATE-2B-EVIDENCE-20260919.json`,
 `GATE-2C-EVIDENCE-20260919.json`,
