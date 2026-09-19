@@ -5,7 +5,7 @@ It retains the upstream source layout and wire helpers, but its package entrypoi
 routes through the **existing** ROCANIIRU Runtime CLI/MCP boundary, not the private
 Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
 
-**Activated through Gate 2C; first pilot Turn attempted, router acceptance not yet passed.** Human Gate 1 originally created isolated BOX pilot
+**Activated through Gate 2C; pilot now reaches Runtime, but Milestone 1 acceptance is not yet complete.** Human Gate 1 originally created isolated BOX pilot
 `97cf83a0-0401-4481-9f3f-8b321921f8b0`; it later drifted durably Temporal. After
 same-ID repair was exhausted, the Human authorized exactly one replacement BOX
 pilot, `507d1f34-56d5-4085-9b48-23d40cb9c914`. Its durable profile is
@@ -41,14 +41,29 @@ first Runtime mutation: Runtime event cursor and the retained 25-Thread set did 
 move, no assistant reply was appended, and Sand settled the Turn as retryable
 `SAND-E0406`. The prior stock Turn had retained a signed assistant
 `reasoning` part; current router validation rejected that private part before
-`journal.begin`. A second source-only fix now drops assistant reasoning from
+`journal.begin`. A second source-only fix drops assistant reasoning from
 Runtime/Codex transcript injection while continuing to reject private reasoning in
-user/tool input. That second fix is validated locally but is **not live**. No
-second retry was sent. Gate artifacts, current host proof and harness authority
+user/tool input. Exact artifact
+`64689d1efdbe612d034244fe679ed1fdb08a594a32d53c5cfad7be12f69719aa`
+from source `e7206a4483478e072c63e3b6c3386e45ab5a5295` is now live after exactly
+one supervisor restart. Post-restart checks showed zero automatic resume/provider
+activity and unchanged host/Runtime/Computer invariants.
+
+The separately approved acceptance Turn then positively traversed the router and
+Runtime: Runtime created a new `grok:` session/thread/Turn, advanced its event
+cursor from `55834575072` to `55834575093`, and produced the expected dynamic
+`SendToUser` call containing `ROCANIIRU_M1_PILOT_ACCEPTANCE_PASS`. The handoff
+did not complete. Sand settled the client Turn as retryable `SAND-E0406`, no
+assistant transcript entry was delivered, router journal became `BLOCKED`, and
+Runtime retains one active Turn / one pending dynamic input. No resend, cancellation,
+additional fix or additional restart was performed. Gate artifacts, current host
+proof and harness authority
 are documented in `GATE-2A-EVIDENCE-20260919.json`,
 `GATE-2B-EVIDENCE-20260919.json`,
 `GATE-2C-EVIDENCE-20260919.json`,
 `PILOT-FIRST-TURN-EVIDENCE-20260919.json`,
+`PILOT-RETRY-EVIDENCE-20260919.json`,
+`PILOT-ACCEPTANCE-EVIDENCE-20260919.json`,
 `HOST-5EC1E7D-EVIDENCE-20260919.json`, `HOST-A5B5D79-EVIDENCE-20260919.json`,
 `PILOT-HARNESS-EVIDENCE-20260919.json`,
 `PILOT-REPLACEMENT-EVIDENCE-20260919.json` and

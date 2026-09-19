@@ -221,3 +221,18 @@ Historical tool-call/result identities remain exact. Private reasoning supplied 
 user/tool content remains invalid and fail-closed. A production-shaped regression
 must include the signed assistant reasoning part so this boundary cannot silently
 regress back to fixture-only behavior.
+
+## 2026-09-19 — Positive Runtime traversal is necessary but not sufficient for pilot acceptance
+
+The second-fix acceptance Turn proved the route end-to-end through Runtime admission:
+a new Runtime Thread and Turn were created, the event cursor advanced, all three
+admission mutations were ACKed, and Codex emitted the expected dynamic
+`SendToUser` call. That is materially stronger evidence than route-selection logs
+alone.
+
+It still did not satisfy pilot acceptance because the dynamic-tool handoff failed
+before user delivery. The durable host settlement is `SAND-E0406`, router journal
+is `BLOCKED`, and Runtime retains the active Turn/pending input. Acceptance must
+therefore require both positive Runtime traversal and successful terminal
+delivery/cleanup. A successful provider/tool event by itself is not a terminal
+acceptance signal.

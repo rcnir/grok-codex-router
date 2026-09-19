@@ -391,9 +391,52 @@ unsupported content still fail closed. Focused Runtime-router tests pass 39/39 a
 the complete router suite remains 102/102 plus telemetry, knip and diff-check.
 The next candidate package is 158036 bytes / SHA-256
 `64689d1efdbe612d034244fe679ed1fdb08a594a32d53c5cfad7be12f69719aa`.
-It is **not live**. No second retry Turn, additional live fix or additional restart
-was performed. See `PILOT-FIRST-TURN-EVIDENCE-20260919.json` and
-`PILOT-RETRY-EVIDENCE-20260919.json`.
+That exact artifact was later separately approved, installed live without rewriting
+the production config, and loaded with exactly one supervisor restart
+`grok-codex-router-1789819567026-ea0c50f6`.
+
+### Pilot acceptance after private-reasoning repair
+
+The second-fix preflight passed on unchanged `0.57.0 / a5b5d79`. Runtime was
+generation 13 / PID 1569085 with 25 retained Threads, cursor
+`55834575072`, no pending/UNKNOWN/active/blocked work and
+`dynamic_only_tool_policy=true`. Computer was `clear/CLEAR`.
+
+After router-only replacement and the single restart, transcript entry count,
+send-acceptance record count, router-session count and Runtime cursor were all
+unchanged from their pre-restart baselines. This proves zero automatic resume or
+provider activity. Read-only routing still admitted only canonical BOX pilot
+`507d1f34-56d5-4085-9b48-23d40cb9c914`; summarization, retired/user-facing
+Temporal, subagent, browser, computer, automation and group remained stock.
+
+Exactly one acceptance send was then accepted as `t2u`, nonce
+`369698f6-cb29-43ec-87c6-d9b8e4c837af`. This Turn positively traversed the
+M1 route. Runtime Thread count increased 25 -> 26 and cursor advanced
+`55834575072 -> 55834575093`. New identities were:
+
+```text
+session  grok:916cabe323e4803f8c6959b3:ce9db519eabb16246e86d7f9
+thread   01a0b990-9de0-7360-bf0f-17383f9ff53d
+turn     01a0b990-aa20-7642-9ffb-7004f4be75df
+```
+
+`runtime_session_open`, `runtime_session_inject_items` and
+`runtime_turn_start` are all journaled ACK. Runtime then emitted a dynamic
+`SendToUser` call whose content is exactly
+`ROCANIIRU_M1_PILOT_ACCEPTANCE_PASS`.
+
+Acceptance still **failed** because that dynamic-tool handoff did not complete.
+There is no assistant transcript entry after `t2u`. Sand durably settled the
+client Turn as `SAND-E0406 / retryable=true`; router journal is `BLOCKED`
+with no pending identities, while Runtime remains healthy but has one active Turn
+and one pending dynamic input. No UNKNOWN operation exists. The exact router fault
+code is not surfaced in current host logs, so no third defect is claimed beyond the
+observed dynamic-tool handoff boundary.
+
+No resend, Runtime cancel/recovery, additional router fix, additional supervisor
+restart or later production phase was performed. See
+`PILOT-ACCEPTANCE-EVIDENCE-20260919.json`. Milestone 1 pilot acceptance remains
+**incomplete** and any further live mutation requires a new Human approval.
 
 ## Local checks
 
@@ -414,10 +457,11 @@ Current regression acceptance passed 102 router tests plus telemetry ingestion a
 `knip`, 219 Runtime Node tests, and 114 Runtime Python tests. The Runtime source was
 not changed by the host port. `git diff --check` passed.
 
-Fresh live Runtime status after Gate 2B is generation 13 / PID 1569085,
-`started=true`, `ready=true`, persistence healthy, `fenced=false`,
-`uncertain=false`, UNKNOWN 0, pending input 0, 25 retained Threads, no active Turn
-and no blocked Thread. The current user-facing Bot
+Current Runtime remains generation 13 / PID 1569085, `started=true`,
+`ready=true`, persistence healthy, `fenced=false`, `uncertain=false`,
+UNKNOWN 0 and dynamic-only enabled. The acceptance Turn added one `grok:` Thread,
+so current count is 26 with one active Turn and one pending dynamic input; this state
+is intentionally left untouched pending new Human approval. The current user-facing Bot
 readback remains `harness:"temporal"`. Final Computer status is 0.2.3 on
 service identity `a6299bb2e1242f491855fd38608b0dc5f65c6f5f956f734cf5ba16aaf9527e41`
 with `clear/CLEAR`.

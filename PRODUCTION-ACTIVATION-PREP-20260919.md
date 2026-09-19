@@ -591,20 +591,36 @@ mutation: Runtime cursor stayed `55834575072`, no Runtime session/thread was
 created, no assistant reply was appended and Sand settled the Turn as
 `SAND-E0406` retryable. No client resend or second retry occurred.
 
-The new defect is the retained signed assistant reasoning part from the first stock
+The new defect was the retained signed assistant reasoning part from the first stock
 Turn. Current `initialRuntimeInput()` rejected that prior private part before
 `journal.begin`. Source-only commit
 `e7206a4483478e072c63e3b6c3386e45ab5a5295` now omits assistant
 reasoning/thinking from Runtime injection while still rejecting private reasoning
 from user input. It passes 39/39 focused Runtime-router tests and 102/102 complete
-router tests plus telemetry/knip/diff-check. The **not-live** next candidate is
+router tests plus telemetry/knip/diff-check. The approved candidate is
 158036 bytes / SHA-256
 `64689d1efdbe612d034244fe679ed1fdb08a594a32d53c5cfad7be12f69719aa`.
 
-The next Human gate is limited to deploying that exact router-only candidate,
-performing one supervisor restart, verifying no automatic resume/provider activity
-and all retained invariants, and only then separately sending at most one further
-pilot acceptance Turn.
+That exact artifact was deployed router-only and loaded by exactly one supervisor
+restart `grok-codex-router-1789819567026-ea0c50f6`. Production config, host patch
+and Runtime were not changed. Restart postflight proved zero automatic resume or
+provider activity: pilot transcript, send-acceptance records, router-session count
+and Runtime cursor all remained at their pre-restart baselines.
+
+The one approved pilot acceptance Turn then positively traversed router and Runtime.
+Runtime created a new `grok:` session/thread/Turn, advanced cursor
+`55834575072 -> 55834575093`, and emitted the expected dynamic `SendToUser`
+call with content `ROCANIIRU_M1_PILOT_ACCEPTANCE_PASS`.
+
+The handoff did not complete. Sand settled the client Turn as retryable
+`SAND-E0406`; no assistant transcript entry was delivered. Router journal is
+`BLOCKED` while Runtime remains generation 13 and healthy with 26 Threads, one
+active Turn, one pending dynamic input and zero UNKNOWN operations. No additional
+fix, Runtime cancellation/recovery, restart or Turn was performed.
+
+Milestone 1 pilot acceptance therefore remains incomplete. A new Human approval is
+required before any Runtime recovery/cancellation, router change, further restart,
+further pilot Turn or later production phase.
 
 ## Approval boundaries
 
