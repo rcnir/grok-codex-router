@@ -11,10 +11,11 @@ same-ID repair was exhausted, the Human authorized exactly one replacement BOX
 pilot, `507d1f34-56d5-4085-9b48-23d40cb9c914`. Its durable profile is
 `harness:"box"`, serverId `4270685`, and no Turn has been started. Gate 2A built and staged the patched
 Codex/Runtime candidates without changing a current pointer or process. Its final
-read-only postflight observed provider-owned drift to stock host `5ec1e7d` and a
+read-only postflight observed provider-owned host drift and a
 durable pilot profile of `harness:"temporal"`. The host drift is now resolved:
-`5ec1e7d` has its own VERIFIED fingerprint-bound manifest while `251860d` and
-`18cd065` remain supported separately and 0.53 remains fail-closed. The pilot
+current `a5b5d79` now has its own VERIFIED fingerprint-bound manifest while
+`5ec1e7d`, `251860d` and `18cd065` remain supported separately and 0.53 remains
+fail-closed. The pilot
 drift was resolved by the explicitly authorized replacement ID; the retired pilot
 remains Temporal and is outside the allowlist. The bounded,
 thread-local
@@ -27,7 +28,8 @@ promoted the Gate-2A patched Codex/Runtime candidate successfully; Gate 2C remai
 separate and has not been executed. Gate 2A/2B artifacts, current host proof and
 harness authority are documented in `GATE-2A-EVIDENCE-20260919.json`,
 `GATE-2B-EVIDENCE-20260919.json`,
-`HOST-5EC1E7D-EVIDENCE-20260919.json`, `PILOT-HARNESS-EVIDENCE-20260919.json`,
+`HOST-5EC1E7D-EVIDENCE-20260919.json`, `HOST-A5B5D79-EVIDENCE-20260919.json`,
+`PILOT-HARNESS-EVIDENCE-20260919.json`,
 `PILOT-REPLACEMENT-EVIDENCE-20260919.json` and
 `PRODUCTION-ACTIVATION-PREP-20260919.md`.
 

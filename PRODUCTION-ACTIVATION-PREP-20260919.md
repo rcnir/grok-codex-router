@@ -497,10 +497,10 @@ retained Thread set stayed identical. Full evidence is in
 
 ## Gate 2C — router install, config, host patch and Sand restart
 
-Gate 2B has passed and the replacement pilot is authoritatively BOX. Gate 2C is now
+Gate 2B has passed and the replacement pilot is authoritatively BOX. Gate 2C is
 the next production mutation boundary but remains **closed pending separate Human
 approval**. It does not include any provider or model inference. Host compatibility
-is established for `grok-bot-0.57-5ec1e7d`.
+is now established for current target `grok-bot-0.57-a5b5d79`.
 
 Preflight rechecks:
 
@@ -508,8 +508,8 @@ Preflight rechecks:
 - pilot profile is `harness:"box"`; user-facing Bot is still
   `harness:"temporal"`.
 - Computer is the same service identity and `clear/CLEAR`.
-- `patch-host --check --compat grok-bot-0.57-5ec1e7d` reports stock with SHA
-  `8b0e2747c0b7b91fca368c886880b24906a28214e2979029a60a98d8ab0c9bc0`.
+- `patch-host --check --compat grok-bot-0.57-a5b5d79` reports stock with SHA
+  `2fd89dc7097ef9eb9f6df8b7d77823f9b4b237b96556a6ae408c33927d0045c7`.
 - `/home/box/grok-codex-router`, live router config/journal directory and pristine
   host backup are still absent.
 - Sand supervisor is fresh/running and has no pending command.
@@ -529,15 +529,15 @@ Then, and only then:
 
    ```sh
    node /home/box/grok-codex-router/dist/scripts/patch-host.js \
-     --compat grok-bot-0.57-5ec1e7d \
+     --compat grok-bot-0.57-a5b5d79 \
      --host /home/box/sand-host/host-main.cjs \
      --backup /home/box/sand-host/host-main.cjs.grok-codex-router-bak
    ```
 
    This must create the pristine backup exclusively at mode 0600 with stock
-   SHA-256 `8b0e2747c0b7b91fca368c886880b24906a28214e2979029a60a98d8ab0c9bc0`
-   and replace the host atomically with exact patched bytes `26461621` / SHA-256
-   `58493df0bc8fa4b22d981a23835468fa4908a3f73c1819b27375eaaab13e018f`.
+   SHA-256 `2fd89dc7097ef9eb9f6df8b7d77823f9b4b237b96556a6ae408c33927d0045c7`
+   and replace the host atomically with exact patched bytes `26463887` / SHA-256
+   `abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30`.
    A follow-up `--check` must report `state=patched` before restart.
 5. Restart through the existing Sand supervisor only:
 
@@ -546,7 +546,7 @@ Then, and only then:
    ```
 
    No `pkill`, alternate host, alternate runtime or second process tree is allowed.
-6. Postflight: host still version `5ec1e7d`, exact patched SHA, complete version-1
+6. Postflight: host still version `a5b5d79`, exact patched SHA, complete version-1
    markers, supervisor host running, pilot/Temporal profiles unchanged, Runtime
    still healthy dynamic-only capable, Computer still clear. Do **not** start the
    pilot Turn.
@@ -554,7 +554,7 @@ Then, and only then:
 Rollback before the Sand restart: run the same patcher with `--restore`; because
 the running host has not loaded the patched file yet, no restart is needed after a
 successful pre-restart restore. Rollback after a Sand restart: restore the exact
-pristine backup with `--restore`, verify stock SHA `8b0e2747...`, then request one
+pristine backup with `--restore`, verify stock SHA `2fd89dc7...`, then request one
 supervisor-controlled restart back onto stock. Disable/remove the router config
 and package only after the host file is stock again. The pristine backup remains
 evidence unless a later separately approved cleanup removes it.

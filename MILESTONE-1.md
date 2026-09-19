@@ -183,6 +183,26 @@ the actual production `--check --compat grok-bot-0.57-5ec1e7d` both pass. The ne
 manifest is therefore `anchorProof:"VERIFIED"`; `18cd065`, `251860d` and 0.53
 artifacts remain separate and unchanged.
 
+The next provider-owned host drift to `a5b5d79` was handled identically and is now
+the current VERIFIED production target:
+
+```text
+Grok Bot: 0.57.0
+Host version: a5b5d79
+Bytes: 26463140
+SHA256: 2fd89dc7097ef9eb9f6df8b7d77823f9b4b237b96556a6ae408c33927d0045c7
+Router markers: all zero (stock)
+Patched bytes: 26463887
+Patched SHA256: abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30
+```
+
+The same four M1 anchors are unique and ordered. The inference seam preserves the
+same mock/model-experiment/requested-model/inferenceOptions flow and the identity
+seam preserves the same executor-profile/workload-classifier/main-session dispatch
+flow as `5ec1e7d`; only unrelated bundle offsets moved. The built read-only
+`--check --compat grok-bot-0.57-a5b5d79` passes on the actual current host. See
+`HOST-A5B5D79-EVIDENCE-20260919.json`.
+
 The 0.53/`11dd264` manifest is retained as a separate built-in compatibility
 target and remains `anchorProof:"BLOCKED"`; its legacy insertion seam is still
 covered by the original fixture suite. A custom fixture manifest still cannot
@@ -294,7 +314,10 @@ markers  0
 The `5ec1e7d` manifest rejected the current host on exact byte fingerprint as
 intended. Router install, production config, router state, pristine backup, host
 patch and supervisor restart were all skipped; rollback was not required. Gate 2B
-remains live. See `GATE-2C-EVIDENCE-20260919.json`.
+remains live. `a5b5d79` compatibility has since been VERIFIED as above, but Gate 2C
+has not been resumed. A fresh router package is required because the compatibility
+port changes the packaged manifest/patcher surface. See
+`GATE-2C-EVIDENCE-20260919.json`.
 
 The earlier activation-preparation readback found external Sand upgrades to
 `251860d` and later `5ec1e7d`; both were independently VERIFIED as above. Gate 2A
@@ -318,7 +341,7 @@ in `PILOT-REPLACEMENT-EVIDENCE-20260919.json` and
 `GATE-2B-EVIDENCE-20260919.json`. The production plan is
 `PRODUCTION-ACTIVATION-PREP-20260919.md`.
 
-Current regression acceptance passed 97 router tests plus telemetry ingestion and
+Current regression acceptance passed 101 router tests plus telemetry ingestion and
 `knip`, 219 Runtime Node tests, and 114 Runtime Python tests. The Runtime source was
 not changed by the host port. `git diff --check` passed.
 
