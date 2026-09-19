@@ -373,3 +373,23 @@ win the observed race, then reset stale provider metadata and require the final
 cached/latest target to match immediately before mutation. Only then execute the
 provider update once. After the swap, verify exact stock bytes before applying the
 reviewed deterministic patch.
+
+## 2026-09-20 — A harness route label is not a permanent model identity
+
+The persistent App Server exposes a live model catalog. On 2026-09-20 it reported
+`gpt-6-astra` as the catalog default and separately exposed
+`chatgpt-web/extra-high` with `xhigh`, plus direct model IDs such as
+`gpt-5.6-sol`.
+
+The current production route intentionally pins `chatgpt-web/extra-high / xhigh`;
+it does not inherit the catalog default. OpenAI's current ChatGPT documentation
+maps Extra High to GPT-5.6 Sol, so “Sol Extra High” is a valid current
+interpretation of that route. It must not be promoted into an immutable code/config
+assumption, because the `chatgpt-web/*` route namespace can remain stable while the
+underlying ChatGPT model changes.
+
+Operational rule: query the live `runtime_models` / App Server `model/list` surface
+before changing or auditing a production model route. Validate the exact route plus
+effort pair from the catalog. Use a direct model ID when the underlying model
+identity is itself the contract; use a `chatgpt-web/*` route only when the ChatGPT
+product route is the intended contract.

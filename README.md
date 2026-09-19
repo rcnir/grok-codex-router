@@ -34,6 +34,55 @@ completed and archived. Runtime remains generation 15 / PID 1658692 with
 35 retained Threads and zero pending/UNKNOWN/active/blocked work. See
 `GROK-HOST-UPDATE-EVIDENCE-20260920.json`.
 
+### Model routing snapshot — 2026-09-20
+
+The persistent Codex App Server is not model-fixed. Its live catalog is exposed
+through Runtime `runtime_models` / App Server `model/list`, and model plus
+reasoning effort are selected explicitly per Thread/Turn when the caller supplies
+them.
+
+Current live catalog observations include:
+
+```text
+catalog default                  gpt-6-astra
+chatgpt-web/light                low
+chatgpt-web/medium               medium
+chatgpt-web/high                 high
+chatgpt-web/extra-high           xhigh
+chatgpt-web/pro                  ultra
+direct model                     gpt-5.6-sol
+```
+
+The current Grok BOX control and production routes do not inherit the App Server
+catalog default. `HOST-F608393-ROLLOUT-CONFIG-20260920.json` explicitly pins both
+routed BOX identities to:
+
+```text
+model             chatgpt-web/extra-high
+reasoningEffort   xhigh
+```
+
+The same config still contains `gpt-5.6-sol / high` as its generic/default and
+auxiliary-class values, but the current routing policy keeps those auxiliary
+classes on the stock path. Do not confuse that source/config default with the App
+Server catalog's own default model.
+
+As of 2026-09-20, OpenAI's ChatGPT documentation states that Extra High uses
+GPT-5.6 Sol. Therefore the current operational interpretation of
+`chatgpt-web/extra-high / xhigh` is “ChatGPT Extra High, presently backed by
+GPT-5.6 Sol.” This is an observed/current mapping, not a permanent alias contract.
+The `chatgpt-web/*` names are native harness route labels and their underlying
+ChatGPT model may change without this repository's route string changing.
+
+Before changing production model routing, re-read the live `runtime_models` catalog
+and verify that the exact route and reasoning effort are still available. If
+underlying model identity itself is a hard requirement, record/choose the direct
+catalog model ID rather than inferring it forever from a `chatgpt-web/*` route
+label.
+
+External current-model reference:
+`https://help.openai.com/en/articles/20001354-gpt-5-6`.
+
 ## Historical M1 chronology
 
 **Milestone 1 pilot acceptance completed on the patched 0.57.0 / a5b5d79 production path.** Human Gate 1 originally created isolated BOX pilot
