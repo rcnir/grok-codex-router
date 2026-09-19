@@ -1,18 +1,18 @@
 # Milestone 1 production activation preparation — 2026-09-19
 
-This is the mutation plan after source/local and live read-only acceptance. It
-does not itself authorize or perform any live mutation. The already-created pilot
-identity is immutable for this plan; its creation-time state was:
+This is the mutation plan after source/local and live read-only acceptance. Human
+scope was later changed to allow exactly one replacement BOX pilot after the
+original immutable pilot became durably Temporal. The current M1 pilot identity is:
 
 ```text
-agent ID   97cf83a0-0401-4481-9f3f-8b321921f8b0
+agent ID   507d1f34-56d5-4085-9b48-23d40cb9c914
 profile    harness:"box"
 route      chatgpt-web/extra-high / xhigh
 ```
 
-Current authoritative evidence now reports the same pilot ID as
-`harness:"temporal"`; that is a blocker, not a permission to rewrite this creation
-record or to mutate the profile.
+The retired pilot `97cf83a0-0401-4481-9f3f-8b321921f8b0` remains durably
+`harness:"temporal"` and is outside the router allowlist. It was not modified or
+deleted during replacement.
 
 The existing user-facing Bot remains `harness:"temporal"` and is outside every
 router allowlist.
@@ -533,22 +533,12 @@ pending/UNKNOWN state.
 
 ## Approval boundaries
 
-Gate 2A produced the required Runtime/Codex hashes. Current host `5ec1e7d` has now
-also passed fresh compatibility acceptance, so the host blocker is cleared. **No
-next live mutation gate is currently open solely because the immutable pilot is
-authoritatively `harness:"temporal"`.** Current Grok Bot 0.57 exposes no supported
-same-ID Temporal-to-BOX repair RPC; `updateAgent` cannot change harness and
-`restoreTemporalAgentRouting` only restores Temporal routing projection. This is
-also true below the app command layer: provider `UpdateGrokBotAgentRequest` has no
-harness field; identity-sync edits cannot push harness; internal harness migration
-is explicitly BOX-to-Temporal and its pass request has no agent-id or target-harness
-field; Primary Bot migration is a cohort/user flow; admin Grok Bot surfaces found
-are read/list/delete rather than harness mutation.
-
-Under the current immutable-pilot-ID scope, there is therefore **no repair mutation
-bundle to approve** and Gate 2B remains CLOSED. The only scope decision that could
-re-open M1 is Human authorization to create a new BOX pilot with a new immutable
-agent ID. No such authorization has been given.
+Gate 2A produced the required Runtime/Codex hashes and current host `5ec1e7d` passed
+fresh compatibility acceptance. The Human then authorized exactly one replacement
+BOX pilot. `507d1f34-56d5-4085-9b48-23d40cb9c914` is durably `harness:"box"`, has
+no Turn, and is now the singleton M1 allowlist identity. The retired Temporal pilot
+and user-facing Temporal Bot are unchanged. With that blocker resolved, Gate 2B is
+authorized to proceed; Gate 2C remains separate and is not implied by Gate 2B.
 
 ### Completed: Gate 2A
 
@@ -576,10 +566,10 @@ identities are retained but do not by themselves open Gate 2B.
 
 ### Later approval: Gate 2B
 
-Only after the pilot harness blocker is explicitly resolved, Gate 2B may
-authorize the one clean Runtime stop, two atomic pointer switches, and one Runtime
-start described above. It never touches the Grok host/router and does not start a
-Turn.
+Gate 2B is now explicitly authorized by the Human after replacement-pilot
+acceptance. It authorizes the one clean Runtime stop, two atomic pointer switches,
+and one Runtime start described above. It never touches the Grok host/router and
+does not start a Turn.
 
 ### Later approval: Gate 2C
 

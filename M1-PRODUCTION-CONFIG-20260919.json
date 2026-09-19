@@ -12,14 +12,14 @@
     "reasoningEffort": "high"
   },
   "agents": {
-    "97cf83a0-0401-4481-9f3f-8b321921f8b0": {
+    "507d1f34-56d5-4085-9b48-23d40cb9c914": {
       "model": "chatgpt-web/extra-high",
       "reasoningEffort": "xhigh"
     }
   },
   "pilot": {
     "agentIds": [
-      "97cf83a0-0401-4481-9f3f-8b321921f8b0"
+      "507d1f34-56d5-4085-9b48-23d40cb9c914"
     ]
   },
   "classes": {

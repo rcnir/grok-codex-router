@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "scope": "Milestone 1 Human-authorized replacement BOX pilot creation",
+  "creation_request": {
+    "name": "ROCANIIRU Codex BOX M1 Pilot 2",
+    "description": "Milestone 1 isolated BOX pilot for Codex router activation.",
+    "creationRoute": { "kind": "box" },
+    "harness": "box",
+    "isIntroductionSuppressed": true,
+    "isKickstartRequested": false,
+    "clientNonce": "rcnir-m1-box-pilot-2-20260919"
+  },
+  "creation_result": {
+    "id": "507d1f34-56d5-4085-9b48-23d40cb9c914",
+    "name": "ROCANIIRU Codex BOX M1 Pilot 2",
+    "running": false,
+    "running_turn": false,
+    "transcript_entries": 0
+  },
+  "authoritative_readback": {
+    "durable_profile_harness": "box",
+    "durable_profile_serverId": "4270685",
+    "durable_profile_sha256": "879da0a4a69315c924ad14698404f61e77f3211a72352d736975338095b96a43",
+    "coordinator_roster_harness": null,
+    "roster_note": "Current coordinator represents local BOX agents with null harness projection; M1 admission reads the durable profile and requires lowercase box."
+  },
+  "retired_pilot": {
+    "id": "97cf83a0-0401-4481-9f3f-8b321921f8b0",
+    "harness": "temporal",
+    "serverId": "4168251",
+    "modified_by_replacement": false
+  },
+  "user_facing_bot": {
+    "id": "139771d1-4e7d-4a8b-80a0-eddc438bccfc",
+    "harness": "temporal",
+    "modified_by_replacement": false
+  },
+  "routing_binding": {
+    "new_singleton_allowlist_id": "507d1f34-56d5-4085-9b48-23d40cb9c914",
+    "retired_temporal_pilot_routes": false,
+    "route": {
+      "model": "chatgpt-web/extra-high",
+      "reasoningEffort": "xhigh"
+    },
+    "source_default_enabled": false,
+    "production_config_enabled": true
+  },
+  "provider_model_turn_started": false,
+  "replacement_count": 1
+}

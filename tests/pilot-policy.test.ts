@@ -3,6 +3,8 @@ import test from "node:test";
 import { M1_PILOT_AGENT_ID } from "../src/config.js";
 import { shouldUseCodexRouter, type CodexRouterPilotPolicyInput } from "../src/pilot-policy.js";
 
+const RETIRED_TEMPORAL_PILOT_ID = "97cf83a0-0401-4481-9f3f-8b321921f8b0";
+
 function eligible(overrides: Partial<CodexRouterPilotPolicyInput> = {}): CodexRouterPilotPolicyInput {
   return {
     enabled: true,
@@ -41,6 +43,9 @@ test("pilot routing requires enabled, allowlisted lowercase box root identity", 
   })), false);
   assert.equal(shouldUseCodexRouter(eligible({
     sessionOptions: { ...eligible().sessionOptions, conversationId: ` ${M1_PILOT_AGENT_ID} ` }
+  })), false);
+  assert.equal(shouldUseCodexRouter(eligible({
+    sessionOptions: { ...eligible().sessionOptions, conversationId: RETIRED_TEMPORAL_PILOT_ID }
   })), false);
 });
 

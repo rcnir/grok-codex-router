@@ -242,11 +242,23 @@ user/cohort batch flow; available Grok Bot admin surfaces read/list/delete but d
 not set harness. Direct profile editing is not an official repair and remains
 forbidden.
 
-Therefore immutable-ID Milestone 1 activation is blocked. There is no exact repair
-request to approve under current 0.57 contracts. The only remaining Human scope
-decision that can make M1 progress is whether to allow creation of a **new BOX
-pilot with a new immutable agent ID**; that scope change has not been granted and
-no replacement pilot is created here.
+The Human subsequently changed scope to allow exactly one new BOX pilot. One and
+only one replacement was created:
+
+```text
+ID       507d1f34-56d5-4085-9b48-23d40cb9c914
+name     ROCANIIRU Codex BOX M1 Pilot 2
+profile  harness:"box"
+serverId 4270685
+running  false
+Turn     none
+```
+
+The coordinator roster's BOX projection reports `harness:null`, while the durable
+profile carries lowercase `harness:"box"`; M1 admission deliberately reads the
+durable profile. The retired `97cf…` pilot remains Temporal and is no longer
+allowlisted. The user-facing Bot remains Temporal. Source/config now bind exactly
+the replacement ID and regression tests prove the retired ID stays on stock.
 
 The earlier activation-preparation readback found an external Sand upgrade to
 `251860d`; that stock host was independently VERIFIED as above. Gate 2A subsequently

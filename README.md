@@ -5,29 +5,28 @@ It retains the upstream source layout and wire helpers, but its package entrypoi
 routes through the **existing** ROCANIIRU Runtime CLI/MCP boundary, not the private
 Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
 
-**Not deployed.** Human Gate 1 created exactly one isolated BOX pilot,
-`97cf83a0-0401-4481-9f3f-8b321921f8b0`; its creation-time authoritative profile
-was `harness:"box"`, and no Turn was started. Gate 2A then built and staged the patched
+**Not deployed.** Human Gate 1 originally created isolated BOX pilot
+`97cf83a0-0401-4481-9f3f-8b321921f8b0`; it later drifted durably Temporal. After
+same-ID repair was exhausted, the Human authorized exactly one replacement BOX
+pilot, `507d1f34-56d5-4085-9b48-23d40cb9c914`. Its durable profile is
+`harness:"box"`, serverId `4270685`, and no Turn has been started. Gate 2A built and staged the patched
 Codex/Runtime candidates without changing a current pointer or process. Its final
 read-only postflight observed provider-owned drift to stock host `5ec1e7d` and a
 durable pilot profile of `harness:"temporal"`. The host drift is now resolved:
 `5ec1e7d` has its own VERIFIED fingerprint-bound manifest while `251860d` and
 `18cd065` remain supported separately and 0.53 remains fail-closed. The pilot
-drift is not resolved: official roster and durable profile agree on Temporal, and
-current 0.57 exposes no supported same-ID conversion back to BOX, including its
-provider identity update RPC, internal BOX-to-Temporal migration surfaces and
-available admin/recovery surfaces. Under the immutable-ID scope there is no repair
-mutation to approve; progressing M1 would require an explicit scope change allowing
-a new BOX pilot ID. The bounded,
+drift was resolved by the explicitly authorized replacement ID; the retired pilot
+remains Temporal and is outside the allowlist. The bounded,
 thread-local
 `toolIsolation:"dynamicOnly"` Codex source patch and Runtime/router capability
 wiring remain separate from host compatibility. The pilot is now the only source
 allowlist identity and its fixed route is `chatgpt-web/extra-high / xhigh`, while
 the source default remains `enabled:false`. No host patch, Runtime/Codex deploy,
-provider/model inference or profile correction has been performed. Gate 2B/2C are
-currently closed on the pilot harness blocker. Gate 2A artifacts, current host
+provider/model inference or profile correction has been performed. Gate 2B is now
+authorized; Gate 2C remains separate. Gate 2A artifacts, current host
 proof and harness authority are documented in `GATE-2A-EVIDENCE-20260919.json`,
-`HOST-5EC1E7D-EVIDENCE-20260919.json`, `PILOT-HARNESS-EVIDENCE-20260919.json` and
+`HOST-5EC1E7D-EVIDENCE-20260919.json`, `PILOT-HARNESS-EVIDENCE-20260919.json`,
+`PILOT-REPLACEMENT-EVIDENCE-20260919.json` and
 `PRODUCTION-ACTIVATION-PREP-20260919.md`.
 
 See [`MILESTONE-1.md`](MILESTONE-1.md) for the implementation contract and status,
