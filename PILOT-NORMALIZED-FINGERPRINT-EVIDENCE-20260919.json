@@ -1,0 +1,169 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-19T13:27:18Z",
+  "scope": "Deploy normalized-transcript fingerprint repair, execute exactly one canonical pilot acceptance Turn, prove successful dynamic-tool delivery, identify the next post-delivery Runtime event classification fault, recover terminal state, and stop before any further fix",
+  "repair_artifact": {
+    "source_commit": "581dfd143ec6ac42a6b1ec23e226db1b4959981f",
+    "behavior": "Fingerprint deterministic JSON-safe normalized transcript state instead of raw Sand message objects; use the same normalized representation for consumed-prefix and assistant-echo replay fences.",
+    "focused_runtime_router_tests": "40/40 PASS",
+    "full_router_tests": "103/103 PASS",
+    "telemetry": "PASS",
+    "knip": "PASS",
+    "diff_check": "PASS",
+    "package_bytes": 160281,
+    "package_sha256": "9f7c482af345f781d223c69c821a5c9434b13fb63a268ce3abeaae733a35354e"
+  },
+  "preflight": {
+    "host_version": "a5b5d79",
+    "host_sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+    "production_config_sha256": "e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f",
+    "runtime_generation": 15,
+    "runtime_child_pid": 1658692,
+    "runtime_thread_count": 28,
+    "runtime_latest_event": 64424509692,
+    "runtime_pending_inputs": 0,
+    "runtime_unknown_operations": 0,
+    "runtime_active_turns": 0,
+    "runtime_blocked_threads": 0,
+    "router_journal_active": null,
+    "computer_mutation_state": "clear",
+    "computer_execution_state": "CLEAR"
+  },
+  "deployment": {
+    "router_package_replacements": 1,
+    "production_config_writes": 0,
+    "host_patch_writes": 0,
+    "runtime_source_changes": 0,
+    "supervisor_restarts": 1,
+    "restart_id": "grok-codex-router-1789824122588-5437c29c",
+    "restart_log_occurrences": 1,
+    "post_restart_automatic_activity": 0,
+    "transcript_entries_before_restart": 6,
+    "transcript_entries_after_restart": 6,
+    "send_acceptance_records_before_restart": 5,
+    "send_acceptance_records_after_restart": 5,
+    "router_session_count_before_restart": 16,
+    "router_session_count_after_restart": 16,
+    "runtime_latest_event_before_restart": 64424509692,
+    "runtime_latest_event_after_restart": 64424509692
+  },
+  "acceptance_turn": {
+    "send_count": 1,
+    "client_resend_count": 0,
+    "pilot_agent_id": "507d1f34-56d5-4085-9b48-23d40cb9c914",
+    "accepted": true,
+    "client_nonce": "460dcf37-cd82-4419-a37e-73848f6daefd",
+    "input_digest": "8b2ab503ae88aa54ddc9146603241c19d48fd74a5f2276783e8ccd5194bf7a67",
+    "accepted_at_ms": 1789824163091,
+    "user_entry_id": "t5u",
+    "assistant_entry_id": "t5s0",
+    "assistant_entry_content": "ROCANIIRU_M1_NORMALIZED_FINGERPRINT_PASS",
+    "user_visible_delivery_succeeded": true,
+    "sand_settlement": {
+      "outcome": "error",
+      "settled_at_ms": 1789824198968,
+      "error_code": "SAND-E0406",
+      "error_domain": "agent",
+      "error_retryable": true
+    }
+  },
+  "positive_router_runtime_traversal": {
+    "runtime_generation": 15,
+    "session_id": "grok:916cabe323e4803f8c6959b3:79adecc49a4520cfae80f734",
+    "thread_id": "01a0b9d5-681a-7080-b356-26846b895414",
+    "turn_id": "01a0b9d5-70b9-7092-8775-8b24006cf6ab",
+    "runtime_session_open": "ACK",
+    "runtime_session_inject_items": "ACK",
+    "runtime_turn_start": "ACK",
+    "dynamic_tool_call": {
+      "event_sequence": 64424509716,
+      "request_id": 0,
+      "tool": "SendToUser",
+      "call_id": "call_D6JbI6TKeffgM2qOSdfvC4uG65uaLcrK",
+      "arguments": {
+        "type": "text",
+        "content": "ROCANIIRU_M1_NORMALIZED_FINGERPRINT_PASS"
+      }
+    },
+    "runtime_respond": {
+      "status": "ACK",
+      "operation_id": "grok:916cabe323e4803f8c6959b3:79adecc49a4520cfae80f734:respond:af74542d8c2c436c1e4ebbf27563eb1fdfae745f819a9ef0756c4145db32fe78"
+    },
+    "server_request_responded_event": {
+      "event_sequence": 64424509717,
+      "method": "engine/serverRequestResponded",
+      "request_id": 0,
+      "params": {
+        "requestId": 0,
+        "method": "item/tool/call"
+      }
+    },
+    "dynamic_tool_completed_successfully": true,
+    "dynamic_tool_completion_event_sequence": 64424509718,
+    "dynamic_tool_completion_delivery_id": "t5s0"
+  },
+  "next_fault": {
+    "first_fault_code": "NATIVE_EXECUTION_REQUEST_FORBIDDEN",
+    "first_fault_uncertain": true,
+    "source_location": {
+      "file": "src/runtime-execution.ts",
+      "line_at_capture": 317,
+      "condition": "event.request_id != null && event.method !== \"item/tool/call\""
+    },
+    "triggering_event": "engine/serverRequestResponded",
+    "triggering_event_is_new_server_request": false,
+    "triggering_event_is_confirmation_of_answered_dynamic_tool_request": true,
+    "runtime_source_evidence": "Runtime Engine emits engine/serverRequestResponded only after the exact pending server response write succeeds; it carries the historical request_id and original method in params.",
+    "secondary_retry_faults": [
+      "CURRENT_USER_INPUT_REQUIRED uncertain=false"
+    ],
+    "secondary_retry_faults_are_causal": false,
+    "conclusion": "The raw-message fingerprint failure is fixed. The remaining outer failure is a router event-classification bug after successful SendToUser delivery: it treats the Runtime confirmation event as a forbidden native server request."
+  },
+  "runtime_terminal_proof": {
+    "turn_operation_id": "grok:916cabe323e4803f8c6959b3:79adecc49a4520cfae80f734:turn",
+    "turn_operation_status": "ACK",
+    "terminal_status": "completed",
+    "terminal_result_available": true,
+    "terminal_output_available": true,
+    "terminal_result_sha256": "7efd23a35cbea59725e1a6ae655a6dba9cf0e0cc5e50ed018a4ce04e3850ba72",
+    "terminal_output": "ROCANIIRU\\_M1\\_NORMALIZED\\_FINGERPRINT\\_PASS",
+    "runtime_latest_event_after_turn": 64424509727
+  },
+  "recovery": {
+    "cancel_performed": false,
+    "runtime_generation_changed": false,
+    "reason": "The Runtime Turn had already reached terminal completed with pending=0, UNKNOWN=0 and no active Turn.",
+    "archive_operation_id": "m1-pilot-t5-normalized-archive-01a0b9d5-681a-7080-b356-26846b895414",
+    "archived": true,
+    "archived_status": "notLoaded",
+    "archived_path": "/home/box/.codex/archived_sessions/rollout-2026-09-19T22-22-45-01a0b9d5-681a-7080-b356-26846b895414.jsonl",
+    "router_state_before_sha256": "c96a828366f04d9333a45e8de6e1d9d22446770f88b9fc4c527c471f096c1625",
+    "router_journal_phase_before": "UNKNOWN",
+    "completed_run_hash": "79adecc49a4520cfae80f73452f76dd663f21520efc201c56056122117f0fb7b",
+    "router_journal_active_after": null
+  },
+  "final_live_state": {
+    "live_router_source_commit": "581dfd143ec6ac42a6b1ec23e226db1b4959981f",
+    "live_router_package_sha256": "9f7c482af345f781d223c69c821a5c9434b13fb63a268ce3abeaae733a35354e",
+    "host_version": "a5b5d79",
+    "host_sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+    "production_config_sha256": "e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f",
+    "supervisor_pending_command": false,
+    "runtime_generation": 15,
+    "runtime_child_pid": 1658692,
+    "runtime_thread_count": 29,
+    "runtime_latest_event": 64424509729,
+    "runtime_pending_inputs": 0,
+    "runtime_unknown_operations": 0,
+    "runtime_active_turns": 0,
+    "runtime_blocked_threads": 0,
+    "runtime_persistence": "healthy",
+    "dynamic_only_tool_policy": true,
+    "router_journal_active": null,
+    "computer_mutation_state": "clear",
+    "computer_execution_state": "CLEAR"
+  },
+  "milestone_1_pilot_acceptance_complete": false,
+  "next_boundary": "New Human approval is required before changing Runtime event classification. The narrow next fix should accept engine/serverRequestResponded only when its request_id/params.requestId match and params.method is item/tool/call, while retaining fail-close rejection for all other request_id-bearing non-item/tool/call events; then run at most one further pilot Turn."
+}

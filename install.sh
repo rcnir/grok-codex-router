@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# ROCANIIRU M1: preserve upstream implementation below for comparison, but do
+# not install packages, write backups, patch/restart a host, or run inference.
+printf '%s\n' 'HUMAN_GATE_CLOSED: current host compatibility and live acceptance are not complete. See MILESTONE-1.md.' >&2
+exit 2
+
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 for command in node bun git; do

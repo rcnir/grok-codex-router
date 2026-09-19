@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   contextWindowForModel,
   DEFAULT_CONFIG,
+  M1_PILOT_AGENT_ID,
   parseContextWindow,
   resolveRoute,
   validateConfig
@@ -41,14 +42,24 @@ test("root agents route by immutable ID while workload classes stay explicit", (
   });
 });
 
-test("router state defaults on for existing configs and preserves an explicit switch off", () => {
+test("M1 defaults off even for legacy configs; only an explicit enabled flag can opt in", () => {
   const { enabled: _enabled, ...existingConfig } = structuredClone(DEFAULT_CONFIG);
-  assert.equal(validateConfig(existingConfig).enabled, true);
+  assert.equal(validateConfig(existingConfig).enabled, false);
+  assert.equal(validateConfig({ ...existingConfig, enabled: true }).enabled, true);
   assert.equal(validateConfig({ ...existingConfig, enabled: false }).enabled, false);
   assert.throws(
     () => validateConfig({ ...existingConfig, enabled: "false" }),
     /enabled must be a boolean/
   );
+});
+
+test("M1 source allowlist is bound to the one approved immutable BOX pilot", () => {
+  assert.deepEqual(DEFAULT_CONFIG.pilot?.agentIds, [M1_PILOT_AGENT_ID]);
+  assert.equal(M1_PILOT_AGENT_ID, "507d1f34-56d5-4085-9b48-23d40cb9c914");
+  assert.equal(DEFAULT_CONFIG.enabled, false);
+  assert.deepEqual(DEFAULT_CONFIG.agents, {
+    [M1_PILOT_AGENT_ID]: { model: "chatgpt-web/extra-high", reasoningEffort: "xhigh" }
+  });
 });
 
 test("auxiliary executors cannot replace the root turn continuation lane", () => {

@@ -6,6 +6,12 @@
     "control/telemetry-check.ts",
     "scripts/*.ts",
     "tests/**/*.test.ts",
+    "src/config.ts",
+    "src/pilot-policy.ts",
+    "src/runtime-client.ts",
+    "src/turn-execution.ts",
+    "src/transport.ts",
+    "src/control-service.ts",
     "ui/app.mjs"
   ],
   "project": [

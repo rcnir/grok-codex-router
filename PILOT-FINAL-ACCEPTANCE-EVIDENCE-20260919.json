@@ -1,0 +1,164 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-19T14:15:00Z",
+  "scope": "Milestone 1 final pilot acceptance after identity-checked engine/serverRequestResponded handling",
+  "repair_artifact": {
+    "source_commit": "ee4f61ab2e1b1738139aaf4846e95fdb2abe37db",
+    "behavior": "Accept engine/serverRequestResponded only when event request_id equals params.requestId, params.method is item/tool/call, and the exact generation/request identity was already observed for this Runtime Turn; all other request-bearing non-item/tool/call events remain fail-closed.",
+    "focused_runtime_router_tests": "43/43 PASS",
+    "full_router_tests": "106/106 PASS",
+    "telemetry": "PASS",
+    "knip": "PASS",
+    "diff_check": "PASS",
+    "package_bytes": 161372,
+    "package_sha256": "6392a8bf7819eb78a11b763580f2aba02c016225ee853d57b0e1dc2cedbc345f"
+  },
+  "preflight": {
+    "host_version": "a5b5d79",
+    "host_sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+    "production_config_sha256": "e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f",
+    "runtime_generation": 15,
+    "runtime_child_pid": 1658692,
+    "runtime_thread_count": 29,
+    "runtime_latest_event": 64424509729,
+    "runtime_pending_inputs": 0,
+    "runtime_unknown_operations": 0,
+    "runtime_active_turns": 0,
+    "runtime_blocked_threads": 0,
+    "router_journal_active": null,
+    "computer_mutation_state": "clear",
+    "computer_execution_state": "CLEAR",
+    "worktrees_clean": true
+  },
+  "deployment": {
+    "router_package_replacements": 1,
+    "production_config_writes": 0,
+    "host_patch_writes": 0,
+    "runtime_source_changes": 0,
+    "supervisor_restarts": 1,
+    "restart_id": "grok-codex-router-1789826965580-3603ce7b",
+    "restart_log_occurrences": 1,
+    "post_restart_automatic_activity": 0,
+    "transcript_entries_before_restart": 8,
+    "transcript_entries_after_restart": 8,
+    "send_acceptance_records_before_restart": 6,
+    "send_acceptance_records_after_restart": 6,
+    "router_session_count_before_restart": 17,
+    "router_session_count_after_restart": 17,
+    "runtime_latest_event_before_restart": 64424509729,
+    "runtime_latest_event_after_restart": 64424509729
+  },
+  "acceptance_turn": {
+    "send_count": 1,
+    "client_resend_count": 0,
+    "pilot_agent_id": "507d1f34-56d5-4085-9b48-23d40cb9c914",
+    "accepted": true,
+    "client_nonce": "036d13fe-d07a-46dd-8734-3a10e1f7af28",
+    "input_digest": "3ab04119be7f2a6e58552c624e82facfa6055178c7708718e91cebfc376afb6d",
+    "accepted_at_ms": 1789827008844,
+    "user_entry_id": "t6u",
+    "assistant_entry_id": "t6s0",
+    "assistant_entry_content": "ROCANIIRU_M1_CONFIRMATION_EVENT_PASS",
+    "user_visible_delivery_succeeded": true,
+    "sand_settlement": {
+      "outcome": "success",
+      "settled_at_ms": 1789827049879
+    }
+  },
+  "positive_router_runtime_traversal": {
+    "runtime_generation": 15,
+    "session_id": "grok:916cabe323e4803f8c6959b3:cad0472cb2c6e3ff3e91f752",
+    "thread_id": "01a0ba00-d186-75e2-a77a-266266e8202d",
+    "turn_id": "01a0ba00-da6e-7583-83ee-014aee15f21d",
+    "runtime_session_open": "ACK",
+    "runtime_session_inject_items": "ACK",
+    "runtime_turn_start": "ACK",
+    "dynamic_tool_call": {
+      "event_sequence": 64424509750,
+      "request_id": 1,
+      "tool": "SendToUser",
+      "call_id": "call_Jk_MKGMGUubnrxkpXrpxtrHnaxQ21Rzq",
+      "arguments": {
+        "type": "text",
+        "content": "ROCANIIRU_M1_CONFIRMATION_EVENT_PASS"
+      }
+    },
+    "server_request_responded_event": {
+      "event_sequence": 64424509751,
+      "method": "engine/serverRequestResponded",
+      "request_id": 1,
+      "params": {
+        "requestId": 1,
+        "method": "item/tool/call"
+      },
+      "accepted_by_identity_checked_confirmation_policy": true
+    },
+    "dynamic_tool_completed_event_sequence": 64424509752,
+    "dynamic_tool_delivery_id": "t6s0",
+    "runtime_terminal_event_sequence": 64424509761,
+    "runtime_archive_event_sequences": [
+      64424509762,
+      64424509763
+    ]
+  },
+  "runtime_terminal_proof": {
+    "turn_operation_id": "grok:916cabe323e4803f8c6959b3:cad0472cb2c6e3ff3e91f752:turn",
+    "turn_operation_status": "ACK",
+    "terminal_status": "completed",
+    "terminal_result_available": true,
+    "terminal_output_available": true,
+    "terminal_result_sha256": "2daeb9f321c9a29cf25a23d535277324cab9cac721bd421c4f8728bc4f901ebc",
+    "terminal_output": "ROCANIIRU\\_M1\\_CONFIRMATION\\_EVENT\\_PASS",
+    "session_archived": true,
+    "archived_status": "notLoaded",
+    "archived_path": "/home/box/.codex/archived_sessions/rollout-2026-09-19T23-10-10-01a0ba00-d186-75e2-a77a-266266e8202d.jsonl"
+  },
+  "router_journal": {
+    "active_after_turn": null,
+    "completed_run_hash": "cad0472cb2c6e3ff3e91f752c06a6dfec1a8f9601c0a7e6d5105b6c69b1acbba"
+  },
+  "routing_readback": {
+    "pilot": true,
+    "summarization": false,
+    "retired_pilot": false,
+    "user_facing_temporal_bot": false,
+    "subagent": false,
+    "browser": false,
+    "computer": false,
+    "automation": false,
+    "group": false
+  },
+  "final_live_state": {
+    "live_router_source_commit": "ee4f61ab2e1b1738139aaf4846e95fdb2abe37db",
+    "live_router_package_sha256": "6392a8bf7819eb78a11b763580f2aba02c016225ee853d57b0e1dc2cedbc345f",
+    "host_version": "a5b5d79",
+    "host_sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+    "production_config_sha256": "e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f",
+    "supervisor_pending_command": false,
+    "runtime_generation": 15,
+    "runtime_child_pid": 1658692,
+    "runtime_thread_count": 30,
+    "runtime_latest_event": 64424509763,
+    "runtime_pending_inputs": 0,
+    "runtime_unknown_operations": 0,
+    "runtime_active_turns": 0,
+    "runtime_blocked_threads": 0,
+    "runtime_persistence": "healthy",
+    "dynamic_only_tool_policy": true,
+    "router_journal_active": null,
+    "computer_mutation_state": "clear",
+    "computer_execution_state": "CLEAR"
+  },
+  "post_turn_follow_up": {
+    "observed": true,
+    "fault": "INVOCATION_ID_REQUIRED uncertain=false",
+    "host_log_context": "sand.memory.extraction_failed",
+    "occurs_after": "AGENT_REQUEST_END and successful root-turn settlement",
+    "affects_root_turn_acceptance": false,
+    "fix_applied": false,
+    "note": "Treat as a separate memory-extraction follow-up; do not conflate it with the successful M1 routed root Turn."
+  },
+  "milestone_1_pilot_acceptance_complete": true,
+  "acceptance": "PASS",
+  "next_boundary": "Milestone 1 pilot acceptance is complete. Any main merge, later production rollout, Grok Bot update, Intelligence integration, or memory-extraction follow-up requires a new explicit Human approval."
+}

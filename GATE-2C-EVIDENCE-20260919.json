@@ -1,0 +1,165 @@
+{
+  "format_version": 2,
+  "recorded_at_utc": "2026-09-19T11:09:58Z",
+  "scope": "Milestone 1 Gate 2C activation on verified Grok Bot 0.57.0 host a5b5d79",
+  "router_source_commit": "164cea8d795f54d7cb09bd7608f6fa62d3341a98",
+  "human_approval": "GRANTED",
+  "steps": {
+    "1_fresh_premutation_preflight": "PASS",
+    "2_repack_current_router": "PASS",
+    "3_package_singleton_allowlist_and_smoke": "PASS",
+    "4_package_actual_host_check": "PASS_STATE_STOCK",
+    "5_router_install": "PASS",
+    "6_production_config_install": "PASS",
+    "7_pristine_backup_create": "PASS",
+    "8_host_patch": "PASS",
+    "9_post_patch_fingerprint_markers": "PASS",
+    "10_supervisor_restart": "PASS",
+    "11_post_restart_readiness": "PASS",
+    "12_live_routing_readback": "PASS_READ_ONLY_NO_TURN"
+  },
+  "router_package": {
+    "name": "rcnir-grok-codex-router-0.1.0-rcnir-m1.0.tgz",
+    "bytes": 156879,
+    "sha256": "3790c70e9acfd7a9a4ba375973c1c4e8032c9f7ba72dc865e6652e1dcb303dd2",
+    "previous_stale_package_sha256": "b0716767531a13e1b97b1617ebcbc4271b7569eb69c741c46c249b6844e496fc",
+    "allowlist": [
+      "507d1f34-56d5-4085-9b48-23d40cb9c914"
+    ],
+    "retired_temporal_pilot_present_in_route_map": false,
+    "built_in_compat_targets": [
+      "grok-bot-0.53-11dd264",
+      "grok-bot-0.57-18cd065",
+      "grok-bot-0.57-251860d",
+      "grok-bot-0.57-5ec1e7d",
+      "grok-bot-0.57-a5b5d79"
+    ],
+    "route": {
+      "model": "chatgpt-web/extra-high",
+      "reasoningEffort": "xhigh"
+    },
+    "tests": {
+      "router": "101/101 PASS",
+      "telemetry": "PASS",
+      "knip": "PASS",
+      "diff_check": "PASS",
+      "package_require_without_node_modules": "PASS"
+    }
+  },
+  "production_config": {
+    "path_in_source": "M1-PRODUCTION-CONFIG-20260919.json",
+    "live_path": "/home/box/sand-data/grok-codex-router.json",
+    "bytes": 1385,
+    "sha256": "e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f",
+    "mode": "0600"
+  },
+  "host": {
+    "grok_bot_version": "0.57.0",
+    "host_version": "a5b5d79",
+    "path": "/home/box/sand-host/host-main.cjs",
+    "preflight_stock": {
+      "bytes": 26463140,
+      "sha256": "2fd89dc7097ef9eb9f6df8b7d77823f9b4b237b96556a6ae408c33927d0045c7",
+      "router_marker_occurrences": 0,
+      "built_package_check": "PASS_STATE_STOCK"
+    },
+    "pristine_backup": {
+      "path": "/home/box/sand-host/host-main.cjs.grok-codex-router-bak",
+      "bytes": 26463140,
+      "sha256": "2fd89dc7097ef9eb9f6df8b7d77823f9b4b237b96556a6ae408c33927d0045c7",
+      "mode": "0600"
+    },
+    "patched": {
+      "bytes": 26463887,
+      "sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+      "marker_counts": {
+        "session_start": 1,
+        "session_end": 1,
+        "identity_start": 1,
+        "identity_end": 1
+      },
+      "built_package_check": "PASS_STATE_PATCHED"
+    }
+  },
+  "supervisor": {
+    "restart_id": "grok-codex-router-1789816115688-f91a02e8",
+    "host_running": true,
+    "host_version": "a5b5d79",
+    "pending_upgrade_version": null,
+    "last_command_kind": "restart",
+    "pending_command": false
+  },
+  "runtime_postflight": {
+    "runtime_current": "/opt/rocaniiru/codex-runtime/0.1.0-72c8032",
+    "standalone_current": "/home/box/.codex/packages/standalone/releases/0.154.0-rcnir-dynamic-only-3084657-x86_64-unknown-linux-musl",
+    "started": true,
+    "ready": true,
+    "child_pid": 1569085,
+    "generation": 13,
+    "thread_count": 25,
+    "pending_inputs": 0,
+    "unknown_operations": 0,
+    "active_turns": 0,
+    "blocked_threads": 0,
+    "persistence": "healthy",
+    "fenced": false,
+    "uncertain": false,
+    "dynamic_only_tool_policy": true
+  },
+  "computer_postflight": {
+    "version": "0.2.3",
+    "service_identity": "a6299bb2e1242f491855fd38608b0dc5f65c6f5f956f734cf5ba16aaf9527e41",
+    "mutation_state": "clear",
+    "execution_state": "CLEAR"
+  },
+  "routing_readback": {
+    "pilot_profile": {
+      "agent_id": "507d1f34-56d5-4085-9b48-23d40cb9c914",
+      "serverId": "4270685",
+      "harness": "box",
+      "routes": true
+    },
+    "retired_pilot_profile": {
+      "agent_id": "97cf83a0-0401-4481-9f3f-8b321921f8b0",
+      "serverId": "4168251",
+      "harness": "temporal",
+      "routes": false
+    },
+    "user_facing_bot_profile": {
+      "agent_id": "139771d1-4e7d-4a8b-80a0-eddc438bccfc",
+      "serverId": "3344671",
+      "harness": "temporal",
+      "routes": false
+    },
+    "stock_passthroughs": {
+      "summarization": true,
+      "subagent": true,
+      "browser": true,
+      "computer": true,
+      "automation": true,
+      "group": true
+    }
+  },
+  "live_paths": {
+    "/home/box/grok-codex-router/package.json": "PRESENT",
+    "/home/box/grok-codex-router/dist/src/session.js": "PRESENT",
+    "/home/box/sand-data/grok-codex-router-state": "PRESENT_MODE_0700",
+    "/home/box/sand-data/grok-codex-router.json": "PRESENT_MODE_0600",
+    "/home/box/sand-host/host-main.cjs.grok-codex-router-bak": "PRESENT_MODE_0600"
+  },
+  "provider_activity": {
+    "provider_or_model_inference_started_by_gate_2c": 0,
+    "pilot_turn_started": false,
+    "router_state_files_after_postflight": 0
+  },
+  "runtime_source_changed": false,
+  "gate_2b_repeated": false,
+  "grok_bot_0_57_1_update_or_restart": false,
+  "rollback_required": false,
+  "previous_attempt": {
+    "status": "FAIL_PRE_MUTATION_CURRENT_HOST_DRIFT",
+    "package_sha256": "b0716767531a13e1b97b1617ebcbc4271b7569eb69c741c46c249b6844e496fc",
+    "live_mutation_count": 0
+  },
+  "gate_2c": "PASS_ACTIVATED_NO_PILOT_TURN"
+}

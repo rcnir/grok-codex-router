@@ -1,0 +1,152 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-19T07:46:25Z",
+  "scope": "Milestone 1 Gate 2A approved build/stage only",
+  "gate_2a": {
+    "status": "BUILD_AND_STAGE_PASS_POSTFLIGHT_BLOCKED_BY_EXTERNAL_DRIFT",
+    "live_current_pointer_changes": 0,
+    "runtime_or_app_server_restarts": 0,
+    "provider_or_model_inference_calls": 0,
+    "pilot_turns_started": 0,
+    "router_live_installs": 0,
+    "host_backup_writes": 0,
+    "host_patches": 0,
+    "sand_restarts_requested": 0
+  },
+  "source_inputs": {
+    "router_commit": "c3dc4b62904e17b9ae9004f891b4cf9afb6e7337",
+    "runtime_commit": "72c80325e0a36c4068e8f02f4b750fc4bd8db26e",
+    "runtime_archive_sha256": "b6097a5ef8624ee93459ac3b86c01b62f977dc6852c970de8ae1a7336da37929",
+    "codex_upstream_commit": "6b9826e3aa83b1a5947db50f4332cb9c65f1b340",
+    "codex_patch_sha256": "3084657c327fe53af7ef55f0fe718ed4bca78f1a39a5b989959bde298e617465",
+    "codex_patch_manifest_sha256": "f4df53e67fc999d0cfafacef6caadf60d22be892420330b90c2a0a9b0be7406e",
+    "accepted_cargo_lock_sha256": "34726731e842976085e3c122f62ddd5c8d6555bdcb32f5e9361c8e27fb0795bf",
+    "cargo_lock_normalization": "PASS: exactly 150 workspace package version lines 0.0.0 -> 0.154.0; no external dependency version drift"
+  },
+  "staged_router_artifact": {
+    "source_commit": "c3dc4b62904e17b9ae9004f891b4cf9afb6e7337",
+    "package": "rcnir-grok-codex-router-0.1.0-rcnir-m1.0.tgz",
+    "bytes": 154140,
+    "sha256": "b720fc269d047f05cce7ce9d5cf1fe0b20c5fda9807f79242216dbf868262f5f",
+    "production_config_sha256": "acc6b5a4e90cb2496d4370d8a90dbe6a9d3d733ff5e5d7ecedc208c113d47f42",
+    "status": "RETAINED_GATE_2A_STAGE_ARTIFACT; repack/reaccept before Gate 2C after current host/profile blockers are resolved"
+  },
+  "scratch_toolchain": {
+    "root": "/workspace/rcnir-m1-activation-20260919/toolchain",
+    "rust": "1.95.0",
+    "target": "x86_64-unknown-linux-musl",
+    "zig": "0.14.0",
+    "cmake": "4.4.3",
+    "ninja": "1.13.2",
+    "gnu_make": "4.4.1",
+    "system_package_changes": 0,
+    "usr_local_changes": 0
+  },
+  "codex_candidate": {
+    "version": "codex-cli 0.154.0",
+    "bytes": 1283274448,
+    "sha256": "790879dcee4a675f34cc1aba9a2ab3fd0edb447588cf97f5cb111967b12fc8e7",
+    "elf_interpreter": null,
+    "dynamic_needed_entries": 0,
+    "static_execution_check": "PASS",
+    "build_note": "The first build wrapper exited 127 only because the VM lacked the optional post-build `file` utility. The produced binary independently passed --version, readelf static checks, exact bytes and SHA verification.",
+    "versioned_release": "/home/box/.codex/packages/standalone/releases/0.154.0-rcnir-dynamic-only-3084657-x86_64-unknown-linux-musl",
+    "standalone_current_changed": false
+  },
+  "runtime_candidate": {
+    "path": "/opt/rocaniiru/codex-runtime/0.1.0-72c8032",
+    "python_tests": {
+      "passed": 114,
+      "failed": 0
+    },
+    "schema": {
+      "codex_version": "codex-cli 0.154.0",
+      "experimental": true,
+      "schema_sha256": "93fcd1f5a09f8192669e7ab24c65e35b8ef988456351895928ad103ecaf38d49",
+      "schema_tree_sha256": "b7d78c70759cad42c27edf9242997ccc6ed4eceb5d37cc75ef87104d2e88a8a1",
+      "files": 1275,
+      "dynamic_only_schema_files": 7,
+      "dynamic_only_tool_policy": true,
+      "generate_verify": "PASS"
+    },
+    "source_json_sha256": "a3cbdc9a64dec664aa2422001f482f6c1c13270727936402682de1bbc95d960b",
+    "runtime_current_changed": false
+  },
+  "live_runtime_postflight": {
+    "current_target": "/opt/rocaniiru/codex-runtime/0.1.0-3c4f121",
+    "runtime_owned_app_server_pid": 883943,
+    "unrelated_app_server_pid": 1188039,
+    "generation": 12,
+    "started": true,
+    "ready": true,
+    "persistence": "healthy",
+    "fenced": false,
+    "uncertain": false,
+    "unknown_operation_count": 0,
+    "pending_input_count": 0,
+    "thread_count": 25,
+    "active_turn_count": 0,
+    "blocked_thread_count": 0,
+    "thread_set_sha256": "405346cb5303cf3b747d080272edce65d66cf2f342b47e2568e7f7b3b85b387b",
+    "state_json_sha256": "1be40ad48c92fca2fa4f0b80bffba6e9561e8f224c65e06aa0c510b1b77b6369",
+    "state_json_bytes": 829029,
+    "live_dynamic_only_capability": false
+  },
+  "external_postflight_drift": {
+    "detected": true,
+    "pilot": {
+      "id": "97cf83a0-0401-4481-9f3f-8b321921f8b0",
+      "name": "ROCANIIRU Codex BOX M1 Pilot",
+      "expected_harness_at_gate_2a_preflight": "box",
+      "observed_harness_at_gate_2a_postflight": "temporal",
+      "profile_mtime": "2026-09-19T12:20:43.339102233+09:00",
+      "profile_mutated_by_this_task": false
+    },
+    "user_facing_bot": {
+      "id": "139771d1-4e7d-4a8b-80a0-eddc438bccfc",
+      "harness": "temporal"
+    },
+    "host": {
+      "expected_version_at_gate_2a_preflight": "251860d",
+      "observed_version_at_gate_2a_postflight": "5ec1e7d",
+      "observed_bytes": 26460874,
+      "observed_sha256": "8b0e2747c0b7b91fca368c886880b24906a28214e2979029a60a98d8ab0c9bc0",
+      "router_markers": 0,
+      "state": "stock_unpatched",
+      "supervisor_last_command_id": "upgrade-5ec1e7d",
+      "supervisor_last_command_kind": "upgrade",
+      "pending_upgrade_version": null,
+      "host_mutated_by_this_task": false
+    }
+  },
+  "other_postflight": {
+    "router_live_install_exists": false,
+    "router_live_config_exists": false,
+    "router_live_state_exists": false,
+    "pristine_host_backup_exists": false,
+    "computer_version": "0.2.3",
+    "computer_service_identity": "a6299bb2e1242f491855fd38608b0dc5f65c6f5f956f734cf5ba16aaf9527e41",
+    "computer_mutation_state": "clear",
+    "computer_execution_state": "CLEAR"
+  },
+  "computer_read_status_fallback": {
+    "reason": "CoS/Groken caller identity was temporarily unavailable during Gate 2A status reads; no original M1 ACK was replayed.",
+    "new_receipts_acknowledged": [
+      ["37734c29e7154795bf371f06e365d553", "d7c23318314d6cbd8b9607c9f8d93326c2ff4e148a9299e18fddb61209450883"],
+      ["71966b4fa2927ce8a6c6954f830470ab", "d8acdcc38074d96a4c575bfa867edae6aac5ae5b45c71749c072131d5acdabb4"],
+      ["c5bd800a82d7c12771ddfd8d9796362f", "473372f0c686b27a06997d2ea39e32f2b0a374e0c94115b9cc7cb201351a7871"],
+      ["63558b7f2895e044a5209667c37adf0c", "fbedc3235a99d51136baf376bc3bd70a39106ce9cac66e7a09c11da240d29aed"],
+      ["4160d6d06f541d5eca224e0513a045a8", "cf20dd5357fda360b177b8f9d9ae307f41814089af9bc2bbe00585adeb012964"]
+    ],
+    "final_state": "clear/CLEAR",
+    "service_identity": "a6299bb2e1242f491855fd38608b0dc5f65c6f5f956f734cf5ba16aaf9527e41"
+  },
+  "next_gate": {
+    "gate_2b": "CLOSED",
+    "reason": "At Gate 2A postflight, both the pilot profile and host had drifted. The later HOST-5EC1E7D-EVIDENCE-20260919.json resolves the host compatibility blocker; Gate 2B remains closed because the immutable pilot is durably Temporal and current Grok Bot 0.57 exposes no supported same-ID repair back to BOX.",
+    "host_blocker_current_status": "RESOLVED_BY_HOST-5EC1E7D-EVIDENCE-20260919.json",
+    "required_human_decisions": [
+      "Resolve the immutable pilot harness blocker. Current Grok Bot 0.57 has no supported same-ID Temporal-to-BOX mutation; do not hand-edit profile.json or silently create a replacement ID."
+    ]
+  }
+}

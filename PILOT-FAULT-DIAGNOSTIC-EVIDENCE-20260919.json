@@ -1,0 +1,141 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-19T13:03:15Z",
+  "scope": "Deploy sanitized router-fault diagnostics, run exactly one bounded pilot diagnostic Turn, capture the first exact RuntimeFault, recover the terminal Runtime session, and stop before any further fix",
+  "diagnostic_artifact": {
+    "source_commit": "36e8d3808661e3cbd69331b7ecd5ca494ac9d41f",
+    "package_bytes": 158651,
+    "package_sha256": "f9e990c1ce01fc87e0ec8dc628a5f63e20ca13569d773be7c0d247e96b116b14",
+    "regenerated": false,
+    "logged_fields_only": [
+      "RuntimeFault.code",
+      "RuntimeFault.uncertain"
+    ]
+  },
+  "preflight": {
+    "host_version": "a5b5d79",
+    "host_sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+    "production_config_sha256": "e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f",
+    "live_router_before_diagnostic": "6711ae13987cb5b4852ee3298b136d47ddadf366",
+    "runtime_generation": 15,
+    "runtime_child_pid": 1658692,
+    "runtime_thread_count": 27,
+    "runtime_latest_event": 64424509668,
+    "runtime_pending_inputs": 0,
+    "runtime_unknown_operations": 0,
+    "runtime_active_turns": 0,
+    "runtime_blocked_threads": 0,
+    "router_journal_active": null,
+    "computer_mutation_state": "clear",
+    "computer_execution_state": "CLEAR",
+    "worktrees_clean": true
+  },
+  "deployment": {
+    "router_package_replacements": 1,
+    "production_config_writes": 0,
+    "host_patch_writes": 0,
+    "runtime_source_changes": 0,
+    "supervisor_restarts": 1,
+    "restart_id": "grok-codex-router-1789822659539-3f004c60",
+    "restart_log_occurrences": 1,
+    "post_restart_automatic_activity": 0,
+    "transcript_entries_before_restart": 5,
+    "transcript_entries_after_restart": 5,
+    "send_acceptance_records_before_restart": 4,
+    "send_acceptance_records_after_restart": 4,
+    "router_session_count_before_restart": 12,
+    "router_session_count_after_restart": 12,
+    "runtime_latest_event_before_restart": 64424509668,
+    "runtime_latest_event_after_restart": 64424509668
+  },
+  "diagnostic_turn": {
+    "send_count": 1,
+    "client_resend_count": 0,
+    "pilot_agent_id": "507d1f34-56d5-4085-9b48-23d40cb9c914",
+    "accepted": true,
+    "client_nonce": "4967c7c9-023b-4f61-9298-f149852ef648",
+    "input_digest": "4ff581cb0f886c58c6d1c551a21d2e64333f262f95fa2aeba03733cdff68091f",
+    "accepted_at_ms": 1789822712338,
+    "user_entry_id": "t4u",
+    "expected_text": "ROCANIIRU_M1_DIAGNOSTIC_PASS",
+    "assistant_entry": null,
+    "sand_settlement": {
+      "outcome": "error",
+      "settled_at_ms": 1789822720581,
+      "error_code": "SAND-E0406",
+      "error_domain": "agent",
+      "error_retryable": true
+    }
+  },
+  "exact_fault": {
+    "first_router_fault_code": "NON_JSON_VALUE",
+    "first_router_fault_uncertain": false,
+    "secondary_fault_code": "PENDING_RUN_NO_REPLAY",
+    "secondary_fault_uncertain": true,
+    "secondary_fault_meaning": "Sand internal retries encountered the still-active blocked durable run after the first deterministic failure.",
+    "source_location": {
+      "file": "src/runtime-execution.ts",
+      "line_at_capture": 155,
+      "expression": "this.consumedPrefixHash = fingerprint(messages)"
+    },
+    "source_reasoning": [
+      "dynamic tool definitions fingerprint completed before journal admission",
+      "runtime_session_open, runtime_session_inject_items, and runtime_turn_start all completed and were journaled ACK",
+      "journal bind after turn start does not fingerprint payload data",
+      "fingerprint(messages) is the next fingerprint operation before observe()",
+      "the sanitized first fault was NON_JSON_VALUE before any later PENDING_RUN_NO_REPLAY retry"
+    ],
+    "canonical_json_contract": "canonicalJson accepts JSON primitives, arrays, and plain records recursively and throws NON_JSON_VALUE for other values.",
+    "exact_non_json_field": "NOT_CAPTURED",
+    "fix_applied": false
+  },
+  "runtime_terminal_proof": {
+    "generation": 15,
+    "session_id": "grok:916cabe323e4803f8c6959b3:4f9ad1679fc2ad75809b5cba",
+    "thread_id": "01a0b9bf-4212-7643-8f32-0cb11a6204e2",
+    "turn_id": "01a0b9bf-4aa8-7cf0-ab91-0c7d203089dd",
+    "turn_operation_id": "grok:916cabe323e4803f8c6959b3:4f9ad1679fc2ad75809b5cba:turn",
+    "turn_operation_status": "ACK",
+    "terminal_status": "completed",
+    "terminal_result_available": true,
+    "terminal_output_available": true,
+    "terminal_result_sha256": "d654ca91d69e6cf6a6d197b229089803c21c093fdfa89f29dd41cc3e67048fe5",
+    "runtime_terminal_output": "ROCANIIRU\\_M1\\_DIAGNOSTIC\\_PASS",
+    "runtime_thread_count_after_turn": 28
+  },
+  "recovery": {
+    "cancel_performed": false,
+    "reason_no_cancel": "The Runtime Turn was already terminal completed with no pending input and no active turn.",
+    "archive_operation_id": "m1-pilot-t4-diagnostic-archive-01a0b9bf-4212-7643-8f32-0cb11a6204e2",
+    "archived": true,
+    "archived_status": "notLoaded",
+    "archived_path": "/home/box/.codex/archived_sessions/rollout-2026-09-19T21-58-34-01a0b9bf-4212-7643-8f32-0cb11a6204e2.jsonl",
+    "router_state_before_sha256": "9801818aaf7440c2529205202ae1dadc4812d6920c0591efd965eacfaa472bce",
+    "completed_run_hash": "4f9ad1679fc2ad75809b5cba6b8da7eaf33e4a806ee4ad1634f40d4cb05189c3",
+    "router_journal_active_after": null,
+    "runtime_generation_changed": false
+  },
+  "final_live_state": {
+    "live_router_source_commit": "36e8d3808661e3cbd69331b7ecd5ca494ac9d41f",
+    "live_router_package_sha256": "f9e990c1ce01fc87e0ec8dc628a5f63e20ca13569d773be7c0d247e96b116b14",
+    "host_version": "a5b5d79",
+    "host_sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+    "production_config_sha256": "e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f",
+    "supervisor_pending_command": false,
+    "runtime_generation": 15,
+    "runtime_child_pid": 1658692,
+    "runtime_thread_count": 28,
+    "runtime_latest_event": 64424509692,
+    "runtime_pending_inputs": 0,
+    "runtime_unknown_operations": 0,
+    "runtime_active_turns": 0,
+    "runtime_blocked_threads": 0,
+    "runtime_persistence": "healthy",
+    "dynamic_only_tool_policy": true,
+    "router_journal_active": null,
+    "computer_mutation_state": "clear",
+    "computer_execution_state": "CLEAR"
+  },
+  "milestone_1_pilot_acceptance_complete": false,
+  "next_boundary": "A new Human approval is required before implementing or deploying a fix for NON_JSON_VALUE. The next source change should replace raw Sand message fingerprinting with a deterministic JSON-safe normalized transcript representation while preserving prefix-change detection and replay fences."
+}

@@ -1,9 +1,13 @@
 import crypto from "node:crypto";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { loadConfig, resolveRoute, type ResolvedRoute, type SandSessionOptions } from "./config.js";
-export { ensureControlService } from "./control-service.js";
 import { type NormalizedUsage, type RouterResult, type StreamPart } from "./response.js";
-import { createCodexTurnState } from "./turn-state.js";
-import { executeCodexTurn } from "./turn-execution.js";
+import { LocalRuntimeClient, RuntimeFault } from "./runtime-client.js";
+import { RuntimeExecution } from "./runtime-execution.js";
+import { shouldUseCodexRouter as matchesPilotPolicy } from "./pilot-policy.js";
+import { isRecord } from "./sand-values.js";
 
 interface SessionOptions {
   requestedModel?: unknown;
@@ -40,6 +44,7 @@ export interface CodexRouterSession {
   sessionId: string;
   nextExecutorOrdinal: number;
   getModelId(): string;
+  getResolvedModelId(): string;
   getExecutor(initialMessages?: unknown): PromptExecutor;
 }
 
@@ -104,7 +109,16 @@ export function createExecutor(
   executorSessionId: string,
   initialMessages?: unknown
 ): PromptExecutor {
-  const state = { messages: [] as unknown[], turnState: createCodexTurnState() };
+  const config = loadConfig();
+  if (!config.runtime) throw new RuntimeFault("RUNTIME_CONFIGURATION_REQUIRED");
+  const execution = new RuntimeExecution({
+    boundary: new LocalRuntimeClient(config.runtime), stateDirectory: config.runtime.stateDirectory,
+    conversationId: String(session.sessionOptions.conversationId || ""),
+    transcriptId: String(session.sessionOptions.transcriptId || ""),
+    executorOrdinal: executorSessionId === session.sessionId ? 0 : Number(executorSessionId.split(":aux:").at(-1)),
+    route: session.route
+  });
+  const state = { messages: [] as unknown[] };
   if (initialMessages) {
     state.messages.push(...(Array.isArray(initialMessages) ? initialMessages : [initialMessages]));
   }
@@ -120,22 +134,22 @@ export function createExecutor(
       return [...state.messages];
     },
     clearMessages() {
+      if (execution.isStarted()) throw new RuntimeFault("ACTIVE_EXECUTOR_CANNOT_CLEAR");
       state.messages = [];
     },
     stream(ctx: SandContext | undefined, invocationId: string | undefined, tools: unknown) {
       try { session.onRequestId && session.onRequestId(invocationId); } catch {}
       const processing = (async () => {
         try {
-          return await executeCodexTurn({
-            messages: state.messages,
-            tools,
-            sessionOptions: session.sessionOptions,
-            sessionId: executorSessionId,
-            invocationId,
-            turnState: state.turnState,
-            signal: ctx?.signal
-          });
+          return await execution.run([...state.messages], tools, invocationId, ctx?.signal);
         } catch (error) {
+          if (error instanceof RuntimeFault) {
+            console.error(
+              `[grok-codex-router] runtime-fault code=${error.code} uncertain=${error.uncertain}`
+            );
+          } else {
+            console.error("[grok-codex-router] runtime-fault code=RUNTIME_EXECUTION_FAILED uncertain=true");
+          }
           return errorResult(session.route.model, invocationId, error);
         }
       })();
@@ -148,9 +162,28 @@ export function isCodexRouterEnabled(): boolean {
   return loadConfig().enabled;
 }
 
+/** Only this exact allowlisted profile is read; Temporal and all other work stay stock. */
+export function shouldUseCodexRouter(sessionOptions: SandSessionOptions = {}): boolean {
+  try {
+    const config = loadConfig();
+    const agentId = sessionOptions.conversationId;
+    if (!config.enabled || typeof agentId !== "string" || !/^[a-zA-Z0-9_-]+$/.test(agentId) ||
+        !config.pilot?.agentIds.includes(agentId)) return false;
+    const root = process.env.SAND_DATA_ROOT || path.join(os.homedir(), "sand-data");
+    const directory = path.join(root, "agents", agentId);
+    if (fs.existsSync(path.join(directory, "group.json"))) return false;
+    const profile: unknown = JSON.parse(fs.readFileSync(path.join(directory, "profile.json"), "utf8"));
+    return isRecord(profile) && matchesPilotPolicy({
+      enabled: config.enabled, allowlistedAgentIds: new Set(config.pilot.agentIds),
+      executionHarness: profile.harness, sessionOptions
+    });
+  } catch { return false; }
+}
+
 export function createCodexRouterSession(options: SessionOptions = {}): CodexRouterSession {
   const config = loadConfig();
   const sessionOptions = options.sessionOptions || {};
+  if (!shouldUseCodexRouter(sessionOptions)) throw new RuntimeFault("PILOT_NOT_ALLOWLISTED");
   const route = resolveRoute(config, sessionOptions);
   const session: CodexRouterSession = {
     requestedModel: options.requestedModel,
@@ -160,6 +193,9 @@ export function createCodexRouterSession(options: SessionOptions = {}): CodexRou
     sessionId: sessionIdFor(route),
     nextExecutorOrdinal: 0,
     getModelId() {
+      return this.route.model;
+    },
+    getResolvedModelId() {
       return this.route.model;
     },
     getExecutor(initialMessages) {

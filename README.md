@@ -1,4 +1,199 @@
-# Grok Codex Router
+# ROCANIIRU Grok Codex Router — Milestone 1 source candidate
+
+This fork starts at `IgorWarzocha/grok-codex-router@599a2013b15592d17fe897126f549974351e4c3f`.
+It retains the upstream source layout and wire helpers, but its package entrypoint
+routes through the **existing** ROCANIIRU Runtime CLI/MCP boundary, not the private
+Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
+
+**Milestone 1 pilot acceptance is complete on the patched 0.57.0 / a5b5d79 production path.** Human Gate 1 originally created isolated BOX pilot
+`97cf83a0-0401-4481-9f3f-8b321921f8b0`; it later drifted durably Temporal. After
+same-ID repair was exhausted, the Human authorized exactly one replacement BOX
+pilot, `507d1f34-56d5-4085-9b48-23d40cb9c914`. Its durable profile is
+`harness:"box"`, serverId `4270685`. It had no Turn at replacement creation;
+the later single acceptance attempt is described below. Gate 2A built and staged the patched
+Codex/Runtime candidates without changing a current pointer or process. Its final
+read-only postflight observed provider-owned host drift and a
+durable pilot profile of `harness:"temporal"`. The host drift is now resolved:
+current `a5b5d79` now has its own VERIFIED fingerprint-bound manifest while
+`5ec1e7d`, `251860d` and `18cd065` remain supported separately and 0.53 remains
+fail-closed. The pilot
+drift was resolved by the explicitly authorized replacement ID; the retired pilot
+remains Temporal and is outside the allowlist. The bounded,
+thread-local
+`toolIsolation:"dynamicOnly"` Codex source patch and Runtime/router capability
+wiring remain separate from host compatibility. The pilot is now the only source
+allowlist identity and its fixed route is `chatgpt-web/extra-high / xhigh`, while
+the source default remains `enabled:false`; the live production config alone enables
+the singleton pilot route. Gate 2B promoted the patched Codex/Runtime successfully.
+After the first Gate-2C attempt failed closed on provider host drift, `a5b5d79`
+compatibility was VERIFIED, current source was freshly repacked/reaccepted, and
+Gate 2C completed: router/config installed, pristine stock backup written, exact
+host patch applied, and one supervisor restart completed. The first approved pilot
+Turn returned the expected text but fell through to stock inference because ordinary
+0.57 main-session options omit `isSummarizationSession`; source fix `3274d17`
+corrected that exact shape. Package SHA-256
+`42ca75a055d93094d6e03c52bf90e3d3c23221cf3282d14bd89abb75068da6c5`
+was then installed and one supervisor restart applied it.
+
+Exactly one retry Turn was subsequently accepted. The live router now selected the
+pilot route (`chatgpt-web/extra-high / xhigh`), but the Turn failed before the
+first Runtime mutation: Runtime event cursor and the retained 25-Thread set did not
+move, no assistant reply was appended, and Sand settled the Turn as retryable
+`SAND-E0406`. The prior stock Turn had retained a signed assistant
+`reasoning` part; current router validation rejected that private part before
+`journal.begin`. A second source-only fix drops assistant reasoning from
+Runtime/Codex transcript injection while continuing to reject private reasoning in
+user/tool input. Exact artifact
+`64689d1efdbe612d034244fe679ed1fdb08a594a32d53c5cfad7be12f69719aa`
+from source `e7206a4483478e072c63e3b6c3386e45ab5a5295` is now live after exactly
+one supervisor restart. Post-restart checks showed zero automatic resume/provider
+activity and unchanged host/Runtime/Computer invariants.
+
+The separately approved acceptance Turn then positively traversed the router and
+Runtime: Runtime created a new `grok:` session/thread/Turn, advanced its event
+cursor from `55834575072` to `55834575093`, and produced the expected dynamic
+`SendToUser` call containing `ROCANIIRU_M1_PILOT_ACCEPTANCE_PASS`. The handoff
+did not complete. Sand settled the client Turn as retryable `SAND-E0406`, no
+assistant transcript entry was delivered, router journal became `BLOCKED`, and
+Runtime retains one active Turn / one pending dynamic input. No resend, cancellation,
+additional fix or additional restart was performed. Gate artifacts, current host
+proof and harness authority
+are documented in `GATE-2A-EVIDENCE-20260919.json`,
+`GATE-2B-EVIDENCE-20260919.json`,
+`GATE-2C-EVIDENCE-20260919.json`,
+`PILOT-FIRST-TURN-EVIDENCE-20260919.json`,
+`PILOT-RETRY-EVIDENCE-20260919.json`,
+`PILOT-ACCEPTANCE-EVIDENCE-20260919.json`,
+`PILOT-CONTRACT-REPAIR-EVIDENCE-20260919.json`,
+`HOST-5EC1E7D-EVIDENCE-20260919.json`, `HOST-A5B5D79-EVIDENCE-20260919.json`,
+`PILOT-HARNESS-EVIDENCE-20260919.json`,
+`PILOT-REPLACEMENT-EVIDENCE-20260919.json` and
+`PRODUCTION-ACTIVATION-PREP-20260919.md`.
+
+The later recovery gate first interrupted and archived that orphaned Runtime Turn,
+then advanced only the Runtime App Server child from generation 13 to 14 so the
+stale pending server request disappeared. The blocked router journal was closed
+against the independently proven interrupted/archived Runtime state.
+
+An actual host-contract gap was then repaired: the inner router session now exposes
+`getResolvedModelId()` with the same fixed route as `getModelId()`. Source
+`6711ae13987cb5b4852ee3298b136d47ddadf366` packaged to 158520 bytes /
+SHA-256 `e134ef299343149a83496c000d24403a1dc72adbebaef7317ebfc9f9582299c9`
+and is live after exactly one supervisor restart
+`grok-codex-router-1789821001599-02908436`.
+
+The one bounded post-repair Turn still reproduced `SAND-E0406`, so that contract
+gap was not the primary failure. Its Runtime Turn was likewise interrupted,
+archived, and cleared through App Server generation 15; router journal is again
+`active:null`, Runtime has 27 retained Threads with zero pending/UNKNOWN/active/
+blocked work, and Computer remains `clear/CLEAR`.
+
+Current source-only commit `36e8d3808661e3cbd69331b7ecd5ca494ac9d41f`
+adds only sanitized `RuntimeFault.code` / `uncertain` logging. Its candidate
+package is 158651 bytes / SHA-256
+`f9e990c1ce01fc87e0ec8dc628a5f63e20ca13569d773be7c0d247e96b116b14`;
+that diagnostic is now live after exactly one supervisor restart
+`grok-codex-router-1789822659539-3f004c60`.
+
+The one bounded diagnostic Turn captured the first exact inner fault:
+`NON_JSON_VALUE uncertain=false`. All later
+`PENDING_RUN_NO_REPLAY uncertain=true` entries are secondary retry attempts after
+the deterministic run had already been fenced. Source ordering identifies
+`this.consumedPrefixHash = fingerprint(messages)` in
+`src/runtime-execution.ts` as the failing fingerprint: all Runtime admission
+mutations were already ACKed, and that is the next fingerprint before
+`observe()`. The exact non-JSON field inside the raw Sand message objects was not
+captured and is not inferred.
+
+The diagnostic Runtime Turn itself completed successfully and produced durable
+terminal output, but Sand had already settled `SAND-E0406`. The completed session
+was archived, exact blocked runHash
+`4f9ad1679fc2ad75809b5cba6b8da7eaf33e4a806ee4ad1634f40d4cb05189c3`
+was moved to completed, and router journal is again `active:null`. At that
+diagnostic boundary Runtime was generation 15 / PID 1658692 with 28 retained Threads and zero
+pending/UNKNOWN/active/blocked work. See
+`PILOT-FAULT-DIAGNOSTIC-EVIDENCE-20260919.json`.
+
+Source commit `581dfd143ec6ac42a6b1ec23e226db1b4959981f` then replaced raw
+Sand-message hashing with deterministic JSON-safe normalized transcript
+fingerprints for both consumed-prefix and assistant-echo replay fences. Focused
+Runtime-router tests pass 40/40 and the full router suite passes 103/103 plus
+telemetry, knip and diff-check. Exact live package: 160281 bytes / SHA-256
+`9f7c482af345f781d223c69c821a5c9434b13fb63a268ce3abeaae733a35354e`,
+loaded by one restart `grok-codex-router-1789824122588-5437c29c`.
+
+That repair worked through the previously failing boundary. The one bounded Turn
+`t5u` reached `SendToUser`, `runtime_respond` was ACKed and the user-facing
+transcript gained `t5s0 = ROCANIIRU_M1_NORMALIZED_FINGERPRINT_PASS`. Runtime
+then emitted `engine/serverRequestResponded` carrying the already answered
+request_id 0. The router incorrectly classified that confirmation event as a new
+native execution request and raised
+`NATIVE_EXECUTION_REQUEST_FORBIDDEN uncertain=true`. Runtime itself completed
+the Turn durably, but Sand settled `SAND-E0406`, so M1 acceptance is still
+incomplete.
+
+The completed Runtime session was archived and exact UNKNOWN journal runHash
+`79adecc49a4520cfae80f73452f76dd663f21520efc201c56056122117f0fb7b`
+was reconciled to completed. Current Runtime is generation 15 / PID 1658692 with
+29 retained Threads and zero pending/UNKNOWN/active/blocked work; router journal is
+`active:null`. See `PILOT-NORMALIZED-FINGERPRINT-EVIDENCE-20260919.json`.
+
+Source commit `ee4f61ab2e1b1738139aaf4846e95fdb2abe37db` then added the
+narrow confirmation-event exception: `engine/serverRequestResponded` is accepted
+only when event `request_id` equals `params.requestId`,
+`params.method === "item/tool/call"`, and that exact generation/request identity
+was already observed in the current Runtime Turn. All other request-bearing
+non-`item/tool/call` events remain fail-closed. Focused Runtime-router tests pass
+43/43 and the complete router suite passes 106/106 plus telemetry, knip and
+diff-check.
+
+Exact live package is 161372 bytes / SHA-256
+`6392a8bf7819eb78a11b763580f2aba02c016225ee853d57b0e1dc2cedbc345f`,
+loaded by exactly one restart `grok-codex-router-1789826965580-3603ce7b`.
+Restart postflight showed zero automatic activity.
+
+The one bounded final Turn `t6u` then passed end-to-end. Runtime accepted the
+dynamic `SendToUser` request, the identity-checked
+`engine/serverRequestResponded` confirmation, terminal `completed`, and
+automatic archive. Sand durably settled client nonce
+`036d13fe-d07a-46dd-8734-3a10e1f7af28` as `outcome:"success"`, and the
+user-facing transcript contains
+`t6s0 = ROCANIIRU_M1_CONFIRMATION_EVENT_PASS`. Router journal completed exact
+runHash
+`cad0472cb2c6e3ff3e91f752c06a6dfec1a8f9601c0a7e6d5105b6c69b1acbba`
+with `active:null`.
+
+**Milestone 1 pilot acceptance is complete.** Current Runtime remains generation
+15 / PID 1658692 with 30 retained Threads and zero pending/UNKNOWN/active/blocked
+work; Computer remains `clear/CLEAR`. See
+`PILOT-FINAL-ACCEPTANCE-EVIDENCE-20260919.json`.
+
+One separate post-turn follow-up remains: after `AGENT_REQUEST_END`, Sand memory
+extraction logged `INVOCATION_ID_REQUIRED`. It occurred after the successful
+root-Turn settlement and does not change the M1 acceptance result; no fix was
+applied in this gate.
+
+See [`MILESTONE-1.md`](MILESTONE-1.md) for the implementation contract and status,
+[`NATIVE-EXECUTION-POLICY.md`](NATIVE-EXECUTION-POLICY.md) for the thread policy,
+[`DYNAMIC-ONLY-EVIDENCE-20260919.json`](DYNAMIC-ONLY-EVIDENCE-20260919.json) for this
+source-only continuation, [`HOST-057-EVIDENCE-20260919.json`](HOST-057-EVIDENCE-20260919.json)
+for the accepted 0.57/Gate-1 snapshot,
+[`ACTIVATION-PREP-EVIDENCE-20260919.json`](ACTIVATION-PREP-EVIDENCE-20260919.json)
+for the current live read-only activation state, and [`LEARNINGS.md`](LEARNINGS.md)
+for corrections.
+
+Local development uses Node, Bun and the pinned dev dependencies. `npm run check`
+builds and runs **local fake/fixture tests only**, plus upstream local telemetry
+ingestion. The old live `vm-contract` test is not part of that command.
+`npm run knip` checks both the active modules and deliberately retained upstream
+modules; lint entry declarations do not put retained transports on the live path.
+
+## Archived upstream README — not the M1 runbook
+
+The following original description and commands are retained for upstream
+comparison. They are **not current installation or operation instructions** for
+this ROCANIIRU candidate. In particular, do not apply upstream `install.sh` to the
+production 0.57 host or the retained 0.53 compatibility target.
 
 > [!WARNING]
 > This is an unofficial experimental project. It patches Grok Bot and uses a private ChatGPT Codex endpoint that can change without notice. It may break your VM, lose work, violate service terms, or get an account restricted or banned. You use it entirely at your own risk. The author accepts no responsibility for broken installations, lost data, account action, or anything else that goes sideways.

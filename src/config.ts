@@ -7,6 +7,7 @@ const CONTEXT_WINDOW_OPTIONS = [272_000, 472_000, 872_000] as const;
 export type ContextWindowTokens = typeof CONTEXT_WINDOW_OPTIONS[number];
 export const ROUTER_MODELS = ["gpt-5.6-sol", "gpt-5.6-luna", "gpt-5.6-terra"] as const;
 export type RouterModel = typeof ROUTER_MODELS[number];
+export const M1_PILOT_AGENT_ID = "507d1f34-56d5-4085-9b48-23d40cb9c914";
 type TransportMode = "cached-websocket" | "websocket" | "sse";
 type WorkloadClass = "agent" | "summarization" | "subagent" | "browser" | "computer" | "automation" | "group";
 type RoutedWorkload = Exclude<WorkloadClass, "agent">;
@@ -29,6 +30,14 @@ export interface RouterConfig {
   default: Route;
   agents: Record<string, Route>;
   classes: Record<RoutedWorkload, Route>;
+  /** New M1 fields are additive; legacy transport settings remain archival. */
+  pilot?: { agentIds: string[] };
+  runtime?: {
+    python: string;
+    entrypoint: string;
+    socket: string;
+    stateDirectory: string;
+  };
   transport: {
     mode: TransportMode;
     maxRetries: number;
@@ -37,6 +46,7 @@ export interface RouterConfig {
 
 export interface SandSessionOptions {
   conversationId?: unknown;
+  transcriptId?: unknown;
   isSummarizationSession?: unknown;
   isComputerUseSubagent?: unknown;
   isBrowserUseSubagent?: unknown;
@@ -48,7 +58,7 @@ export interface SandSessionOptions {
 
 export const DEFAULT_CONFIG = Object.freeze<RouterConfig>({
   version: 1,
-  enabled: true,
+  enabled: false,
   authStore: "pi",
   contextWindows: {
     "gpt-5.6-sol": 272_000,
@@ -56,7 +66,10 @@ export const DEFAULT_CONFIG = Object.freeze<RouterConfig>({
     "gpt-5.6-terra": 272_000
   },
   default: { model: "gpt-5.6-sol", reasoningEffort: "high" },
-  agents: {},
+  agents: {
+    [M1_PILOT_AGENT_ID]: { model: "chatgpt-web/extra-high", reasoningEffort: "xhigh" }
+  },
+  pilot: { agentIds: [M1_PILOT_AGENT_ID] },
   classes: {
     summarization: { model: "gpt-5.6-sol", reasoningEffort: "high" },
     subagent: { model: "gpt-5.6-sol", reasoningEffort: "high" },
@@ -152,14 +165,36 @@ export function validateConfig(raw: unknown): RouterConfig {
       parseContextWindow(rawContextWindows[model] ?? legacyContextWindow)
     ])
   ) as Record<RouterModel, ContextWindowTokens>;
+  let pilot: RouterConfig["pilot"];
+  if (raw.pilot !== undefined) {
+    if (!isRecord(raw.pilot) || !Array.isArray(raw.pilot.agentIds) ||
+        raw.pilot.agentIds.some((id) => typeof id !== "string" || !/^[a-zA-Z0-9_-]+$/.test(id)) ||
+        new Set(raw.pilot.agentIds).size !== raw.pilot.agentIds.length) {
+      throw new Error("pilot.agentIds must contain unique immutable agent IDs");
+    }
+    pilot = { agentIds: [...raw.pilot.agentIds] as string[] };
+  }
+  let runtime: RouterConfig["runtime"];
+  if (raw.runtime !== undefined) {
+    const inputRuntime = raw.runtime;
+    if (!isRecord(inputRuntime) || ["python", "entrypoint", "socket", "stateDirectory"].some((key) =>
+      typeof inputRuntime[key] !== "string" || !path.isAbsolute(inputRuntime[key] as string))) {
+      throw new Error("runtime client and state paths must be absolute");
+    }
+    if (inputRuntime.socket !== "/run/rcnir-codex-runtime/mcp.sock") throw new Error("runtime.socket is not the assigned Runtime boundary");
+    runtime = { python: inputRuntime.python as string, entrypoint: inputRuntime.entrypoint as string,
+      socket: inputRuntime.socket, stateDirectory: inputRuntime.stateDirectory as string };
+  }
   return {
     version: 1,
-    enabled: raw.enabled ?? true,
+    enabled: raw.enabled ?? false,
     authStore: raw.authStore,
     contextWindows,
     default: validateRoute(raw.default, "default"),
     agents,
     classes,
+    ...(pilot ? { pilot } : {}),
+    ...(runtime ? { runtime } : {}),
     transport: { mode: raw.transport["mode"] as TransportMode, maxRetries }
   };
 }

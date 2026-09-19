@@ -1,0 +1,154 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-19T12:14:32Z",
+  "scope": "Milestone 1 second-fix live deployment and exactly one canonical pilot acceptance Turn",
+  "approved_artifact": {
+    "source_commit": "e7206a4483478e072c63e3b6c3386e45ab5a5295",
+    "package_bytes": 158036,
+    "package_sha256": "64689d1efdbe612d034244fe679ed1fdb08a594a32d53c5cfad7be12f69719aa"
+  },
+  "preflight": {
+    "status": "PASS",
+    "host_version": "a5b5d79",
+    "host_sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+    "production_config_sha256": "e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f",
+    "runtime_generation": 13,
+    "runtime_child_pid": 1569085,
+    "runtime_thread_count": 25,
+    "runtime_latest_event": 55834575072,
+    "runtime_pending_inputs": 0,
+    "runtime_unknown_operations": 0,
+    "runtime_active_turns": 0,
+    "runtime_blocked_threads": 0,
+    "runtime_persistence": "healthy",
+    "dynamic_only_tool_policy": true,
+    "computer_mutation_state": "clear",
+    "computer_execution_state": "CLEAR",
+    "pilot_agent_id": "507d1f34-56d5-4085-9b48-23d40cb9c914",
+    "pilot_server_id": "4270685",
+    "pilot_harness": "box",
+    "supervisor_pending_command": false,
+    "provider_drift": false
+  },
+  "artifact_transfer": {
+    "remote_bytes": 158036,
+    "remote_sha256": "64689d1efdbe612d034244fe679ed1fdb08a594a32d53c5cfad7be12f69719aa",
+    "regenerated": false,
+    "production_shaped_history_smoke": "PASS"
+  },
+  "live_mutations": {
+    "router_package_replacements": 1,
+    "production_config_writes": 0,
+    "host_patch_writes": 0,
+    "runtime_changes": 0,
+    "gate_2b_repeats": 0,
+    "supervisor_restarts": 1,
+    "pilot_acceptance_sends": 1,
+    "additional_pilot_sends": 0
+  },
+  "restart": {
+    "id": "grok-codex-router-1789819567026-ea0c50f6",
+    "supervisor_log_occurrences": 1,
+    "post_restart_host_version": "a5b5d79",
+    "post_restart_host_sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+    "post_restart_config_sha256": "e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f",
+    "post_restart_pending_command": false
+  },
+  "automatic_activity_check": {
+    "status": "PASS_ZERO_ACTIVITY",
+    "transcript_entries_before_restart": 3,
+    "transcript_entries_after_restart": 3,
+    "send_acceptance_records_before_restart": 2,
+    "send_acceptance_records_after_restart": 2,
+    "router_session_count_before_restart": 4,
+    "router_session_count_after_restart": 4,
+    "runtime_latest_event_before_restart": 55834575072,
+    "runtime_latest_event_after_restart": 55834575072
+  },
+  "post_restart_routing": {
+    "pilot": true,
+    "summarization": false,
+    "retired_pilot": false,
+    "user_facing_temporal_bot": false,
+    "subagent": false,
+    "browser": false,
+    "computer": false,
+    "automation": false,
+    "group": false
+  },
+  "acceptance_turn": {
+    "send_count": 1,
+    "client_resend_count": 0,
+    "accepted": true,
+    "client_nonce": "369698f6-cb29-43ec-87c6-d9b8e4c837af",
+    "input_digest": "3aa9a00dbb7c7aef175a33487afbd0980ba70b3581f22f6dea603c3b48830662",
+    "accepted_at_ms": 1789819655364,
+    "user_entry_id": "t2u",
+    "assistant_entry": null,
+    "expected_response_observed": false
+  },
+  "positive_router_runtime_traversal": {
+    "router_selected": true,
+    "route": "chatgpt-web/extra-high",
+    "reasoning_effort": "xhigh",
+    "runtime_thread_count_before": 25,
+    "runtime_thread_count_after": 26,
+    "runtime_latest_event_before": 55834575072,
+    "runtime_latest_event_after": 55834575093,
+    "runtime_session_id": "grok:916cabe323e4803f8c6959b3:ce9db519eabb16246e86d7f9",
+    "runtime_thread_id": "01a0b990-9de0-7360-bf0f-17383f9ff53d",
+    "runtime_turn_id": "01a0b990-aa20-7642-9ffb-7004f4be75df",
+    "runtime_session_open": "ACK",
+    "runtime_session_inject_items": "ACK",
+    "runtime_turn_start": "ACK",
+    "dynamic_tool_call": {
+      "tool": "SendToUser",
+      "call_id": "call_jF3tMOsP6ATENjCLZik2IrpC_7PsG7Oz",
+      "request_id": 0,
+      "arguments": {
+        "type": "text",
+        "content": "ROCANIIRU_M1_PILOT_ACCEPTANCE_PASS"
+      }
+    }
+  },
+  "failure": {
+    "status": "FAIL_DYNAMIC_TOOL_HANDOFF",
+    "sand_settlement": {
+      "outcome": "error",
+      "settled_at_ms": 1789819664827,
+      "error_code": "SAND-E0406",
+      "error_domain": "agent",
+      "error_retryable": true
+    },
+    "router_journal_phase": "BLOCKED",
+    "router_journal_pending": 0,
+    "runtime_pending_inputs": 1,
+    "runtime_active_turns": 1,
+    "runtime_unknown_operations": 0,
+    "assistant_response_delivered": false,
+    "internal_router_session_count_for_this_client_send": 4,
+    "exact_router_fault_code": "NOT_SURFACED_IN_HOST_LOGS",
+    "conclusion": "The exact Turn positively traversed router and Runtime and reached a Runtime dynamic SendToUser call, but the handoff did not complete and no pilot response was delivered."
+  },
+  "final_live_state": {
+    "host_version": "a5b5d79",
+    "host_sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+    "production_config_sha256": "e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f",
+    "supervisor_pending_command": false,
+    "runtime_generation": 13,
+    "runtime_thread_count": 26,
+    "runtime_latest_event": 55834575093,
+    "runtime_pending_inputs": 1,
+    "runtime_unknown_operations": 0,
+    "runtime_active_turns": 1,
+    "runtime_blocked_threads": 0,
+    "runtime_persistence": "healthy",
+    "dynamic_only_tool_policy": true,
+    "computer_mutation_state": "clear",
+    "computer_execution_state": "CLEAR"
+  },
+  "acceptance": "FAIL_RESPONSE_NOT_DELIVERED_AFTER_POSITIVE_RUNTIME_TRAVERSAL",
+  "milestone_1_pilot_acceptance_complete": false,
+  "further_live_mutation_performed": false,
+  "next_boundary": "New Human approval is required before any Runtime cancellation/recovery, router fix, additional supervisor restart, additional pilot Turn, or later production phase."
+}

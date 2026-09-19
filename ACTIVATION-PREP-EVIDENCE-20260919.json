@@ -1,0 +1,209 @@
+{
+  "format_version": 1,
+  "historical_snapshot": true,
+  "superseded_by": "GATE-2A-EVIDENCE-20260919.json",
+  "recorded_at_utc": "2026-09-19T01:06:22Z",
+  "scope": "Milestone 1 production activation preparation; source/local plus live read-only only",
+  "live_mutations_performed": 0,
+  "pilot": {
+    "id": "97cf83a0-0401-4481-9f3f-8b321921f8b0",
+    "name": "ROCANIIRU Codex BOX M1 Pilot",
+    "authoritative_profile_harness": "box",
+    "is_running": false,
+    "source_allowlist": [
+      "97cf83a0-0401-4481-9f3f-8b321921f8b0"
+    ],
+    "source_enabled_default": false,
+    "source_route": {
+      "model": "chatgpt-web/extra-high",
+      "reasoningEffort": "xhigh"
+    }
+  },
+  "routing_acceptance": {
+    "router_tests": 93,
+    "router_tests_failed": 0,
+    "telemetry": "PASS",
+    "knip": "PASS",
+    "production_package_smoke": {
+      "pilot": true,
+      "other_box": false,
+      "summarization": false,
+      "subagent": false,
+      "browser": false,
+      "computer": false,
+      "automation": false,
+      "group": false
+    },
+    "runtime_node_tests": 219,
+    "runtime_node_tests_failed": 0,
+    "runtime_python_tests": 114,
+    "runtime_python_tests_failed": 0,
+    "runtime_source_changed": false
+  },
+  "router_artifacts": {
+    "stage_transfer_manifest": {
+      "path": "M1-STAGE-TRANSFER-MANIFEST-20260919.json",
+      "sha256": "d80df970f0b02f4eb840f295bcb55908eedb0f52dcadb0ffa5c847d332e8937a",
+      "max_part_base64_text_bytes": 48000,
+      "runtime_part_count": 21,
+      "router_part_count": 5
+    },
+    "package": {
+      "name": "rcnir-grok-codex-router-0.1.0-rcnir-m1.0.tgz",
+      "bytes": 154140,
+      "sha256": "b720fc269d047f05cce7ce9d5cf1fe0b20c5fda9807f79242216dbf868262f5f"
+    },
+    "production_config": {
+      "path_in_source": "M1-PRODUCTION-CONFIG-20260919.json",
+      "bytes": 1385,
+      "sha256": "acc6b5a4e90cb2496d4370d8a90dbe6a9d3d733ff5e5d7ecedc208c113d47f42"
+    }
+  },
+  "runtime_candidate": {
+    "repository": "rcnir/execution-runtime",
+    "branch": "agent/grok-router-m1-20260919",
+    "commit": "72c80325e0a36c4068e8f02f4b750fc4bd8db26e",
+    "codex_runtime_archive_bytes": 1536000,
+    "codex_runtime_archive_sha256": "b6097a5ef8624ee93459ac3b86c01b62f977dc6852c970de8ae1a7336da37929",
+    "codex_runtime_gzip_bytes": 720463,
+    "codex_runtime_gzip_sha256": "5cb6ea8f31cd842590c9114e492ada63188731b242006b069836f2e14de5398d",
+    "codex_runtime_gzip_base64_text_bytes": 960620,
+    "codex_runtime_gzip_base64_text_sha256": "b7edcba46eae453a54d104221a5295bdd58863ca232864f7d52c7c0131bbadc8",
+    "deploy_owner_source_changed_from_live": false,
+    "state_version": 1,
+    "tool_isolation_state_change": "optional additive session field; pre-M1 sessions without the field remain valid"
+  },
+  "codex_candidate": {
+    "upstream_commit": "6b9826e3aa83b1a5947db50f4332cb9c65f1b340",
+    "version": "0.154.0",
+    "patch_sha256": "3084657c327fe53af7ef55f0fe718ed4bca78f1a39a5b989959bde298e617465",
+    "patch_manifest_sha256": "f4df53e67fc999d0cfafacef6caadf60d22be892420330b90c2a0a9b0be7406e",
+    "rust_toolchain": "1.95.0",
+    "target": "x86_64-unknown-linux-musl",
+    "rustup_init_sha256": "dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
+    "zig_version": "0.14.0",
+    "zig_tarball_sha256": "473ec26806133cf4d1918caf1a410f8403a13d979726a9045b421b685031a982",
+    "cmake_version": "4.4.3",
+    "cmake_cp313_linux_x86_64_wheel_sha256": "bae3c4954623ec4d62e62c70443f0da7988b733111c2871fcc6a31ead5137e20",
+    "ninja_version": "1.13.2",
+    "ninja_cp313_linux_x86_64_wheel_sha256": "65a24341b5ac09fcadcc37082660be40a94174e51a937fabf6e2cae26225fa2c",
+    "rusty_v8_version": "150.4.0",
+    "rusty_v8_checksum_manifest_sha256": "9bd5beb3a7bfa4f95bc887476ec3e4d564254c1815efe63296740e09bcc8665b",
+    "rusty_v8_archive_sha256": "d06e08bcbf45a90cfeac8a4d322c7288775cb5e3609ca703ea312b155174e46a",
+    "rusty_v8_binding_sha256": "7727826ae479bdb645e807239fb12d1f8e2e23de7a6cf16f5ee592690d1d8506",
+    "rootless_linux_build_probe": "BOUNDARY_PROVED: Rust 1.95 x86_64-musl link works and pinned V8/toolchain inputs resolve; full codex binary requires authoritative native x86_64 Gate 2A build because arm64 macOS host proc-macro/native dependencies are not a production-equivalent link environment",
+    "linux_binary_bytes": null,
+    "linux_binary_sha256": null
+  },
+  "live_runtime_baseline": {
+    "current_target": "/opt/rocaniiru/codex-runtime/0.1.0-3c4f121",
+    "source_commit": "3c4f1219164278f1ae67266e81b14f00b7904793",
+    "source_archive_sha256": "c91bae3c1705d2748dd84044753e4b6d98e60d164b1a9b1b281faca64f6b6848",
+    "codex_version": "codex-cli 0.154.0",
+    "stock_codex_sha256": "3188814c35471432d4123203e0eb38e5bddc60226e3d7ddf0e59e649ea140022",
+    "stock_codex_bytes": 262858016,
+    "runtime_owned_app_server_pid": 883943,
+    "generation": 12,
+    "started": true,
+    "ready": true,
+    "persistence": "healthy",
+    "fenced": false,
+    "uncertain": false,
+    "unknown_operation_count": 0,
+    "pending_input_count": 0,
+    "retained_thread_count": 25,
+    "retained_thread_set_sha256": "66aab9a7ede58034ef51cfd39714e5cac9e3a84a0980c18580b2372324c31d55",
+    "state_json_bytes": 829029,
+    "state_json_sha256": "1be40ad48c92fca2fa4f0b80bffba6e9561e8f224c65e06aa0c510b1b77b6369",
+    "active_turn_count": 0,
+    "blocked_thread_count": 0,
+    "dynamic_only_capability_live": false,
+    "unrelated_app_server_pid_at_preflight": 1188039
+  },
+  "live_capacity_preflight": {
+    "filesystem": "overlay",
+    "available_human": "110G",
+    "stock_standalone_release_human": "324M",
+    "current_runtime_package_human": "9.5M"
+  },
+  "previous_verified_host_baseline": {
+    "grok_bot_version": "0.57.0",
+    "host_version": "18cd065",
+    "path": "/home/box/sand-host/host-main.cjs",
+    "bytes": 26438264,
+    "sha256": "c667b530962bbf94a2ba77659b0440f20dd553dfdbabdd4a2cd157e4335bba29",
+    "router_markers": 0,
+    "actual_host_router_check": "PASS state=stock",
+    "deterministic_patched_bytes": 26439011,
+    "deterministic_patched_sha256": "07835cd847c027aa2628741c2fb93a7c2ebbcb67a55c4861254dfc51af522b1d",
+    "router_install_exists": false,
+    "router_config_exists": false,
+    "router_state_exists": false,
+    "pristine_backup_exists": false,
+    "supervisor_command_pending": false,
+    "supervisor_host_running": true,
+    "status": "HISTORICAL_ACCEPTED_BASELINE_SUPERSEDED_BY_EXTERNAL_HOST_UPDATE"
+  },
+  "current_live_host_readback": {
+    "grok_bot_version": "0.57.0",
+    "host_version": "251860d",
+    "path": "/home/box/sand-host/host-main.cjs",
+    "bytes": 26453384,
+    "sha256": "2354d46da4304d11110645f4e7fa565a15de1b30cd1d80971db2b8934a278161",
+    "router_markers": 0,
+    "host_state": "stock_unpatched",
+    "reviewed_057_manifest_check": {
+      "status": "PASS_STATE_STOCK",
+      "compat": "grok-bot-0.57-251860d",
+      "expected_bytes": 26453384,
+      "observed_bytes": 26453384,
+      "expected_sha256": "2354d46da4304d11110645f4e7fa565a15de1b30cd1d80971db2b8934a278161",
+      "exit_code": 0
+    },
+    "required_anchor_counts": {
+      "inferenceOwner": 1,
+      "inferenceHook": 1,
+      "mainSessionOptions": 1,
+      "mainSessionDispatch": 1
+    },
+    "anchor_positions": {
+      "inferenceOwner": 22850049,
+      "inferenceHook": 22852885,
+      "mainSessionOptions": 26007642,
+      "mainSessionDispatch": 26008904
+    },
+    "anchor_order": "PASS",
+    "anchor_proof": "VERIFIED",
+    "deterministic_patched_bytes": 26454131,
+    "deterministic_patched_sha256": "8d8c2c239667e38f421d6b96af994c279b69fdbaddbb91bed927f16a02aef5ea",
+    "supervisor": {
+      "host_running": true,
+      "host_version": "251860d",
+      "last_command_id": "upgrade-251860d",
+      "last_command_kind": "upgrade",
+      "pending_upgrade_version": null
+    },
+    "activation_paths_still_absent": true,
+    "compatibility_status": "VERIFIED_CURRENT_PRODUCTION_TARGET"
+  },
+  "other_live_gate_readback": {
+    "user_facing_bot_id": "139771d1-4e7d-4a8b-80a0-eddc438bccfc",
+    "user_facing_bot_harness": "temporal",
+    "computer_version": "0.2.3",
+    "computer_service_identity": "a6299bb2e1242f491855fd38608b0dc5f65c6f5f956f734cf5ba16aaf9527e41",
+    "computer_mutation_state": "clear",
+    "computer_execution_state": "CLEAR"
+  },
+  "next_human_gates": {
+    "status": "GATE_2A_READY_FOR_EXPLICIT_HUMAN_APPROVAL",
+    "2A": "BUILD_AND_STAGE_ONLY",
+    "2B": "RUNTIME_CODEX_PROMOTION_AFTER_2A_HASH_ACCEPTANCE",
+    "2C": "ROUTER_CONFIG_AND_VERIFIED_251860D_HOST_PATCH_AFTER_2B_PASS",
+    "first_pilot_turn": "SEPARATE_LATER_APPROVAL"
+  },
+  "gate_2a_create_new_preflight": {
+    "/workspace/rcnir-m1-activation-20260919": false,
+    "/opt/rocaniiru/codex-runtime/0.1.0-72c8032": false,
+    "/home/box/.codex/packages/standalone/releases/0.154.0-rcnir-dynamic-only-3084657-x86_64-unknown-linux-musl": false
+  }
+}

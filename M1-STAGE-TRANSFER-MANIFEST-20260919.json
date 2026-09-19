@@ -1,0 +1,164 @@
+{
+  "format_version": 1,
+  "part_encoding": "standard base64 without line breaks",
+  "scratch_root": "/workspace/rcnir-m1-activation-20260919/transfer",
+  "artifacts": [
+    {
+      "name": "runtime.tar.gz",
+      "raw_bytes": 720463,
+      "raw_sha256": "5cb6ea8f31cd842590c9114e492ada63188731b242006b069836f2e14de5398d",
+      "base64_text_bytes": 960620,
+      "base64_text_sha256": "b7edcba46eae453a54d104221a5295bdd58863ca232864f7d52c7c0131bbadc8",
+      "part_size_max": 48000,
+      "parts": [
+        {
+          "index": 0,
+          "bytes": 48000,
+          "sha256": "344c51ae55b0b41cecabed9838342a0f942340dc099bd79e5eef94a3d7c1f1e1"
+        },
+        {
+          "index": 1,
+          "bytes": 48000,
+          "sha256": "b4d88ea31fa6fe3fdc7d3911ed7552d92ea7f87cb48585dbfa2b51fabc0ec2b3"
+        },
+        {
+          "index": 2,
+          "bytes": 48000,
+          "sha256": "25cbff1b717dc7ec7ee306c7d9498e330064f85308293958c9f8e9297f19929e"
+        },
+        {
+          "index": 3,
+          "bytes": 48000,
+          "sha256": "6984ee277de97215af0dcbdadeed24fc2bb89f643ae32d6a16174e790f1c7463"
+        },
+        {
+          "index": 4,
+          "bytes": 48000,
+          "sha256": "56e9321177d9985cd1ad04c1a0552696e72979864dc56f3151d503ce5d7a010f"
+        },
+        {
+          "index": 5,
+          "bytes": 48000,
+          "sha256": "1060a0837885e060eff2e2fb6882eb38d944ec50cfd2cbf1a1653426f507cfed"
+        },
+        {
+          "index": 6,
+          "bytes": 48000,
+          "sha256": "5dd38aea0a25c33ee82a9db2822ce0ac5cc90ca6b587a1c7f9dde9ddbc82b38d"
+        },
+        {
+          "index": 7,
+          "bytes": 48000,
+          "sha256": "2ec59bda18759450ffddc8789bfa36dcdcddcc4d4f9a82a76f2287ff8a5e48bb"
+        },
+        {
+          "index": 8,
+          "bytes": 48000,
+          "sha256": "e0cd7dcd3a6710d621353eb30066d5e6db18ab95d8adb948c9bbbb12cf54f4a5"
+        },
+        {
+          "index": 9,
+          "bytes": 48000,
+          "sha256": "2d528bec9936384d96f55a97579898cbc239a81156c8643dee0f072770458d33"
+        },
+        {
+          "index": 10,
+          "bytes": 48000,
+          "sha256": "80d7033be31dcf4561e7af8f009c2b972c83c0fb327fafd441ae2e4b29f1c5e3"
+        },
+        {
+          "index": 11,
+          "bytes": 48000,
+          "sha256": "8ef43678a1004e0d00d3394171bcbe4ddc83a6254036c1e2b7f7f112f208063b"
+        },
+        {
+          "index": 12,
+          "bytes": 48000,
+          "sha256": "a0603699c56b59382ffb65812463c43dc79a614b35e8f9fd1fa8bebbb2cb34e4"
+        },
+        {
+          "index": 13,
+          "bytes": 48000,
+          "sha256": "f80ed0c2803937207dacc7b44da0ffc67f92c4789eb40d1e07ba5e1df3c8d7a7"
+        },
+        {
+          "index": 14,
+          "bytes": 48000,
+          "sha256": "29978b01c761e901827765b6a72e88568cf9765a1de2ce79f40be30ad37abc2a"
+        },
+        {
+          "index": 15,
+          "bytes": 48000,
+          "sha256": "59189f1f725830e7ae236d4c9ee23e8a50dafd0c8f3c9513fdc9a686b60eb502"
+        },
+        {
+          "index": 16,
+          "bytes": 48000,
+          "sha256": "2f6766ce6007598fdcda72f9fdca8e8dae19b38e5f2528b52a573f40d19c54d2"
+        },
+        {
+          "index": 17,
+          "bytes": 48000,
+          "sha256": "40fe2264a74fb90b4a5674f9363a9c5a20dc26d3f92213d0e46f3ba5c2dbf1d0"
+        },
+        {
+          "index": 18,
+          "bytes": 48000,
+          "sha256": "0eea4a1843518a3eb5de610d161a56e96e3c3370f55d58e26331dc6e9dc65973"
+        },
+        {
+          "index": 19,
+          "bytes": 48000,
+          "sha256": "e36c392c92d5f0ecb2841ce54316d646387be56f7f8ba671afc00701259ea06a"
+        },
+        {
+          "index": 20,
+          "bytes": 620,
+          "sha256": "739e0b94321b711796121a8559dd53ec224c2af554f85f4844cd43a40cd95647"
+        }
+      ]
+    },
+    {
+      "name": "router.tgz",
+      "raw_bytes": 154140,
+      "raw_sha256": "b720fc269d047f05cce7ce9d5cf1fe0b20c5fda9807f79242216dbf868262f5f",
+      "base64_text_bytes": 205520,
+      "base64_text_sha256": "f6ddd32aef563845be69b7c1147080f5ad1e52caadd25f0c72ee29ec4d8164cf",
+      "part_size_max": 48000,
+      "parts": [
+        {
+          "index": 0,
+          "bytes": 48000,
+          "sha256": "1d6bb7157d4bdc373de89737edeb99febbba4e8006a78b1307006a168a204381"
+        },
+        {
+          "index": 1,
+          "bytes": 48000,
+          "sha256": "16b1729b1aea0e9d6abe838b215d4809584a1dec09b9d2bca31c47777514eb24"
+        },
+        {
+          "index": 2,
+          "bytes": 48000,
+          "sha256": "82834edec09684863d9e31cefd3cf36875b393971d945c7814e08d7a93e356d8"
+        },
+        {
+          "index": 3,
+          "bytes": 48000,
+          "sha256": "c1885cca6cabe13e7253830c0061bf5c530f3d2a24be3220f4666ac3e7b409a2"
+        },
+        {
+          "index": 4,
+          "bytes": 13520,
+          "sha256": "4fd5fe17540dd64036363047796624559e08459cd08805ef27f42062d43c7d5c"
+        }
+      ]
+    },
+    {
+      "name": "M1-PRODUCTION-CONFIG-20260919.json",
+      "raw_bytes": 1385,
+      "raw_sha256": "acc6b5a4e90cb2496d4370d8a90dbe6a9d3d733ff5e5d7ecedc208c113d47f42",
+      "encoding": "utf-8",
+      "single_file": true
+    }
+  ]
+}
