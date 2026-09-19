@@ -538,7 +538,17 @@ also passed fresh compatibility acceptance, so the host blocker is cleared. **No
 next live mutation gate is currently open solely because the immutable pilot is
 authoritatively `harness:"temporal"`.** Current Grok Bot 0.57 exposes no supported
 same-ID Temporal-to-BOX repair RPC; `updateAgent` cannot change harness and
-`restoreTemporalAgentRouting` only restores Temporal routing projection.
+`restoreTemporalAgentRouting` only restores Temporal routing projection. This is
+also true below the app command layer: provider `UpdateGrokBotAgentRequest` has no
+harness field; identity-sync edits cannot push harness; internal harness migration
+is explicitly BOX-to-Temporal and its pass request has no agent-id or target-harness
+field; Primary Bot migration is a cohort/user flow; admin Grok Bot surfaces found
+are read/list/delete rather than harness mutation.
+
+Under the current immutable-pilot-ID scope, there is therefore **no repair mutation
+bundle to approve** and Gate 2B remains CLOSED. The only scope decision that could
+re-open M1 is Human authorization to create a new BOX pilot with a new immutable
+agent ID. No such authorization has been given.
 
 ### Completed: Gate 2A
 

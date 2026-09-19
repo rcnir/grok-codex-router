@@ -14,7 +14,11 @@ durable pilot profile of `harness:"temporal"`. The host drift is now resolved:
 `5ec1e7d` has its own VERIFIED fingerprint-bound manifest while `251860d` and
 `18cd065` remain supported separately and 0.53 remains fail-closed. The pilot
 drift is not resolved: official roster and durable profile agree on Temporal, and
-current 0.57 exposes no supported same-ID conversion back to BOX. The bounded,
+current 0.57 exposes no supported same-ID conversion back to BOX, including its
+provider identity update RPC, internal BOX-to-Temporal migration surfaces and
+available admin/recovery surfaces. Under the immutable-ID scope there is no repair
+mutation to approve; progressing M1 would require an explicit scope change allowing
+a new BOX pilot ID. The bounded,
 thread-local
 `toolIsolation:"dynamicOnly"` Codex source patch and Runtime/router capability
 wiring remain separate from host compatibility. The pilot is now the only source

@@ -142,6 +142,16 @@ same-ID `setAgentHarness`/convert/migrate/restore-BOX command exists in the curr
 coordinator surface. If an immutable M1 pilot becomes durably Temporal, fail closed
 rather than hand-edit `profile.json` or silently create a replacement ID.
 
+The same boundary continues below the coordinator. `CreateGrokBotAgentRequest`
+contains harness while `UpdateGrokBotAgentRequest` does not, and
+`SandAgentIdentityService.pushEdit` sends only ordinary identity/avatar fields to
+that update RPC. Internal harness migration is explicitly BOX-to-Temporal rollout
+orchestration: status/hold/pass requests do not provide a per-agent target-harness
+reverse operation. Admin identity surfaces can inspect or delete agents but expose
+no harness setter. Treat an internal migration/status RPC name as evidence only
+after its request shape and direction are read; do not turn rollout machinery into
+an invented user repair path.
+
 ## 2026-09-19 — Repeated host drift keeps one manifest per fingerprint
 
 `5ec1e7d` preserved the same M1 structural seams as `18cd065` and `251860d`, but it

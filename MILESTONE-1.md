@@ -233,7 +233,20 @@ official roster and durable profile both report `harness:"temporal"`, with
 `serverId:"4168251"`. Current 0.57 `updateAgent` cannot change harness,
 `restoreTemporalAgentRouting` only re-applies Temporal routing projection, and no
 supported same-ID Temporal-to-BOX command exists in the current coordinator
-surface. Direct profile editing is not an official repair and remains forbidden.
+surface. The deeper provider/server audit reaches the same result: provider
+`CreateGrokBotAgentRequest` has a harness field but `UpdateGrokBotAgentRequest`
+does not; identity-sync edits push only ordinary profile/avatar fields; the internal
+harness migration RPCs are explicitly BOX-to-Temporal rollout/status/hold/pass
+surfaces and accept no per-agent target harness; Primary Bot migration is a
+user/cohort batch flow; available Grok Bot admin surfaces read/list/delete but do
+not set harness. Direct profile editing is not an official repair and remains
+forbidden.
+
+Therefore immutable-ID Milestone 1 activation is blocked. There is no exact repair
+request to approve under current 0.57 contracts. The only remaining Human scope
+decision that can make M1 progress is whether to allow creation of a **new BOX
+pilot with a new immutable agent ID**; that scope change has not been granted and
+no replacement pilot is created here.
 
 The earlier activation-preparation readback found an external Sand upgrade to
 `251860d`; that stock host was independently VERIFIED as above. Gate 2A subsequently

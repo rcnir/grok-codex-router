@@ -1,6 +1,6 @@
 {
-  "format_version": 1,
-  "recorded_at_utc": "2026-09-19T08:04:58Z",
+  "format_version": 2,
+  "recorded_at_utc": "2026-09-19T08:16:47Z",
   "scope": "Authoritative harness state and supported repair surface for the immutable Milestone 1 pilot",
   "pilot": {
     "id": "97cf83a0-0401-4481-9f3f-8b321921f8b0",
@@ -74,7 +74,82 @@
         "harness": "box"
       },
       "effect": "creates a new agent with a new immutable ID; this is not a same-ID repair"
+    },
+    "provider_identity_rpc": {
+      "CreateGrokBotAgentRequest": "legacy_agent_id,name,description,title,avatar_shape,avatar_color,avatar_data_url?,agent_id,harness,kickstart_requested?,introduction_suppressed?,purpose?,origin?,language?",
+      "UpdateGrokBotAgentRequest": "id,name,description,title,avatar_shape,avatar_color,avatar_change",
+      "DeleteGrokBotAgentRequest": "id",
+      "create_has_harness": true,
+      "update_has_harness": false,
+      "delete_is_soft_delete_and_durable_id_is_not_reusable": true,
+      "create_existing_agent_id_contract": "agent_id is the create idempotency key; a retry returns the existing agent and a tombstoned id is never revived",
+      "same_id_harness_conversion_supported": false
+    },
+    "provider_identity_sync": {
+      "authority": "remote GrokBotAgent row is synced down to profile.json with serverId+harness binding",
+      "local_edit_push": "SandAgentIdentityService.pushEdit -> updateRemoteAgent -> UpdateGrokBotAgent",
+      "local_edit_payload": "name/description/title/avatar fields only",
+      "harness_written_upstream_by_edit": false,
+      "already_server_bound_agent_can_be_re_minted": false,
+      "same_public_agent_id_create_when_taken": "already_taken",
+      "same_id_repair_supported": false
+    },
+    "coordinator_server_action_bridge": {
+      "bridge": "performServerAgentAction",
+      "validated_methods": "explicit tm/KM allowlist",
+      "harness_conversion_method_in_allowlist": false,
+      "internal_harness_migration_rpc_exposed_as_normal_app_action": false
+    },
+    "internal_harness_migration": {
+      "direction": "BOX_TO_TEMPORAL",
+      "GetGrokBotHarnessMigrationStatusInternal": {
+        "request": "owner_auth_id",
+        "comment": "operator read surface for BOX -> Temporal rollout eligibility, hold, live-agent harnesses and pass history",
+        "mutates_harness": false
+      },
+      "ClearGrokBotHarnessMigrationHoldInternal": {
+        "request": "owner_auth_id",
+        "effect": "drops an owner migration hold so BOX-bound commands stop being refused; an in-flight pass defers on hold_lost",
+        "sets_target_harness": false
+      },
+      "EnsureGrokBotBoxHarnessMigrationPass": {
+        "request": "operation_id,box_rooms[]",
+        "agent_id_field": false,
+        "target_harness_field": false,
+        "host_call_site": "host-upgrade/resume migration barrier",
+        "effect": "starts/finds a rollout pass and returns DISABLED/DONE/PENDING",
+        "reverse_temporal_to_box_contract": false
+      }
+    },
+    "internal_primary_bot_migration": {
+      "PreviewInternalPrimaryBotMigrationRequest": "team_ids[],email_suffixes[]",
+      "ExecuteInternalPrimaryBotMigrationRequest": "team_ids[],email_suffixes[],selected_user_ids[],cohort_hash,preview_token,confirmation",
+      "agent_id_field": false,
+      "target_harness_field": false,
+      "purpose": "batch Primary/System Bot migration, not per-agent harness reversal",
+      "same_id_temporal_to_box_contract": false
+    },
+    "admin_surfaces": {
+      "AdminGetGrokBotAgentDefinition": "read-only identity/definition inspection; identity includes harness",
+      "AdminListGrokBotTeamAgents": "read/list",
+      "AdminDeleteGrokBotAgent": "delete-only",
+      "AdminUpdateGrokBotAgent_found": false,
+      "AdminSetGrokBotAgentHarness_found": false,
+      "AdminMigrateGrokBotAgent_found": false,
+      "sandbox_recreate_restore_surfaces": "computer/store lifecycle only; not agent harness mutation",
+      "same_id_temporal_to_box_contract": false
     }
+  },
+  "public_official_surface": {
+    "cursor_docs": "public Grok Bot docs document Bot creation, ordinary profile edit, duplicate, hide and delete; no same-ID harness conversion flow is documented",
+    "xai_org_grok_build_protocol": {
+      "SandCreateAgentArgs": "creationRoute + harness are creation-time fields",
+      "ArgsUpdateAgent": "id + SandAgentProfile",
+      "SandAgentProfile": "avatarColor/avatarShape/description/name/title only",
+      "SandAgentSummary": "roster contains harness/id/serverId",
+      "same_id_harness_update_contract": false
+    },
+    "unofficial_reconstruction_excluded": "AkiKurisu/grok-bot is an unofficial older reconstruction and is not used as authority for current 0.57 lifecycle semantics"
   },
   "repair_conclusion": {
     "supported_official_same_id_temporal_to_box_path": false,
@@ -82,7 +157,9 @@
     "rollback": null,
     "direct_profile_json_edit_supported": false,
     "gate_2b": "CLOSED",
-    "reason": "M1 source admission requires the allowlisted immutable pilot to be BOX, while the current durable/roster state is Temporal and current Grok Bot 0.57 exposes no supported same-ID conversion back to BOX."
+    "reason": "M1 source admission requires the allowlisted immutable pilot to be BOX. Current durable profile, official roster, provider identity row semantics, coordinator RPC bridge, provider UpdateGrokBotAgent schema, internal BOX-to-Temporal migration surfaces and admin/recovery surfaces expose no supported reverse same-ID Temporal-to-BOX conversion.",
+    "only_scope_decision_to_continue": "Allow creation of a new BOX pilot with a new immutable agent ID",
+    "new_pilot_creation_authorized": false
   },
   "fresh_final_readback": {
     "pilot_official_roster_harness": "temporal",
