@@ -6,22 +6,25 @@ routes through the **existing** ROCANIIRU Runtime CLI/MCP boundary, not the priv
 Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
 
 **Not deployed.** Human Gate 1 created exactly one isolated BOX pilot,
-`97cf83a0-0401-4481-9f3f-8b321921f8b0`, whose authoritative profile is
-`harness:"box"`; no Turn was started. Gate 2A then built and staged the patched
+`97cf83a0-0401-4481-9f3f-8b321921f8b0`; its creation-time authoritative profile
+was `harness:"box"`, and no Turn was started. Gate 2A then built and staged the patched
 Codex/Runtime candidates without changing a current pointer or process. Its final
-read-only postflight observed new provider-owned drift: the stock Sand host is now
-`5ec1e7d` and the same pilot profile now reads `harness:"temporal"`. Neither change
-was performed by this task. The verified `251860d` and `18cd065` targets remain as
-separate fingerprint-bound manifests, and the older 0.53 compatibility manifest
-remains fail-closed. The bounded, thread-local
+read-only postflight observed provider-owned drift to stock host `5ec1e7d` and a
+durable pilot profile of `harness:"temporal"`. The host drift is now resolved:
+`5ec1e7d` has its own VERIFIED fingerprint-bound manifest while `251860d` and
+`18cd065` remain supported separately and 0.53 remains fail-closed. The pilot
+drift is not resolved: official roster and durable profile agree on Temporal, and
+current 0.57 exposes no supported same-ID conversion back to BOX. The bounded,
+thread-local
 `toolIsolation:"dynamicOnly"` Codex source patch and Runtime/router capability
 wiring remain separate from host compatibility. The pilot is now the only source
 allowlist identity and its fixed route is `chatgpt-web/extra-high / xhigh`, while
 the source default remains `enabled:false`. No host patch, Runtime/Codex deploy,
 provider/model inference or profile correction has been performed. Gate 2B/2C are
-currently closed until the Human explicitly resolves both current facts. Gate 2A
-artifacts and the remaining activation/rollback plan are documented in
-`GATE-2A-EVIDENCE-20260919.json` and `PRODUCTION-ACTIVATION-PREP-20260919.md`.
+currently closed on the pilot harness blocker. Gate 2A artifacts, current host
+proof and harness authority are documented in `GATE-2A-EVIDENCE-20260919.json`,
+`HOST-5EC1E7D-EVIDENCE-20260919.json`, `PILOT-HARNESS-EVIDENCE-20260919.json` and
+`PRODUCTION-ACTIVATION-PREP-20260919.md`.
 
 See [`MILESTONE-1.md`](MILESTONE-1.md) for the implementation contract and status,
 [`NATIVE-EXECUTION-POLICY.md`](NATIVE-EXECUTION-POLICY.md) for the thread policy,

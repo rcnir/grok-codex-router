@@ -126,3 +126,26 @@ do not infer that a valid candidate artifact authorizes promotion after its live
 target/profile preconditions have drifted. Preserve the staged artifacts, keep
 current pointers untouched, and close the next gate until the Human explicitly
 resolves the new production facts.
+
+## 2026-09-19 — Harness projection and durable profile are separate authorities
+
+The coordinator keeps an in-memory harness map for routing, and
+`restoreTemporalAgentRouting` only repopulates that projection. Do not mistake that
+for a durable harness conversion API. `profile.json` independently carries the
+server binding; current host code parses `serverId` + `harness` and serializes both
+back to disk. When official roster and the durable profile agree on Temporal, the
+agent is not merely displayed as Temporal.
+
+Current Grok Bot 0.57 exposes harness selection on `createAgent`, but
+`updateAgent` accepts only ordinary profile fields and cannot change harness. No
+same-ID `setAgentHarness`/convert/migrate/restore-BOX command exists in the current
+coordinator surface. If an immutable M1 pilot becomes durably Temporal, fail closed
+rather than hand-edit `profile.json` or silently create a replacement ID.
+
+## 2026-09-19 — Repeated host drift keeps one manifest per fingerprint
+
+`5ec1e7d` preserved the same M1 structural seams as `18cd065` and `251860d`, but it
+still received a separate exact stock fingerprint, fresh required-anchor proof,
+deterministic patched SHA and actual-host `--check`. Keeping one manifest per host
+fingerprint lets provider upgrades fail closed without weakening earlier accepted
+targets.

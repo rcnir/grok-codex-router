@@ -143,10 +143,10 @@
   },
   "next_gate": {
     "gate_2b": "CLOSED",
-    "reason": "End-to-end M1 admission preconditions changed externally after Gate 2A: the pilot profile is now temporal and the stock host advanced to unreviewed 5ec1e7d. Do not promote Runtime/Codex or patch the host until Human explicitly resolves both current facts.",
+    "reason": "At Gate 2A postflight, both the pilot profile and host had drifted. The later HOST-5EC1E7D-EVIDENCE-20260919.json resolves the host compatibility blocker; Gate 2B remains closed because the immutable pilot is durably Temporal and current Grok Bot 0.57 exposes no supported same-ID repair back to BOX.",
+    "host_blocker_current_status": "RESOLVED_BY_HOST-5EC1E7D-EVIDENCE-20260919.json",
     "required_human_decisions": [
-      "Authorize or decline a fresh compatibility port for current stock host 5ec1e7d.",
-      "Decide whether the immutable pilot profile may be changed from externally observed harness:temporal back to harness:box; do not mutate it without explicit approval."
+      "Resolve the immutable pilot harness blocker. Current Grok Bot 0.57 has no supported same-ID Temporal-to-BOX mutation; do not hand-edit profile.json or silently create a replacement ID."
     ]
   }
 }

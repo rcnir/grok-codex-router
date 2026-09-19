@@ -159,11 +159,29 @@ Patched SHA256: 8d8c2c239667e38f421d6b96af994c279b69fdbaddbb91bed927f16a02aef5ea
 
 Fresh actual-host proof found exactly one `inferenceOwner`, one stock inference
 fallback, one `mainSessionOptions` seam and one `mainSessionDispatch`, in that
-order. The built read-only check now passes on the current production host with
+order. The built read-only check passed on that production host with
 `--compat grok-bot-0.57-251860d`. The insertion algorithm is unchanged: one opt-in
 hook immediately before the stock inference fallback and one exact three-field
 identity block inside the main session options. Existing `18cd065` and 0.53
 artifacts remain unchanged.
+
+The next automatic Sand upgrade to `5ec1e7d` was handled the same way without
+weakening either prior manifest:
+
+```text
+Grok Bot: 0.57.0
+Host version: 5ec1e7d
+Bytes: 26460874
+SHA256: 8b0e2747c0b7b91fca368c886880b24906a28214e2979029a60a98d8ab0c9bc0
+Router markers: all zero (stock)
+Patched bytes: 26461621
+Patched SHA256: 58493df0bc8fa4b22d981a23835468fa4908a3f73c1819b27375eaaab13e018f
+```
+
+Its four required anchors are again unique and ordered; source/local fixtures and
+the actual production `--check --compat grok-bot-0.57-5ec1e7d` both pass. The new
+manifest is therefore `anchorProof:"VERIFIED"`; `18cd065`, `251860d` and 0.53
+artifacts remain separate and unchanged.
 
 The 0.53/`11dd264` manifest is retained as a separate built-in compatibility
 target and remains `anchorProof:"BLOCKED"`; its legacy insertion seam is still
@@ -209,13 +227,13 @@ the Runtime candidate passed 114 Python tests and its generated schema reports
 `93fcd1f5a09f8192669e7ab24c65e35b8ef988456351895928ad103ecaf38d49`.
 No current pointer or process changed.
 
-Gate 2B is nevertheless closed by fresh external postflight drift: current stock
-host is now `5ec1e7d` / 26,460,874 bytes / SHA-256
-`8b0e2747c0b7b91fca368c886880b24906a28214e2979029a60a98d8ab0c9bc0`
-with zero router markers, and the immutable pilot profile now reads
-`harness:"temporal"`. Neither change was performed by this task. Do not port
-`5ec1e7d`, mutate the pilot profile, promote Runtime/Codex or proceed to Gate 2C
-without a new explicit Human decision.
+Gate 2B remains closed, but the host side of that drift is now resolved by the
+verified `5ec1e7d` port above. The remaining blocker is the immutable pilot:
+official roster and durable profile both report `harness:"temporal"`, with
+`serverId:"4168251"`. Current 0.57 `updateAgent` cannot change harness,
+`restoreTemporalAgentRouting` only re-applies Temporal routing projection, and no
+supported same-ID Temporal-to-BOX command exists in the current coordinator
+surface. Direct profile editing is not an official repair and remains forbidden.
 
 The earlier activation-preparation readback found an external Sand upgrade to
 `251860d`; that stock host was independently VERIFIED as above. Gate 2A subsequently
@@ -238,9 +256,9 @@ production-activation preparation and fresh read-only baselines are in
 `ACTIVATION-PREP-EVIDENCE-20260919.json` and
 `PRODUCTION-ACTIVATION-PREP-20260919.md`.
 
-Current regression acceptance passed 93 router tests plus telemetry ingestion and
+Current regression acceptance passed 97 router tests plus telemetry ingestion and
 `knip`, 219 Runtime Node tests, and 114 Runtime Python tests. The Runtime source was
-not changed by the 0.57 port. `git diff --check` passed.
+not changed by the host port. `git diff --check` passed.
 
 Fresh live read-only Runtime status is generation 12 / PID 883943,
 `started=true`, `ready=true`, persistence healthy, `fenced=false`,

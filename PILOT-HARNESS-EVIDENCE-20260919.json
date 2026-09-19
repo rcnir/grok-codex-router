@@ -1,0 +1,95 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-19T08:04:58Z",
+  "scope": "Authoritative harness state and supported repair surface for the immutable Milestone 1 pilot",
+  "pilot": {
+    "id": "97cf83a0-0401-4481-9f3f-8b321921f8b0",
+    "name": "ROCANIIRU Codex BOX M1 Pilot",
+    "created_as": "box",
+    "current_authoritative_harness": "temporal",
+    "same_immutable_id_still_present": true,
+    "is_running": false,
+    "profile": {
+      "path": "/home/box/sand-data/agents/97cf83a0-0401-4481-9f3f-8b321921f8b0/profile.json",
+      "mtime": "2026-09-19T12:20:43.339102233+09:00",
+      "bytes": 276,
+      "sha256": "36a06386113bf12649c744e60c555a22ad3a6ecb97f5ff9eaad7be3eccc08a80",
+      "serverId": "4168251",
+      "harness": "temporal"
+    },
+    "official_roster_harness": "temporal",
+    "classification": "DURABLE_TEMPORAL_NOT_MERE_PROJECTION"
+  },
+  "user_facing_bot": {
+    "id": "139771d1-4e7d-4a8b-80a0-eddc438bccfc",
+    "name": "Bot",
+    "current_harness": "temporal",
+    "is_running": false,
+    "profile_sha256": "924827a93e905c6890f76f9ae341cc5b7cf7af629690dc407b52e67ad9148f3f"
+  },
+  "current_official_source": {
+    "grok_bot_version": "0.57.0",
+    "coordinator": "dist/node-agent-coordinator/main.cjs",
+    "coordinator_integrity_sha256": "9348b41bc5d83bc4340023ffd3be4a3a47e66e370221ac171e2e70a6b58e36db",
+    "createAgent_validator_fingerprint": "6fc3051afc608b0f916bdc240d64d7d5f00dd20b53c805e91782897227752adb",
+    "updateAgent_validator_fingerprint": "db4f24628cb183fcb5063920b01d315e7f14c83957aed8f840db18a086d20bb8",
+    "listAgents_validator_fingerprint": "0006ab4614c3e3bbfadc4e854fd9b28d5cd3744e1bd31b33fd6a83c3210dd7b5"
+  },
+  "durable_profile_semantics": {
+    "profileHarnessFromJson": "accepts only box or temporal",
+    "profileServerBindingFromJson": "includes serverId and harness in the parsed server binding",
+    "serializeSandProfileFile": "persists binding.serverId and binding.harness into profile.json",
+    "projection_explanation": "Coordinator Rb.noteRoster maintains an in-memory harness map, but that projection alone cannot account for the durable profile.json write and mtime."
+  },
+  "official_mutation_surface": {
+    "updateAgent": {
+      "supported_profile_fields": [
+        "name",
+        "description",
+        "title",
+        "avatarShape",
+        "avatarColor"
+      ],
+      "supports_harness_change": false
+    },
+    "restoreTemporalAgentRouting": {
+      "args": {
+        "agentIds": "string[]"
+      },
+      "effect": "re-applies Temporal IDs to the coordinator in-memory routing projection",
+      "converts_temporal_to_box": false
+    },
+    "same_id_harness_commands_found": {
+      "setAgentHarness": false,
+      "convertAgent": false,
+      "migrateAgent": false,
+      "restoreBox": false
+    },
+    "createAgent": {
+      "supports_box_creation": true,
+      "box_selector": {
+        "creationRoute": {
+          "kind": "box"
+        },
+        "harness": "box"
+      },
+      "effect": "creates a new agent with a new immutable ID; this is not a same-ID repair"
+    }
+  },
+  "repair_conclusion": {
+    "supported_official_same_id_temporal_to_box_path": false,
+    "exact_same_id_repair_request": null,
+    "rollback": null,
+    "direct_profile_json_edit_supported": false,
+    "gate_2b": "CLOSED",
+    "reason": "M1 source admission requires the allowlisted immutable pilot to be BOX, while the current durable/roster state is Temporal and current Grok Bot 0.57 exposes no supported same-ID conversion back to BOX."
+  },
+  "fresh_final_readback": {
+    "pilot_official_roster_harness": "temporal",
+    "pilot_profile_harness": "temporal",
+    "pilot_is_running": false,
+    "user_facing_bot_official_roster_harness": "temporal",
+    "user_facing_bot_profile_harness": "temporal",
+    "user_facing_bot_is_running": false
+  }
+}

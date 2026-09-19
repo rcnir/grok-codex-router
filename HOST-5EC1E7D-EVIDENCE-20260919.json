@@ -1,0 +1,149 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-19T08:04:58Z",
+  "scope": "Milestone 1 Grok Bot 0.57 current host 5ec1e7d compatibility port",
+  "production_mutations": {
+    "host_writes": 0,
+    "host_backup_writes": 0,
+    "host_restarts": 0,
+    "router_installs": 0,
+    "runtime_or_codex_promotions": 0,
+    "provider_or_model_inference_calls": 0,
+    "pilot_turns": 0,
+    "pilot_profile_changes": 0
+  },
+  "host": {
+    "grok_bot_version": "0.57.0",
+    "host_version": "5ec1e7d",
+    "path": "/home/box/sand-host/host-main.cjs",
+    "stock": {
+      "bytes": 26460874,
+      "sha256": "8b0e2747c0b7b91fca368c886880b24906a28214e2979029a60a98d8ab0c9bc0"
+    },
+    "router_marker_version": 1,
+    "router_marker_counts": {
+      "session_start": 0,
+      "session_end": 0,
+      "identity_start": 0,
+      "identity_end": 0,
+      "legacy_service_start": 0,
+      "legacy_service_end": 0
+    },
+    "required_anchor_counts": {
+      "inferenceOwner": 1,
+      "inferenceHook": 1,
+      "mainSessionOptions": 1,
+      "mainSessionDispatch": 1
+    },
+    "anchor_order": "PASS",
+    "anchor_proof": "VERIFIED",
+    "pristine_backup_policy": {
+      "mode_octal": "0600",
+      "sha256_must_equal_stock": "8b0e2747c0b7b91fca368c886880b24906a28214e2979029a60a98d8ab0c9bc0"
+    },
+    "deterministic_patched": {
+      "bytes": 26461621,
+      "sha256": "58493df0bc8fa4b22d981a23835468fa4908a3f73c1819b27375eaaab13e018f",
+      "delta_bytes": 747,
+      "session_markers": 1,
+      "identity_markers": 1,
+      "identity_block_count": 1
+    },
+    "actual_host_router_check": {
+      "status": "PASS",
+      "state": "stock",
+      "compat": "grok-bot-0.57-5ec1e7d",
+      "exit_code": 0
+    }
+  },
+  "compatibility_retention": {
+    "grok-bot-0.57-18cd065": "RETAINED_VERIFIED",
+    "grok-bot-0.57-251860d": "RETAINED_VERIFIED",
+    "grok-bot-0.53-11dd264": "RETAINED_FAIL_CLOSED_BLOCKED"
+  },
+  "source_local_validation": {
+    "focused_compat_tests": 24,
+    "focused_compat_failures": 0,
+    "router_tests": 97,
+    "router_tests_failed": 0,
+    "router_telemetry": "PASS",
+    "router_knip": "PASS",
+    "runtime_node_tests": 219,
+    "runtime_node_tests_failed": 0,
+    "runtime_python_tests": 114,
+    "runtime_python_tests_failed": 0,
+    "runtime_source_changed_for_host_port": false,
+    "gate_2a_candidates_rebuilt": false,
+    "git_diff_check": "PASS"
+  },
+  "routing_contract": {
+    "pilot_id": "97cf83a0-0401-4481-9f3f-8b321921f8b0",
+    "source_allowlist_is_singleton": true,
+    "source_default_enabled": false,
+    "pilot_route": {
+      "model": "chatgpt-web/extra-high",
+      "reasoningEffort": "xhigh"
+    },
+    "stock_passthrough": [
+      "non-allowlisted agents",
+      "temporal profiles",
+      "summarization",
+      "subagents",
+      "browser",
+      "computer",
+      "automation",
+      "group turns"
+    ]
+  },
+  "fresh_final_readback": {
+    "host": {
+      "version": "5ec1e7d",
+      "bytes": 26460874,
+      "sha256": "8b0e2747c0b7b91fca368c886880b24906a28214e2979029a60a98d8ab0c9bc0",
+      "router_marker_occurrences": 0,
+      "actual_router_check": "PASS state=stock"
+    },
+    "runtime": {
+      "current_target": "/opt/rocaniiru/codex-runtime/0.1.0-3c4f121",
+      "started": true,
+      "ready": true,
+      "child_pid": 883943,
+      "generation": 12,
+      "persistence": "healthy",
+      "fenced": false,
+      "uncertain": false,
+      "unknown_operation_count": 0,
+      "pending_input_count": 0,
+      "active_turn_count": 0,
+      "blocked_thread_count": 0,
+      "thread_count": 25,
+      "thread_set_sha256": "405346cb5303cf3b747d080272edce65d66cf2f342b47e2568e7f7b3b85b387b",
+      "state_json_sha256": "1be40ad48c92fca2fa4f0b80bffba6e9561e8f224c65e06aa0c510b1b77b6369",
+      "state_json_bytes": 829029
+    },
+    "gate_2a_candidates": {
+      "codex_release": "/home/box/.codex/packages/standalone/releases/0.154.0-rcnir-dynamic-only-3084657-x86_64-unknown-linux-musl",
+      "codex_bytes": 1283274448,
+      "codex_sha256": "790879dcee4a675f34cc1aba9a2ab3fd0edb447588cf97f5cb111967b12fc8e7",
+      "runtime_candidate": "/opt/rocaniiru/codex-runtime/0.1.0-72c8032",
+      "schema_digest": "93fcd1f5a09f8192669e7ab24c65e35b8ef988456351895928ad103ecaf38d49",
+      "dynamic_only_tool_policy": true,
+      "standalone_current": "/home/box/.codex/packages/standalone/releases/0.154.0-x86_64-unknown-linux-musl",
+      "runtime_current": "/opt/rocaniiru/codex-runtime/0.1.0-3c4f121"
+    },
+    "live_activation_paths": {
+      "/home/box/grok-codex-router": false,
+      "/home/box/sand-data/grok-codex-router.json": false,
+      "/home/box/sand-data/grok-codex-router-state": false,
+      "/home/box/sand-host/host-main.cjs.grok-codex-router-bak": false,
+      "/tmp/sand-supervisor/command.json": false
+    },
+    "computer": {
+      "version": "0.2.3",
+      "service_identity": "a6299bb2e1242f491855fd38608b0dc5f65c6f5f956f734cf5ba16aaf9527e41",
+      "mutation_state": "clear",
+      "execution_state": "CLEAR"
+    },
+    "gate_2b": "CLOSED_PILOT_HARNESS_BLOCKER"
+  }
+}
