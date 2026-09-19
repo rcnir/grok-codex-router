@@ -92,8 +92,27 @@ Current source-only commit `36e8d3808661e3cbd69331b7ecd5ca494ac9d41f`
 adds only sanitized `RuntimeFault.code` / `uncertain` logging. Its candidate
 package is 158651 bytes / SHA-256
 `f9e990c1ce01fc87e0ec8dc628a5f63e20ca13569d773be7c0d247e96b116b14`;
-it is **not live**. The next bounded diagnostic must capture the exact router fault
-before any further production fix.
+that diagnostic is now live after exactly one supervisor restart
+`grok-codex-router-1789822659539-3f004c60`.
+
+The one bounded diagnostic Turn captured the first exact inner fault:
+`NON_JSON_VALUE uncertain=false`. All later
+`PENDING_RUN_NO_REPLAY uncertain=true` entries are secondary retry attempts after
+the deterministic run had already been fenced. Source ordering identifies
+`this.consumedPrefixHash = fingerprint(messages)` in
+`src/runtime-execution.ts` as the failing fingerprint: all Runtime admission
+mutations were already ACKed, and that is the next fingerprint before
+`observe()`. The exact non-JSON field inside the raw Sand message objects was not
+captured and is not inferred.
+
+The diagnostic Runtime Turn itself completed successfully and produced durable
+terminal output, but Sand had already settled `SAND-E0406`. The completed session
+was archived, exact blocked runHash
+`4f9ad1679fc2ad75809b5cba6b8da7eaf33e4a806ee4ad1634f40d4cb05189c3`
+was moved to completed, and router journal is again `active:null`. Current
+Runtime remains generation 15 / PID 1658692 with 28 retained Threads and zero
+pending/UNKNOWN/active/blocked work. See
+`PILOT-FAULT-DIAGNOSTIC-EVIDENCE-20260919.json`.
 
 See [`MILESTONE-1.md`](MILESTONE-1.md) for the implementation contract and status,
 [`NATIVE-EXECUTION-POLICY.md`](NATIVE-EXECUTION-POLICY.md) for the thread policy,

@@ -649,8 +649,31 @@ The next source-only diagnostic is commit
 `36e8d3808661e3cbd69331b7ecd5ca494ac9d41f`: it logs only sanitized
 `RuntimeFault.code` and `uncertain`. Candidate package is 158651 bytes /
 SHA-256 `f9e990c1ce01fc87e0ec8dc628a5f63e20ca13569d773be7c0d247e96b116b14`
-and is not live. A new Human approval is required before deploying that diagnostic
-or sending another pilot Turn.
+and was deployed router-only with one supervisor restart
+`grok-codex-router-1789822659539-3f004c60`.
+
+One bounded diagnostic Turn `t4u` captured the exact first router fault:
+`NON_JSON_VALUE uncertain=false`. Subsequent
+`PENDING_RUN_NO_REPLAY uncertain=true` records are retry fallout, not the first
+failure.
+
+The source location is narrowed to
+`this.consumedPrefixHash = fingerprint(messages)` in
+`src/runtime-execution.ts`. At that point tool mapping, journal admission,
+session open, transcript injection and turn start had all succeeded and were
+journaled ACK. That raw-message fingerprint is the next canonical-JSON operation
+before Runtime event observation.
+
+The Runtime Turn later reached durable terminal `completed`, but Sand had already
+settled `SAND-E0406`. The terminal session was archived; because there was no
+active Turn or pending input, no Runtime generation change was required. Exact
+blocked runHash
+`4f9ad1679fc2ad75809b5cba6b8da7eaf33e4a806ee4ad1634f40d4cb05189c3`
+was moved to completed and journal returned to `active:null`.
+
+Final Runtime state is generation 15 / PID 1658692 / 28 retained Threads /
+pending 0 / UNKNOWN 0 / active 0 / blocked 0 with healthy persistence. A new Human
+approval is required before implementing or deploying the `NON_JSON_VALUE` fix.
 
 ## Approval boundaries
 

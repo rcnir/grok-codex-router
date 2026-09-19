@@ -258,3 +258,21 @@ The live stream first-token deadline was also measured at 150000ms, so the obser
 ~9s failure is not the first-token watchdog. The next diagnostic must expose the
 sanitized router `RuntimeFault.code` directly rather than infer it from the outer
 SAND-E0406 classification.
+
+## 2026-09-19 — Fingerprint normalized transcript data, not raw Sand message objects
+
+The sanitized diagnostic exposed the first deterministic router failure as
+`NON_JSON_VALUE uncertain=false`. All three Runtime admission mutations had
+already completed and were journaled ACK. The next fingerprint in the source path
+is `this.consumedPrefixHash = fingerprint(messages)`, before `observe()`.
+
+`canonicalJson()` intentionally rejects values outside recursive JSON primitives,
+arrays and plain records. The router was fingerprinting the raw Sand message
+objects even though earlier wire conversion already has a JSON-safe normalized
+representation for Runtime input. That makes the replay/prefix fence depend on
+host-object representation rather than normalized transcript semantics.
+
+The exact offending raw field was not captured, so it should not be invented.
+The next fix should preserve the prefix-change/replay fence while fingerprinting a
+deterministic JSON-safe normalized transcript representation instead of raw host
+message objects.

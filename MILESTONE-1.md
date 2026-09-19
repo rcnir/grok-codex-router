@@ -474,7 +474,7 @@ The exact inner RuntimeFault is not persisted in current host logs.
 The t3 orphan was then recovered once using the same contract: interrupt, terminal
 `interrupted`, archive, App Server child generation 14 -> 15
 (`1649828 -> 1658692`) to discard the stale pending request, then exact router
-journal closure. Current Runtime is generation 15 with 27 retained Threads,
+journal closure. At that recovery boundary Runtime was generation 15 with 27 retained Threads,
 pending/UNKNOWN/active/blocked all zero and healthy persistence.
 
 Source-only commit `36e8d3808661e3cbd69331b7ecd5ca494ac9d41f` adds sanitized
@@ -482,7 +482,54 @@ fault observability: only `RuntimeFault.code` and `uncertain` are logged at the
 router execution boundary. Tests remain 102/102 plus telemetry/knip/diff-check.
 Candidate package is 158651 bytes / SHA-256
 `f9e990c1ce01fc87e0ec8dc628a5f63e20ca13569d773be7c0d247e96b116b14`
-and is **not live**. See `PILOT-CONTRACT-REPAIR-EVIDENCE-20260919.json`.
+and was later deployed router-only with one restart
+`grok-codex-router-1789822659539-3f004c60`.
+
+### Sanitized fault diagnostic
+
+Restart postflight preserved the existing baselines exactly: transcript entries 5,
+send-acceptance records 4, router-session count 12 and Runtime cursor
+`64424509668`. No automatic resume/provider activity occurred.
+
+Exactly one diagnostic Turn `t4u` was accepted, nonce
+`4967c7c9-023b-4f61-9298-f149852ef648`, with no resend. The first sanitized
+router error is:
+
+```text
+NON_JSON_VALUE uncertain=false
+```
+
+Only afterward do internal retries report
+`PENDING_RUN_NO_REPLAY uncertain=true`. The first fault is therefore the causal
+router failure; the pending-run errors are secondary.
+
+Source control flow narrows `NON_JSON_VALUE` to
+`src/runtime-execution.ts` immediately after successful
+`runtime_turn_start`:
+
+```ts
+this.consumedPrefixHash = fingerprint(messages);
+```
+
+The tool-set fingerprint and all three admission mutation fingerprints had already
+succeeded, all admission operations are journaled ACK, and no later Runtime event
+processing had begun. `fingerprint(messages)` is therefore the first remaining
+canonical-JSON fingerprint in that path. The exact raw Sand message field that is
+non-JSON was not captured.
+
+Runtime independently completed the diagnostic Turn:
+session `grok:916cabe323e4803f8c6959b3:4f9ad1679fc2ad75809b5cba`,
+thread `01a0b9bf-4212-7643-8f32-0cb11a6204e2`,
+Turn `01a0b9bf-4aa8-7cf0-ab91-0c7d203089dd`, terminal
+`completed`, terminal result available. Sand had already settled the client Turn
+as retryable `SAND-E0406`.
+
+Because the Runtime Turn was already terminal and pending input was zero, recovery
+did not cancel or rotate the Runtime generation. The session was archived and exact
+blocked runHash
+`4f9ad1679fc2ad75809b5cba6b8da7eaf33e4a806ee4ad1634f40d4cb05189c3`
+was moved to completed. Router journal returned to `active:null`.
+See `PILOT-FAULT-DIAGNOSTIC-EVIDENCE-20260919.json`.
 
 ## Local checks
 
@@ -505,7 +552,7 @@ not changed by the host port. `git diff --check` passed.
 
 Current Runtime is generation 15 / PID 1658692, `started=true`,
 `ready=true`, persistence healthy, `fenced=false`, `uncertain=false`,
-UNKNOWN 0 and dynamic-only enabled. It retains 27 Threads with zero pending,
+UNKNOWN 0 and dynamic-only enabled. It retains 28 Threads with zero pending,
 active or blocked work after bounded recovery. The current user-facing Bot
 readback remains `harness:"temporal"`. Final Computer status is 0.2.3 on
 service identity `a6299bb2e1242f491855fd38608b0dc5f65c6f5f956f734cf5ba16aaf9527e41`
