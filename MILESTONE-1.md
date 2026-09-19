@@ -531,6 +531,57 @@ blocked runHash
 was moved to completed. Router journal returned to `active:null`.
 See `PILOT-FAULT-DIAGNOSTIC-EVIDENCE-20260919.json`.
 
+### Normalized transcript fingerprint repair
+
+Source commit `581dfd143ec6ac42a6b1ec23e226db1b4959981f` introduces one
+JSON-safe normalized transcript representation and uses it for both
+`consumedPrefixHash` and assistant-echo hashes. Host-only values such as function
+metadata are excluded from the replay fingerprint while model-visible transcript
+changes still fail closed. Focused Runtime-router tests pass 40/40; complete router
+tests pass 103/103 plus telemetry, knip and diff-check.
+
+Exact package is 160281 bytes / SHA-256
+`9f7c482af345f781d223c69c821a5c9434b13fb63a268ce3abeaae733a35354e`.
+It was installed router-only and loaded with exactly one supervisor restart
+`grok-codex-router-1789824122588-5437c29c`. Restart postflight preserved
+transcript count 6, send-acceptance count 5, router-session count 16 and Runtime
+cursor `64424509692`; there was zero automatic activity.
+
+Exactly one acceptance Turn `t5u` was accepted, nonce
+`460dcf37-cd82-4419-a37e-73848f6daefd`, with no resend. Unlike every previous
+M1 attempt, the dynamic tool loop completed far enough to produce an actual
+user-facing delivery:
+
+```text
+t5s0  ROCANIIRU_M1_NORMALIZED_FINGERPRINT_PASS
+```
+
+Runtime event `item/tool/call` sequence `64424509716` requested
+`SendToUser` with request_id 0; `runtime_respond` was journaled ACK; Runtime
+then emitted `engine/serverRequestResponded` sequence `64424509717` with the
+same request_id and `params.method=item/tool/call`.
+
+The router currently rejects any event carrying request_id unless the event method
+itself is `item/tool/call`. It therefore raised
+`NATIVE_EXECUTION_REQUEST_FORBIDDEN uncertain=true` on the confirmation event.
+That event is not a new server request: Runtime emits it only after the exact
+pending response write succeeds. Later `CURRENT_USER_INPUT_REQUIRED` errors are
+Sand retry fallout after the initial post-delivery failure.
+
+Runtime independently reached terminal `completed` for session
+`grok:916cabe323e4803f8c6959b3:79adecc49a4520cfae80f734`, thread
+`01a0b9d5-681a-7080-b356-26846b895414`, Turn
+`01a0b9d5-70b9-7092-8775-8b24006cf6ab`, with durable terminal result available.
+Sand nevertheless settled the client Turn as retryable `SAND-E0406`; therefore
+M1 acceptance remains incomplete.
+
+Because the Runtime Turn was already terminal with pending/UNKNOWN/active all zero,
+recovery required no cancel or generation rotation. The session was archived and
+UNKNOWN runHash
+`79adecc49a4520cfae80f73452f76dd663f21520efc201c56056122117f0fb7b`
+was reconciled to completed. See
+`PILOT-NORMALIZED-FINGERPRINT-EVIDENCE-20260919.json`.
+
 ## Local checks
 
 `npm run knip` checks active and retained source. `npm run check` builds, runs local
@@ -546,14 +597,15 @@ in `PILOT-REPLACEMENT-EVIDENCE-20260919.json` and
 `GATE-2B-EVIDENCE-20260919.json`. The production plan is
 `PRODUCTION-ACTIVATION-PREP-20260919.md`.
 
-Current regression acceptance passed 102 router tests plus telemetry ingestion and
+Current regression acceptance passed 103 router tests plus telemetry ingestion and
 `knip`, 219 Runtime Node tests, and 114 Runtime Python tests. The Runtime source was
 not changed by the host port. `git diff --check` passed.
 
 Current Runtime is generation 15 / PID 1658692, `started=true`,
 `ready=true`, persistence healthy, `fenced=false`, `uncertain=false`,
-UNKNOWN 0 and dynamic-only enabled. It retains 28 Threads with zero pending,
-active or blocked work after bounded recovery. The current user-facing Bot
+UNKNOWN 0 and dynamic-only enabled. After the normalized-fingerprint acceptance
+Turn and archive it retains 29 Threads with zero pending/UNKNOWN/active/blocked
+state. The current user-facing Bot
 readback remains `harness:"temporal"`. Final Computer status is 0.2.3 on
 service identity `a6299bb2e1242f491855fd38608b0dc5f65c6f5f956f734cf5ba16aaf9527e41`
 with `clear/CLEAR`.

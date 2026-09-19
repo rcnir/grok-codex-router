@@ -276,3 +276,22 @@ The exact offending raw field was not captured, so it should not be invented.
 The next fix should preserve the prefix-change/replay fence while fingerprinting a
 deterministic JSON-safe normalized transcript representation instead of raw host
 message objects.
+
+## 2026-09-19 — request_id does not necessarily mean a new server request
+
+The normalized-transcript repair proved that the previous fingerprint diagnosis was
+correct: the Turn passed initial admission, crossed the dynamic tool boundary,
+`runtime_respond` was ACKed, and `SendToUser` produced a real transcript
+delivery.
+
+The next fault came from treating every event with a non-null `request_id` as an
+active server request unless its method was literally `item/tool/call`. Runtime
+also emits `engine/serverRequestResponded` after a response write succeeds and
+attaches the historical request_id for correlation. That is a confirmation event,
+not new work requiring execution.
+
+Event policy therefore has to classify by both method and identity, not by
+`request_id` presence alone. The narrow safe exception is the confirmation of an
+already allowed dynamic `item/tool/call`: event request_id must equal
+`params.requestId` and `params.method` must be `item/tool/call`. Other
+request-bearing event types remain fail-closed.

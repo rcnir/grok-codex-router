@@ -675,6 +675,44 @@ Final Runtime state is generation 15 / PID 1658692 / 28 retained Threads /
 pending 0 / UNKNOWN 0 / active 0 / blocked 0 with healthy persistence. A new Human
 approval is required before implementing or deploying the `NON_JSON_VALUE` fix.
 
+The normalized-transcript repair was subsequently approved. Commit
+`581dfd143ec6ac42a6b1ec23e226db1b4959981f` fingerprints the same JSON-safe
+normalized transcript representation used for Runtime-visible history, including
+assistant echoes, instead of raw Sand message objects. It passes 40/40 focused and
+103/103 complete router tests plus telemetry/knip/diff-check. Exact artifact:
+160281 bytes / SHA-256
+`9f7c482af345f781d223c69c821a5c9434b13fb63a268ce3abeaae733a35354e`.
+
+That artifact was installed router-only and loaded with one restart
+`grok-codex-router-1789824122588-5437c29c`; postflight showed zero automatic
+activity and unchanged host/config/Runtime/Computer invariants.
+
+The one approved Turn `t5u` then crossed the previous failure boundary:
+Runtime opened/injected/started successfully, emitted dynamic `SendToUser`,
+`runtime_respond` was ACKed, and transcript entry `t5s0` delivered exactly
+`ROCANIIRU_M1_NORMALIZED_FINGERPRINT_PASS`.
+
+The remaining failure occurs after that successful delivery. Runtime emitted
+`engine/serverRequestResponded` with request_id 0 to confirm the exact answered
+`item/tool/call`. The router's blanket request_id check treated this internal
+confirmation as a forbidden native execution request and raised
+`NATIVE_EXECUTION_REQUEST_FORBIDDEN uncertain=true`. Runtime nevertheless
+completed the Turn durably; Sand settled the outer Turn as retryable
+`SAND-E0406`.
+
+The completed session was archived without cancellation or generation rotation,
+and exact UNKNOWN router runHash
+`79adecc49a4520cfae80f73452f76dd663f21520efc201c56056122117f0fb7b`
+was reconciled to completed. Current Runtime is generation 15 / PID 1658692 /
+29 retained Threads / pending 0 / UNKNOWN 0 / active 0 / blocked 0 with healthy
+persistence.
+
+The next Human gate is limited to an identity-checked event-classification fix:
+accept `engine/serverRequestResponded` only when its event request_id equals
+`params.requestId` and `params.method === "item/tool/call"`; all other
+request_id-bearing non-`item/tool/call` events remain fail-closed. Then perform
+at most one further pilot Turn.
+
 ## Approval boundaries
 
 Gate 2A produced the required Runtime/Codex hashes. The Human then authorized exactly one replacement

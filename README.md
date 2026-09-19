@@ -109,10 +109,34 @@ The diagnostic Runtime Turn itself completed successfully and produced durable
 terminal output, but Sand had already settled `SAND-E0406`. The completed session
 was archived, exact blocked runHash
 `4f9ad1679fc2ad75809b5cba6b8da7eaf33e4a806ee4ad1634f40d4cb05189c3`
-was moved to completed, and router journal is again `active:null`. Current
-Runtime remains generation 15 / PID 1658692 with 28 retained Threads and zero
+was moved to completed, and router journal is again `active:null`. At that
+diagnostic boundary Runtime was generation 15 / PID 1658692 with 28 retained Threads and zero
 pending/UNKNOWN/active/blocked work. See
 `PILOT-FAULT-DIAGNOSTIC-EVIDENCE-20260919.json`.
+
+Source commit `581dfd143ec6ac42a6b1ec23e226db1b4959981f` then replaced raw
+Sand-message hashing with deterministic JSON-safe normalized transcript
+fingerprints for both consumed-prefix and assistant-echo replay fences. Focused
+Runtime-router tests pass 40/40 and the full router suite passes 103/103 plus
+telemetry, knip and diff-check. Exact live package: 160281 bytes / SHA-256
+`9f7c482af345f781d223c69c821a5c9434b13fb63a268ce3abeaae733a35354e`,
+loaded by one restart `grok-codex-router-1789824122588-5437c29c`.
+
+That repair worked through the previously failing boundary. The one bounded Turn
+`t5u` reached `SendToUser`, `runtime_respond` was ACKed and the user-facing
+transcript gained `t5s0 = ROCANIIRU_M1_NORMALIZED_FINGERPRINT_PASS`. Runtime
+then emitted `engine/serverRequestResponded` carrying the already answered
+request_id 0. The router incorrectly classified that confirmation event as a new
+native execution request and raised
+`NATIVE_EXECUTION_REQUEST_FORBIDDEN uncertain=true`. Runtime itself completed
+the Turn durably, but Sand settled `SAND-E0406`, so M1 acceptance is still
+incomplete.
+
+The completed Runtime session was archived and exact UNKNOWN journal runHash
+`79adecc49a4520cfae80f73452f76dd663f21520efc201c56056122117f0fb7b`
+was reconciled to completed. Current Runtime is generation 15 / PID 1658692 with
+29 retained Threads and zero pending/UNKNOWN/active/blocked work; router journal is
+`active:null`. See `PILOT-NORMALIZED-FINGERPRINT-EVIDENCE-20260919.json`.
 
 See [`MILESTONE-1.md`](MILESTONE-1.md) for the implementation contract and status,
 [`NATIVE-EXECUTION-POLICY.md`](NATIVE-EXECUTION-POLICY.md) for the thread policy,
