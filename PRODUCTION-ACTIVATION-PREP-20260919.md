@@ -567,12 +567,13 @@ pending/UNKNOWN state.
 
 ## Approval boundaries
 
-Gate 2A produced the required Runtime/Codex hashes and current host `5ec1e7d` passed
-fresh compatibility acceptance. The Human then authorized exactly one replacement
+Gate 2A produced the required Runtime/Codex hashes. The Human then authorized exactly one replacement
 BOX pilot. `507d1f34-56d5-4085-9b48-23d40cb9c914` is durably `harness:"box"`, has
 no Turn, and is now the singleton M1 allowlist identity. The retired Temporal pilot
-and user-facing Temporal Bot are unchanged. With that blocker resolved, Gate 2B is
-authorized to proceed; Gate 2C remains separate and is not implied by Gate 2B.
+and user-facing Temporal Bot are unchanged. Gate 2B subsequently completed. The
+provider-owned host is now stock `a5b5d79`, whose exact fingerprint, four M1
+anchors and deterministic patch image have independently passed fresh compatibility
+acceptance. Gate 2C remains separate and is not implied by Gate 2B.
 
 ### Completed: Gate 2A
 
@@ -606,7 +607,14 @@ It did not touch the Grok host/router or start a Turn.
 
 ### Later approval: Gate 2C
 
-Gate 2C now requires its own explicit Human approval. It may authorize
-router/config installation, one pristine host backup, the verified deterministic
-`5ec1e7d` patch and one supervisor-owned Sand restart. Gate 2C still does not start
-the pilot Turn.
+The prior Gate-2C attempt stopped fail-closed at the mandatory actual-host check
+before any live mutation after the provider advanced the host from `5ec1e7d` to
+`a5b5d79`. Current `a5b5d79` compatibility is now VERIFIED, but Gate 2C has not
+been resumed and requires a new explicit Human approval.
+
+The previous Gate-2C router package SHA-256
+`b0716767531a13e1b97b1617ebcbc4271b7569eb69c741c46c249b6844e496fc` was built
+before the `a5b5d79` compatibility source existed. It **must be repacked and
+reaccepted from current source before any future Gate-2C live install**. This
+compatibility-port task does not perform that repack, router/config installation,
+pristine backup write, host patch, Sand restart or pilot Turn.

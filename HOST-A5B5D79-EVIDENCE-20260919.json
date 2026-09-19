@@ -1,14 +1,17 @@
 {
   "format_version": 1,
-  "recorded_at_utc": "2026-09-19T10:13:18Z",
+  "recorded_at_utc": "2026-09-19T10:50:30Z",
   "scope": "Milestone 1 Grok Bot 0.57 current host a5b5d79 compatibility port",
   "production_mutations": {
+    "live_mutation_count": 0,
     "router_install": 0,
     "production_config_install": 0,
     "host_backup_write": 0,
     "host_patch": 0,
     "host_restart": 0,
     "runtime_change": 0,
+    "gate_2b_repeat": 0,
+    "grok_bot_update_or_restart": 0,
     "provider_or_model_inference": 0,
     "pilot_turns": 0
   },
@@ -22,6 +25,12 @@
     },
     "router_marker_version": 1,
     "router_marker_occurrences": 0,
+    "router_marker_counts": {
+      "session_start": 0,
+      "session_end": 0,
+      "identity_start": 0,
+      "identity_end": 0
+    },
     "required_anchor_counts": {
       "inferenceOwner": 1,
       "inferenceHook": 1,
@@ -29,10 +38,22 @@
       "mainSessionDispatch": 1
     },
     "anchor_positions": {
-      "inferenceOwner": 22858061,
-      "inferenceHook": 22860897,
-      "mainSessionOptions": 26017297,
-      "mainSessionDispatch": 26018559
+      "inferenceOwner": {
+        "byte_offset": 22859014,
+        "line": 605907
+      },
+      "inferenceHook": {
+        "byte_offset": 22861850,
+        "line": 605972
+      },
+      "mainSessionOptions": {
+        "byte_offset": 26018280,
+        "line": 680169
+      },
+      "mainSessionDispatch": {
+        "byte_offset": 26019542,
+        "line": 680194
+      }
     },
     "anchor_order": "PASS",
     "anchor_proof": "VERIFIED",
@@ -44,15 +65,23 @@
       "bytes": 26463887,
       "sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
       "delta_bytes": 747,
-      "session_markers": 1,
-      "identity_markers": 1,
+      "marker_counts": {
+        "session_start": 1,
+        "session_end": 1,
+        "identity_start": 1,
+        "identity_end": 1
+      },
       "identity_block_count": 1
     },
     "actual_host_router_check": {
       "status": "PASS",
       "state": "stock",
       "compat": "grok-bot-0.57-a5b5d79",
-      "exit_code": 0
+      "exit_code": 0,
+      "stdout": "host patch check passed: state=stock version=a5b5d79 sha256=2fd89dc7097ef9eb9f6df8b7d77823f9b4b237b96556a6ae408c33927d0045c7",
+      "built_check_bundle_sha256": "10d9d6d9f2447224fcd7e5d3f3fc20aed97996f18a3ad9e859aaa4bd77a0a9a2",
+      "production_paths_created": 0,
+      "post_check_host_unchanged": true
     }
   },
   "semantic_diff_vs_5ec1e7d": {
@@ -76,9 +105,15 @@
     "focused_compat_failures": 0,
     "router_tests": 101,
     "router_tests_failed": 0,
+    "build": "PASS",
     "telemetry": "PASS",
     "knip": "PASS",
-    "diff_check": "PASS"
+    "diff_check": "PASS",
+    "runtime_node_tests": 219,
+    "runtime_node_tests_failed": 0,
+    "runtime_python_tests": 114,
+    "runtime_python_tests_failed": 0,
+    "runtime_source_changed_for_host_port": false
   },
   "pilot_binding": {
     "current_box_pilot": "507d1f34-56d5-4085-9b48-23d40cb9c914",
@@ -90,5 +125,21 @@
     "source_allowlist_is_singleton": true,
     "retired_pilot_routed": false
   },
-  "package_note": "The router package must be repacked before the next Gate 2C attempt because this compatibility port adds a new built-in manifest/patcher import after the previous package was built."
+  "gate_2b": {
+    "state": "PRESERVED",
+    "repeated_by_this_port": false
+  },
+  "live_paths_after_check": {
+    "/home/box/sand-host/host-main.cjs.grok-codex-router-bak": "ABSENT",
+    "/home/box/grok-codex-router": "ABSENT",
+    "/home/box/sand-data/grok-codex-router.json": "ABSENT",
+    "/home/box/sand-data/grok-codex-router-state": "ABSENT"
+  },
+  "package_note": {
+    "previous_gate_2c_router_package_sha256": "b0716767531a13e1b97b1617ebcbc4271b7569eb69c741c46c249b6844e496fc",
+    "status": "STALE_FOR_A5B5D79",
+    "required_before_future_gate_2c": "REPACK_AND_REACCEPT",
+    "reason": "The previous Gate 2C package predates the a5b5d79 built-in compatibility manifest and patcher import.",
+    "repacked_or_installed_by_this_port": false
+  }
 }

@@ -159,3 +159,18 @@ still received a separate exact stock fingerprint, fresh required-anchor proof,
 deterministic patched SHA and actual-host `--check`. Keeping one manifest per host
 fingerprint lets provider upgrades fail closed without weakening earlier accepted
 targets.
+
+The subsequent stock `a5b5d79` drift confirmed the same rule again. Fresh actual
+source proof found all four required anchors exactly once and in order at byte
+offsets 22859014, 22861850, 26018280 and 26019542 (lines 605907, 605972, 680169 and
+680194). The M1 inference and identity seams are semantically unchanged from
+`5ec1e7d`; unrelated bundle growth moved offsets only. A fresh deterministic
+in-memory transform produced 26463887 bytes / SHA-256
+`abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30`, with
+each of the four router markers and the identity block exactly once.
+
+Compatibility source is part of the packaged patcher surface. Therefore a router
+package accepted before a new built-in host manifest is added cannot be reused just
+because the routing code itself is unchanged. Gate-2C package
+`b0716767531a13e1b97b1617ebcbc4271b7569eb69c741c46c249b6844e496fc` predates
+`a5b5d79` support and must be repacked/reaccepted before any future activation.

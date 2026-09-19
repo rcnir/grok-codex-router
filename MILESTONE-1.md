@@ -315,9 +315,12 @@ The `5ec1e7d` manifest rejected the current host on exact byte fingerprint as
 intended. Router install, production config, router state, pristine backup, host
 patch and supervisor restart were all skipped; rollback was not required. Gate 2B
 remains live. `a5b5d79` compatibility has since been VERIFIED as above, but Gate 2C
-has not been resumed. A fresh router package is required because the compatibility
-port changes the packaged manifest/patcher surface. See
-`GATE-2C-EVIDENCE-20260919.json`.
+has not been resumed. The previously accepted Gate-2C router package
+`b0716767531a13e1b97b1617ebcbc4271b7569eb69c741c46c249b6844e496fc` predates
+the `a5b5d79` built-in manifest/patcher import. It is stale for the current host
+and **must be repacked and reaccepted from current source** before any future
+Gate-2C activation. No such repack or live install is part of this compatibility
+port. See `GATE-2C-EVIDENCE-20260919.json`.
 
 The earlier activation-preparation readback found external Sand upgrades to
 `251860d` and later `5ec1e7d`; both were independently VERIFIED as above. Gate 2A
