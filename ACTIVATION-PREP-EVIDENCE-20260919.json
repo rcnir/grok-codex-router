@@ -1,5 +1,7 @@
 {
   "format_version": 1,
+  "historical_snapshot": true,
+  "superseded_by": "GATE-2A-EVIDENCE-20260919.json",
   "recorded_at_utc": "2026-09-19T01:06:22Z",
   "scope": "Milestone 1 production activation preparation; source/local plus live read-only only",
   "live_mutations_performed": 0,

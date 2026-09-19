@@ -21,7 +21,8 @@ Router source is `rcnir/grok-codex-router` branch
 production config artifact is `M1-PRODUCTION-CONFIG-20260919.json`; it alone sets
 `enabled:true` for activation.
 
-The current packed router artifact and activation config are:
+The router artifact actually staged during Gate 2A (source commit `c3dc4b629...`)
+and its activation config are:
 
 ```text
 router tarball
@@ -38,7 +39,9 @@ production config
 The router package smoke test loads the packed artifact without installing
 `node_modules`: the one pilot admits and resolves to
 `chatgpt-web/extra-high / xhigh`; another BOX and every auxiliary workload are
-stock passthrough.
+stock passthrough. Later documentation/evidence commits do not silently replace
+this staged package. Because current host/profile facts drifted after Gate 2A, a
+Gate-2C package must be repacked and reaccepted after those blockers are resolved.
 
 Runtime source remains `rcnir/execution-runtime` commit
 `72c80325e0a36c4068e8f02f4b750fc4bd8db26e`. The exact `codex-runtime` archive
@@ -115,32 +118,77 @@ marker version       1
 ```
 
 The Sand supervisor later performed an external upgrade that was not initiated by
-this task. The new current target has now completed the same source/local plus
-actual-host read-only acceptance:
+this task. At Gate 2A preflight, that then-current target completed the same
+source/local plus actual-host read-only acceptance:
 
 ```text
-current host version   251860d
-current stock bytes    26453384
-current stock SHA-256  2354d46da4304d11110645f4e7fa565a15de1b30cd1d80971db2b8934a278161
-current patched bytes  26454131
-current patched SHA    8d8c2c239667e38f421d6b96af994c279b69fdbaddbb91bed927f16a02aef5ea
+Gate-2A-preflight host version   251860d
+stock bytes                     26453384
+stock SHA-256                   2354d46da4304d11110645f4e7fa565a15de1b30cd1d80971db2b8934a278161
+reviewed patched bytes          26454131
+reviewed patched SHA            8d8c2c239667e38f421d6b96af994c279b69fdbaddbb91bed927f16a02aef5ea
 router marker count    0
 supervisor command     upgrade-251860d / upgrade
 host running           true
 pending upgrade        none
 ```
 
-`grok-bot-0.57-251860d` is now `anchorProof:"VERIFIED"`. Fresh actual-host anchor
+`grok-bot-0.57-251860d` remains `anchorProof:"VERIFIED"`. Its fresh actual-host anchor
 counts were 1/1/1/1 in the reviewed order, all router markers were zero, and the
-built read-only `--check` passed with `state=stock`. No router, config, journal
-directory, pristine backup, candidate Runtime/Codex release or activation scratch
-path exists. The stock Codex/Runtime pointers are unchanged.
+built read-only `--check` passed with `state=stock`. At that preflight there was no
+router/config/journal directory, pristine backup or candidate Runtime/Codex release.
+Gate 2A subsequently created only the approved versioned candidates; it did not
+change either live `current` pointer. Its final postflight is recorded below.
 
 ## Gate 2A — build and stage only
 
 This gate does **not** change either `current` symlink, stop a process, install
 the router, write the host backup, patch `host-main.cjs`, restart Sand, or start a
 provider/model Turn.
+
+### Gate 2A execution result
+
+Gate 2A was explicitly approved and completed as build/stage only. It produced:
+
+```text
+patched Codex 0.154.0 x86_64-musl
+  bytes   1283274448
+  sha256  790879dcee4a675f34cc1aba9a2ab3fd0edb447588cf97f5cb111967b12fc8e7
+  static  PASS (no ELF interpreter / no dynamic NEEDED entries)
+
+versioned standalone candidate
+  /home/box/.codex/packages/standalone/releases/
+    0.154.0-rcnir-dynamic-only-3084657-x86_64-unknown-linux-musl
+
+Runtime candidate
+  /opt/rocaniiru/codex-runtime/0.1.0-72c8032
+
+Runtime candidate tests
+  Python 114/114 PASS
+
+candidate schema
+  digest                    93fcd1f5a09f8192669e7ab24c65e35b8ef988456351895928ad103ecaf38d49
+  tree SHA256               b7d78c70759cad42c27edf9242997ccc6ed4eceb5d37cc75ef87104d2e88a8a1
+  dynamic_only_tool_policy  true
+```
+
+Neither `standalone/current` nor Runtime `current` changed. Runtime PID 883943,
+generation 12, its 25 retained Threads, journal SHA, zero UNKNOWN/pending state,
+and the unrelated App Server PID 1188039 remained untouched.
+
+However, the final read-only postflight discovered two external changes that this
+task did not perform: Sand advanced the stock host again from `251860d` to
+`5ec1e7d` (`26460874` bytes / SHA-256
+`8b0e2747c0b7b91fca368c886880b24906a28214e2979029a60a98d8ab0c9bc0`,
+zero router markers), and the immutable pilot profile now reads
+`harness:"temporal"` instead of the Gate-2A-preflight `harness:"box"`. The pilot
+profile mtime is `2026-09-19 12:20:43.339102233 +0900`; no profile mutation was
+issued by this task. Sand supervisor reports `upgrade-5ec1e7d / upgrade`.
+
+Therefore Gate 2A artifacts are accepted as staged candidates, but **Gate 2B is
+CLOSED**. Do not promote them until the Human explicitly resolves both the current
+host compatibility and pilot-harness facts. Full evidence is in
+`GATE-2A-EVIDENCE-20260919.json`.
 
 Use one new scratch root:
 
@@ -302,8 +350,11 @@ Use one new scratch root:
    ```
 
 6. Record exact patched Linux binary bytes/SHA-256 and generated schema digest.
-   Gate 2B is closed until those two identities are known and
-   `Protocol.dynamic_only_tool_policy` evaluates true from the staged schema. Also
+   Gate 2A satisfied this identity gate with binary SHA-256
+   `790879dcee4a675f34cc1aba9a2ab3fd0edb447588cf97f5cb111967b12fc8e7`
+   and schema digest
+   `93fcd1f5a09f8192669e7ab24c65e35b8ef988456351895928ad103ecaf38d49`;
+   `Protocol.dynamic_only_tool_policy` evaluated `true`. Also
    record the staged binary's `codex --version` (`codex-cli 0.154.0`) and prove
    that the staged source/archive/patch hashes still match the Gate 2A inputs.
    Publish those accepted identities in the candidate's `SOURCE.json`; at minimum
@@ -409,8 +460,10 @@ Server, and never restore the saved pre-promotion journal over the current one.
 
 ## Gate 2C — router install, config, host patch and Sand restart
 
-This gate remains closed until Gate 2B passes. It does not include any provider or
-model inference. The exact current-host target is `grok-bot-0.57-251860d`.
+This gate remains closed until Gate 2B passes and the current external drift is
+resolved. It does not include any provider or model inference. The procedure below
+is the last reviewed target, `grok-bot-0.57-251860d`; it must **not** be executed on
+the now-current stock host `5ec1e7d` without a fresh compatibility port.
 
 Preflight rechecks:
 
@@ -477,13 +530,15 @@ pending/UNKNOWN state.
 
 ## Approval boundaries
 
-The current-host compatibility precondition is now satisfied. Approval remains
-intentionally split because Gate 2B must consume hashes that exist only after Gate
-2A has built and staged the actual x86_64 artifact on the assigned VM.
+Gate 2A produced the required Runtime/Codex hashes, but **no next live mutation gate
+is currently open**. Its postflight found two independent external admission
+changes: current host `5ec1e7d` is unreviewed and the immutable pilot now reads
+`harness:"temporal"`. Approval remains intentionally split; neither Gate 2B nor
+Gate 2C may proceed until the Human explicitly resolves both facts.
 
-### Next approval: Gate 2A only
+### Completed: Gate 2A
 
-Gate 2A is the first live mutation boundary. An approval for Gate 2A authorizes only:
+Gate 2A was approved and completed within the following boundary:
 
 - creation of `/workspace/rcnir-m1-activation-20260919` and scratch toolchain/build
   files below it;
@@ -500,19 +555,22 @@ starting any process, writing the live router/config/journal, writing a host bac
 changing `host-main.cjs`, requesting a Sand restart, changing any Bot profile, or
 starting provider/model inference.
 
-Gate 2A must end by returning the measured Linux Codex SHA/bytes, schema SHA,
-candidate `SOURCE.json`, test result, and a fresh proof that both live `current`
-pointers/processes/host remain unchanged. Those measured identities become the
-literal preconditions for a later Gate 2B approval.
+Gate 2A returned the measured Linux Codex SHA/bytes, schema SHA, candidate
+`SOURCE.json`, tests and unchanged live pointers/processes. Its provider-owned host
+and pilot-profile postconditions changed externally, so those measured candidate
+identities are retained but do not by themselves open Gate 2B.
 
 ### Later approval: Gate 2B
 
-Only after Gate 2A acceptance, Gate 2B may authorize the one clean Runtime stop,
-two atomic pointer switches, and one Runtime start described above. It never
-touches the Grok host/router and does not start a Turn.
+Only after the current host/profile blockers are explicitly resolved, Gate 2B may
+authorize the one clean Runtime stop, two atomic pointer switches, and one Runtime
+start described above. It never touches the Grok host/router and does not start a
+Turn.
 
 ### Later approval: Gate 2C
 
-Only after Gate 2B acceptance, Gate 2C may authorize router/config installation,
-one pristine host backup, the reviewed deterministic `251860d` patch and one
-supervisor-owned Sand restart. Gate 2C still does not start the pilot Turn.
+Only after a fresh current-host compatibility acceptance plus Gate 2B acceptance,
+Gate 2C may authorize router/config installation, one pristine host backup, the
+then-current reviewed deterministic patch and one supervisor-owned Sand restart.
+The historical `251860d` commands above must not be replayed on `5ec1e7d`. Gate 2C
+still does not start the pilot Turn.

@@ -201,11 +201,28 @@ changing a current pointer or process; 2B promotes the patched Codex + Runtime;
 0.57 patch and performs one Sand-supervisor restart. The first pilot Turn remains
 a later separate Human decision.
 
-The final activation-preparation readback found an external Sand host upgrade that
-this task did not initiate. That current `251860d` stock host is now independently
-VERIFIED as above, so the drift blocker is cleared. Production activation remains
-split into Gate 2A build/stage, Gate 2B Runtime/Codex promotion and Gate 2C
-router/config + deterministic host patch/restart; none has yet been executed.
+Gate 2A has now completed successfully as build/stage only. The exact staged Codex
+binary is 1,283,274,448 bytes / SHA-256
+`790879dcee4a675f34cc1aba9a2ab3fd0edb447588cf97f5cb111967b12fc8e7`;
+the Runtime candidate passed 114 Python tests and its generated schema reports
+`dynamic_only_tool_policy=true` with digest
+`93fcd1f5a09f8192669e7ab24c65e35b8ef988456351895928ad103ecaf38d49`.
+No current pointer or process changed.
+
+Gate 2B is nevertheless closed by fresh external postflight drift: current stock
+host is now `5ec1e7d` / 26,460,874 bytes / SHA-256
+`8b0e2747c0b7b91fca368c886880b24906a28214e2979029a60a98d8ab0c9bc0`
+with zero router markers, and the immutable pilot profile now reads
+`harness:"temporal"`. Neither change was performed by this task. Do not port
+`5ec1e7d`, mutate the pilot profile, promote Runtime/Codex or proceed to Gate 2C
+without a new explicit Human decision.
+
+The earlier activation-preparation readback found an external Sand upgrade to
+`251860d`; that stock host was independently VERIFIED as above. Gate 2A subsequently
+completed build/stage only. Its final postflight then observed a second external
+upgrade to stock `5ec1e7d` and an external pilot-profile change to
+`harness:"temporal"`. Gate 2B/2C are therefore closed again; staged candidates are
+retained, but neither new production fact is silently accepted or mutated.
 
 ## Local checks
 

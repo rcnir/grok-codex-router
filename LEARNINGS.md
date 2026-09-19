@@ -115,3 +115,14 @@ For `251860d`, the M1 insertion seams remained structurally identical to `18cd06
 but verification still required a fresh stock SHA/size, exact anchor counts/order,
 zero router markers, deterministic patched-image SHA and an actual-host read-only
 `--check` before `anchorProof` could be promoted.
+
+## 2026-09-19 — Revalidate admission facts after staging, not only before it
+
+Gate 2A proved that immutable build/stage work can succeed while provider-owned
+state changes underneath it. The staged Runtime/Codex candidates remained valid,
+but the final postflight observed both a new automatic Sand host upgrade and an
+external pilot-profile harness change. Treat those as independent admission facts:
+do not infer that a valid candidate artifact authorizes promotion after its live
+target/profile preconditions have drifted. Preserve the staged artifacts, keep
+current pointers untouched, and close the next gate until the Human explicitly
+resolves the new production facts.
