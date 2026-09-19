@@ -322,6 +322,41 @@ test("completed invocation cannot be replayed through a replacement executor ord
   assert.equal(fresh.runtime.calls.filter((row) => row.name === "runtime_session_open").length, 1);
 });
 
+const memoryPrompt = (marker = "<<SAND_MEMORY_EXTRACTION>>", reason = "memory-extraction") => [
+  { role: "system", content: marker + "\nMemory fixture instructions." },
+  { role: "user", content: "Memory fixture exchange.",
+    providerOptions: { cursor: { inferenceReason: reason } } }
+];
+
+test("root executor still requires an external invocation id for memory-shaped input", async (t) => {
+  const { runtime, execution } = fixture(t);
+  await assert.rejects(execution.run(memoryPrompt(), undefined, undefined), /INVOCATION_ID_REQUIRED/);
+  assert.equal(runtime.calls.length, 0);
+});
+
+for (const marker of ["<<SAND_MEMORY_EXTRACTION>>", "<<SAND_MEMORY_EPISODE>>"]) {
+  test("auxiliary " + marker + " inference gets a deterministic internal invocation id", async (t) => {
+    const { runtime, execution } = fixture(t, new FakeRuntime(), undefined, 1);
+    const result = await execution.run(memoryPrompt(marker), undefined, undefined);
+    assert.match(String(result.invocationId), /^memory:1:[a-f0-9]{64}$/);
+    assert.equal(runtime.calls.filter((row) => row.name === "runtime_session_open").length, 1);
+  });
+}
+
+for (const mode of ["wrong-marker", "wrong-reason", "tools-present"]) {
+  test("auxiliary invocation id synthesis rejects " + mode, async (t) => {
+    const { runtime, execution } = fixture(t, new FakeRuntime(), undefined, 1);
+    const messages = mode === "wrong-marker"
+      ? memoryPrompt("<<NOT_MEMORY>>")
+      : mode === "wrong-reason"
+        ? memoryPrompt("<<SAND_MEMORY_EXTRACTION>>", "other")
+        : memoryPrompt();
+    const tools = mode === "tools-present" ? [] : undefined;
+    await assert.rejects(execution.run(messages, tools, undefined), /INVOCATION_ID_REQUIRED/);
+    assert.equal(runtime.calls.length, 0);
+  });
+}
+
 test("production native policy requires verified Runtime capability and explicit dynamicOnly request", () => {
   const status = { capabilities: { dynamic_only_tool_policy: true } };
   assert.doesNotThrow(() => productionThreadPolicy.verify(status, "dynamicOnly"));
