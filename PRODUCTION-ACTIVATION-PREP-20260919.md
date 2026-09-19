@@ -787,15 +787,61 @@ that validation route. Final Runtime is generation 15 / PID 1658692 /
 33 retained Threads / pending 0 / UNKNOWN 0 / active 0 / blocked 0 with healthy
 persistence. See `PRODUCTION-ROLLOUT-EVIDENCE-20260920.json`.
 
-## Approval boundaries
+## Grok host provider update — completed 2026-09-20
+
+Human approval authorized the provider host update after broader production and
+memory-auxiliary acceptance. The update preflight observed a version race: the
+host's cached target was initially `720baf1` while the public provider latest had
+advanced to `f608393`. Both targets were fingerprinted, anchor-checked and added to
+the compatibility manifests before any live update. Full router validation passed
+114/114 plus telemetry/knip/diff-check.
+
+The official `updateHostNow(force=true)` command was executed exactly once after a
+cache-reset restart confirmed both host status and public latest at `f608393`. The
+provider installed exact stock host 26,468,193 bytes / SHA-256
+`da5b2494c41198e593c626c5d5d617d8ddf5eb75fed62effea63d8388a8e6032`.
+The canonical router package was reinstalled, live `--check` passed against that
+stock host, and the deterministic patch produced 26,468,940 bytes / SHA-256
+`614b74aeef87b8870e4f964d9dbea43e59182a54baf910ef7bba35bf1c6f7469`.
+A new pristine stock backup was created at mode 0600 with the exact stock SHA.
+Patched host loading required one restart
+`grok-codex-router-1789833873085-75aaf53d`.
+
+After the provider update, the pre-update pilot and production profiles were
+reconciled from BOX to Temporal. The router therefore failed closed before any
+post-update Turn. No policy relaxation or profile rewrite was used. Two fresh BOX
+identities were created under the new host contract and became the exact live
+allowlist:
+
+```text
+control pilot  8e063541-fe8e-43f8-875e-2d61afe9a7d9  serverId 4319334
+production     9c394bda-cc84-4ab1-8e20-c40c5f91aacf  serverId 4319335
+```
+
+The post-update live config is 1558 bytes / SHA-256
+`17fc241c2cef1b534bc1bb1c658b9f23be1fa7a358931191fc1c4d6a6fb96240`.
+Readback routes only the two fresh BOX identities. Both historical IDs and all
+Temporal/auxiliary workload classes remain stock.
+
+Exactly one production acceptance Turn was then sent to the fresh production BOX.
+It delivered `ROCANIIRU_F608393_UPDATE_PASS`; Sand durably settled the exact nonce
+with `outcome:"success"`; the root Runtime Turn completed and archived; the
+post-turn memory auxiliary separately completed and archived; and no new router or
+memory-extraction fault occurred. Final Runtime is generation 15 / PID 1658692 /
+35 retained Threads / pending 0 / UNKNOWN 0 / active 0 / blocked 0. Provider status
+reports `hostVersion=f608393`, `latestHostVersion=f608393`, and
+`hostUpdateAvailable=false`. See `GROK-HOST-UPDATE-EVIDENCE-20260920.json`.
+
+## Historical M1 approval boundaries
 
 Gate 2A produced the required Runtime/Codex hashes. The Human then authorized exactly one replacement
-BOX pilot. `507d1f34-56d5-4085-9b48-23d40cb9c914` is durably `harness:"box"`
-and remains the singleton M1 allowlist identity; it had no Turn at replacement
+BOX pilot. At that M1 boundary `507d1f34-56d5-4085-9b48-23d40cb9c914` was durably `harness:"box"`
+and was the singleton M1 allowlist identity; it had no Turn at replacement
 creation. The later first-Turn and retry evidence are recorded separately. The
 retired Temporal pilot and user-facing Temporal Bot are unchanged. Gate 2B and
-Gate 2C subsequently completed. The current host remains patched `a5b5d79` at
-SHA-256 `abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30`.
+Gate 2C subsequently completed. At that historical boundary the host was patched
+`a5b5d79` at SHA-256
+`abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30`.
 
 ### Completed: Gate 2A
 
