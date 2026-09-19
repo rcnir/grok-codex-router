@@ -44,6 +44,7 @@ export interface CodexRouterSession {
   sessionId: string;
   nextExecutorOrdinal: number;
   getModelId(): string;
+  getResolvedModelId(): string;
   getExecutor(initialMessages?: unknown): PromptExecutor;
 }
 
@@ -185,6 +186,9 @@ export function createCodexRouterSession(options: SessionOptions = {}): CodexRou
     sessionId: sessionIdFor(route),
     nextExecutorOrdinal: 0,
     getModelId() {
+      return this.route.model;
+    },
+    getResolvedModelId() {
       return this.route.model;
     },
     getExecutor(initialMessages) {

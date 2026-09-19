@@ -44,6 +44,8 @@ test("only explicit pilot IDs and lowercase BOX profile opt in; all native workl
   assert.equal(shouldUseCodexRouter({ ...options, transcriptId: undefined }), false);
   assert.equal(shouldUseCodexRouter({ ...options, conversationId: "../pilot" }), false);
   const session = createCodexRouterSession({ sessionOptions: options });
+  assert.equal(session.getResolvedModelId(), "chatgpt-web/extra-high");
+  assert.equal(session.getResolvedModelId(), session.getModelId());
   const executor = session.getExecutor([{ role: "user", content: "local only" }]);
   assert.equal(executor.getMessages().length, 1);
   assert.equal(fs.existsSync(path.join(root, "journal")), false, "session/executor construction is lazy and never invokes the Runtime");
