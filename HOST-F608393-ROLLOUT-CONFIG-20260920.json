@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "enabled": true,
+  "authStore": "pi",
+  "contextWindows": {
+    "gpt-5.6-sol": 272000,
+    "gpt-5.6-luna": 272000,
+    "gpt-5.6-terra": 272000
+  },
+  "default": {
+    "model": "gpt-5.6-sol",
+    "reasoningEffort": "high"
+  },
+  "agents": {
+    "8e063541-fe8e-43f8-875e-2d61afe9a7d9": {
+      "model": "chatgpt-web/extra-high",
+      "reasoningEffort": "xhigh"
+    },
+    "9c394bda-cc84-4ab1-8e20-c40c5f91aacf": {
+      "model": "chatgpt-web/extra-high",
+      "reasoningEffort": "xhigh"
+    }
+  },
+  "pilot": {
+    "agentIds": [
+      "8e063541-fe8e-43f8-875e-2d61afe9a7d9",
+      "9c394bda-cc84-4ab1-8e20-c40c5f91aacf"
+    ]
+  },
+  "classes": {
+    "summarization": {
+      "model": "gpt-5.6-sol",
+      "reasoningEffort": "high"
+    },
+    "subagent": {
+      "model": "gpt-5.6-sol",
+      "reasoningEffort": "high"
+    },
+    "browser": {
+      "model": "gpt-5.6-sol",
+      "reasoningEffort": "high"
+    },
+    "computer": {
+      "model": "gpt-5.6-sol",
+      "reasoningEffort": "high"
+    },
+    "automation": {
+      "model": "gpt-5.6-sol",
+      "reasoningEffort": "high"
+    },
+    "group": {
+      "model": "gpt-5.6-sol",
+      "reasoningEffort": "high"
+    }
+  },
+  "runtime": {
+    "python": "/opt/rocaniiru/codex-runtime/venv/bin/python3",
+    "entrypoint": "/opt/rocaniiru/codex-runtime/current/codex-runtime/entrypoint.py",
+    "socket": "/run/rcnir-codex-runtime/mcp.sock",
+    "stateDirectory": "/home/box/sand-data/grok-codex-router-state"
+  },
+  "transport": {
+    "mode": "cached-websocket",
+    "maxRetries": 5
+  }
+}

@@ -349,3 +349,27 @@ auxiliary workload classes stayed stock.
 
 This keeps the accepted pilot as an audit/control identity while giving production
 traffic its own durable agent/profile/journal identity.
+
+## 2026-09-20 — Provider host updates can migrate identity semantics
+
+A host update is not only a binary replacement. The `f608393` provider update
+reconciled the previously accepted BOX pilot and production profiles to Temporal.
+The router's explicit BOX profile check therefore failed closed before any
+post-update provider Turn.
+
+Do not respond to that drift by broadening an allowlist or treating Temporal as an
+equivalent harness. Re-evaluate the new host's durable identity contract, create
+fresh BOX identities under that contract when needed, and rotate the exact
+allowlist only after readback proves the intended harness.
+
+## 2026-09-20 — Accept version races before mutating provider-owned host state
+
+During the approved update preflight, the host's cached latest version was
+`720baf1` while the public provider latest advanced to `f608393`. Updating against
+only the cached target would have created an avoidable compatibility race.
+
+The safer pattern is to fingerprint and structurally accept every target that can
+win the observed race, then reset stale provider metadata and require the final
+cached/latest target to match immediately before mutation. Only then execute the
+provider update once. After the swap, verify exact stock bytes before applying the
+reviewed deterministic patch.

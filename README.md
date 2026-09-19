@@ -5,26 +5,57 @@ It retains the upstream source layout and wire helpers, but its package entrypoi
 routes through the **existing** ROCANIIRU Runtime CLI/MCP boundary, not the private
 Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
 
-**Milestone 1 pilot acceptance is complete on the patched 0.57.0 / a5b5d79 production path.** Human Gate 1 originally created isolated BOX pilot
+## Current production state — 2026-09-20
+
+The live Grok host is provider-latest `f608393`, deterministically patched to
+26,468,940 bytes / SHA-256
+`614b74aeef87b8870e4f964d9dbea43e59182a54baf910ef7bba35bf1c6f7469`.
+Its pristine stock backup is 26,468,193 bytes / SHA-256
+`da5b2494c41198e593c626c5d5d617d8ddf5eb75fed62effea63d8388a8e6032`
+at mode 0600. Provider status reports `hostUpdateAvailable:false`.
+
+The provider update reconciled the pre-update BOX pilot/production profiles to
+Temporal, and the router correctly failed closed. Rather than weakening the BOX
+policy or rewriting those identities, two fresh `f608393` BOX identities were
+created and the live allowlist was rotated explicitly:
+
+```text
+control pilot  8e063541-fe8e-43f8-875e-2d61afe9a7d9  serverId 4319334
+production     9c394bda-cc84-4ab1-8e20-c40c5f91aacf  serverId 4319335
+```
+
+The live config is `HOST-F608393-ROLLOUT-CONFIG-20260920.json`, 1558 bytes /
+SHA-256 `17fc241c2cef1b534bc1bb1c658b9f23be1fa7a358931191fc1c4d6a6fb96240`.
+Only those two fresh BOX identities route; old pilot/production IDs, user-facing
+Temporal and auxiliary workload classes remain stock. The one post-update
+production acceptance Turn delivered `ROCANIIRU_F608393_UPDATE_PASS`, Sand
+settled success, and both the root Runtime Turn and post-turn memory auxiliary
+completed and archived. Runtime remains generation 15 / PID 1658692 with
+35 retained Threads and zero pending/UNKNOWN/active/blocked work. See
+`GROK-HOST-UPDATE-EVIDENCE-20260920.json`.
+
+## Historical M1 chronology
+
+**Milestone 1 pilot acceptance completed on the patched 0.57.0 / a5b5d79 production path.** Human Gate 1 originally created isolated BOX pilot
 `97cf83a0-0401-4481-9f3f-8b321921f8b0`; it later drifted durably Temporal. After
 same-ID repair was exhausted, the Human authorized exactly one replacement BOX
-pilot, `507d1f34-56d5-4085-9b48-23d40cb9c914`. Its durable profile is
-`harness:"box"`, serverId `4270685`. It had no Turn at replacement creation;
+pilot, `507d1f34-56d5-4085-9b48-23d40cb9c914`. At the M1 acceptance boundary its durable profile was
+`harness:"box"`, serverId `4270685`; the later `f608393` provider update reconciled that historical identity to Temporal. It had no Turn at replacement creation;
 the later single acceptance attempt is described below. Gate 2A built and staged the patched
 Codex/Runtime candidates without changing a current pointer or process. Its final
 read-only postflight observed provider-owned host drift and a
 durable pilot profile of `harness:"temporal"`. The host drift is now resolved:
-current `a5b5d79` now has its own VERIFIED fingerprint-bound manifest while
+the then-current `a5b5d79` received its own VERIFIED fingerprint-bound manifest while
 `5ec1e7d`, `251860d` and `18cd065` remain supported separately and 0.53 remains
 fail-closed. The pilot
 drift was resolved by the explicitly authorized replacement ID; the retired pilot
 remains Temporal and is outside the allowlist. The bounded,
 thread-local
 `toolIsolation:"dynamicOnly"` Codex source patch and Runtime/router capability
-wiring remain separate from host compatibility. The pilot is now the only source
-allowlist identity and its fixed route is `chatgpt-web/extra-high / xhigh`, while
+wiring remain separate from host compatibility. At that M1 boundary the pilot was the only live allowlist
+identity and its fixed route is `chatgpt-web/extra-high / xhigh`, while
 the source default remains `enabled:false`; the live production config alone enables
-the singleton pilot route. Gate 2B promoted the patched Codex/Runtime successfully.
+the singleton pilot route at that time. Gate 2B promoted the patched Codex/Runtime successfully.
 After the first Gate-2C attempt failed closed on provider host drift, `a5b5d79`
 compatibility was VERIFIED, current source was freshly repacked/reaccepted, and
 Gate 2C completed: router/config installed, pristine stock backup written, exact

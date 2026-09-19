@@ -1,0 +1,118 @@
+{
+  "format_version": 1,
+  "scope": "Approved Grok Bot host update from patched a5b5d79 to provider-latest f608393",
+  "pre_update": {
+    "host_version": "a5b5d79",
+    "patched_host_sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+    "runtime_generation": 15,
+    "runtime_threads": 33,
+    "runtime_pending": 0,
+    "runtime_unknown": 0,
+    "runtime_active": 0
+  },
+  "provider_latest_race": {
+    "initial_cached_target": "720baf1",
+    "public_latest_advanced_to": "f608393",
+    "cache_reset_restart_id": "grok-codex-router-1789833638813-708989f5",
+    "post_restart_latest": "f608393"
+  },
+  "compatibility": {
+    "source_commit": "d7f5c6ea23e6539c0bef552d9bbc9c4ac41491cc",
+    "main_merge_commit": "43ef65f8fc749e0b020df1546d4f1998ef3a4c38",
+    "tests": "114/114 PASS plus telemetry/knip/diff-check",
+    "720baf1": {
+      "bundle_sha256": "73223297d450d1603d38fe254e5ec8d62d05090def186181ca4ae343bac806a0",
+      "stock_bytes": 26468498,
+      "stock_sha256": "148b28dab774cbc5befd0fbef8477c1a2bf3884e6115497a4ff6d696302f289a",
+      "patched_bytes": 26469245,
+      "patched_sha256": "f0581785f0c33e12cd76cb96c127b9e140225f99a0fa592da5dae14c796b9837"
+    },
+    "f608393": {
+      "bundle_sha256": "e0a6bc66e42e4f64ccfe8f9b017aa99cc397244546a85ffb0fd79ce16abac7b0",
+      "stock_bytes": 26468193,
+      "stock_sha256": "da5b2494c41198e593c626c5d5d617d8ddf5eb75fed62effea63d8388a8e6032",
+      "patched_bytes": 26468940,
+      "patched_sha256": "614b74aeef87b8870e4f964d9dbea43e59182a54baf910ef7bba35bf1c6f7469"
+    }
+  },
+  "provider_update": {
+    "command": "updateHostNow(force=true)",
+    "command_count": 1,
+    "ack_version": "f608393",
+    "supervisor_upgrade_command_id": "upgrade-f608393",
+    "post_upgrade_stock_sha256": "da5b2494c41198e593c626c5d5d617d8ddf5eb75fed62effea63d8388a8e6032"
+  },
+  "router_reinstall_and_patch": {
+    "router_package_bytes": 165582,
+    "router_package_sha256": "8057fc30ee57f42e2159ee8e235347fe978c68c4b20d046fc6e0d3ecc917d8ec",
+    "final_host_sha256": "614b74aeef87b8870e4f964d9dbea43e59182a54baf910ef7bba35bf1c6f7469",
+    "pristine_backup_sha256": "da5b2494c41198e593c626c5d5d617d8ddf5eb75fed62effea63d8388a8e6032",
+    "post_patch_restart_id": "grok-codex-router-1789833873085-75aaf53d",
+    "post_patch_restart_count": 1
+  },
+  "identity_rotation": {
+    "reason": "Provider update reconciled the pre-update BOX identities to temporal; router remained fail-closed.",
+    "old_pilot_id": "507d1f34-56d5-4085-9b48-23d40cb9c914",
+    "old_production_id": "349eff8b-f38e-4353-b9b3-09b09f93897e",
+    "new_pilot": {
+      "id": "8e063541-fe8e-43f8-875e-2d61afe9a7d9",
+      "server_id": "4319334",
+      "harness": "box",
+      "profile_sha256": "8c1d506f7b3beb4ad2e1762a744bab21a833d944ea6d61584205eec72709e32e"
+    },
+    "new_production": {
+      "id": "9c394bda-cc84-4ab1-8e20-c40c5f91aacf",
+      "server_id": "4319335",
+      "harness": "box",
+      "profile_sha256": "7992a18f9e93827194f22b0635296751c0a1550d492b73bafa626a31502aac75"
+    }
+  },
+  "post_update_config": {
+    "file": "HOST-F608393-ROLLOUT-CONFIG-20260920.json",
+    "bytes": 1558,
+    "sha256": "17fc241c2cef1b534bc1bb1c658b9f23be1fa7a358931191fc1c4d6a6fb96240",
+    "new_pilot_routes": true,
+    "new_production_routes": true,
+    "old_pilot_routes": false,
+    "old_production_routes": false,
+    "auxiliary_routes": false
+  },
+  "acceptance": {
+    "send_count": 1,
+    "client_resend_count": 0,
+    "client_nonce": "03c3af41-1cce-4cd3-a01c-7a6522cabeec",
+    "assistant_entry_content": "ROCANIIRU_F608393_UPDATE_PASS",
+    "sand_outcome": "success",
+    "settled_at_ms": 1789834315831,
+    "root_session_id": "grok:aa697846f6d2f92e761dff9c:478eae737451ea4ed90c0cc3",
+    "root_thread_id": "01a0ba6f-2579-75a2-ab34-f014c5d508c3",
+    "root_turn_id": "01a0ba6f-2e2a-7112-9f15-f602c1e3d734",
+    "root_terminal_sequence": 64424509891,
+    "root_archive_sequence": 64424509893,
+    "root_completed_run_hash": "478eae737451ea4ed90c0cc3e83fb553813a2a49f014e8c61a79c5b522527b15",
+    "memory_session_id": "grok:aa697846f6d2f92e761dff9c:a480850fdbfe80bf3bf048af",
+    "memory_thread_id": "01a0ba6f-ba69-7272-bbf8-0d59f35d68f4",
+    "memory_turn_id": "01a0ba6f-be47-7c53-b2fc-e78a3ba60e9e",
+    "memory_terminal_sequence": 64424509919,
+    "memory_archive_sequence": 64424509921,
+    "memory_completed_run_hash": "a480850fdbfe80bf3bf048af81399602434dd1bf5c385e0486629bdeaa8e6e7b",
+    "new_memory_failures": 0,
+    "new_router_faults": 0
+  },
+  "final_live_state": {
+    "host_version": "f608393",
+    "host_update_available": false,
+    "latest_host_version": "f608393",
+    "host_sha256": "614b74aeef87b8870e4f964d9dbea43e59182a54baf910ef7bba35bf1c6f7469",
+    "config_sha256": "17fc241c2cef1b534bc1bb1c658b9f23be1fa7a358931191fc1c4d6a6fb96240",
+    "runtime_generation": 15,
+    "runtime_thread_count": 35,
+    "runtime_latest_event": 64424509921,
+    "runtime_pending_inputs": 0,
+    "runtime_unknown_operations": 0,
+    "runtime_active_turns": 0,
+    "runtime_blocked_threads": 0,
+    "computer": "clear/CLEAR"
+  },
+  "grok_bot_update_complete": true
+}
