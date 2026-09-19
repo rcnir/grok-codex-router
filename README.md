@@ -5,21 +5,30 @@ It retains the upstream source layout and wire helpers, but its package entrypoi
 routes through the **existing** ROCANIIRU Runtime CLI/MCP boundary, not the private
 Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
 
-**Not deployed. Human Gate 1 is open only for explicit approval to create one
-isolated BOX pilot.** The current production host is Grok Bot `0.57.0`, host
-`18cd065`; its exact stock fingerprint, structural anchors and deterministic
-patched image are verified read-only. The older 0.53 compatibility manifest is
-retained and remains fail-closed. The bounded, thread-local
+**Not deployed.** Human Gate 1 created exactly one isolated BOX pilot,
+`97cf83a0-0401-4481-9f3f-8b321921f8b0`, whose authoritative profile is
+`harness:"box"`; no Turn has been started. Host `18cd065` was the verified 0.57
+compatibility baseline, but the final read-only pre-activation check observed an
+external Sand host upgrade to stock/unpatched `251860d`. The retained 0.57
+manifest correctly fails closed against that new fingerprint, so production
+activation is blocked until current-host compatibility is explicitly re-scoped
+and verified. The older 0.53 compatibility manifest is retained and remains
+fail-closed. The bounded, thread-local
 `toolIsolation:"dynamicOnly"` Codex source patch and Runtime/router capability
-wiring remain separate from host compatibility. No host patch, Runtime/Codex
-deploy, pilot creation, provider/model inference or Temporal profile change has
-been performed.
+wiring remain separate from host compatibility. The pilot is now the only source
+allowlist identity and its fixed route is `chatgpt-web/extra-high / xhigh`, while
+the source default remains `enabled:false`. No host patch, Runtime/Codex deploy,
+provider/model inference or Temporal profile change has been performed. No live
+mutation approval is currently open; the prepared mutation boundaries and the
+current blocker are documented in `PRODUCTION-ACTIVATION-PREP-20260919.md`.
 
 See [`MILESTONE-1.md`](MILESTONE-1.md) for the implementation contract and status,
 [`NATIVE-EXECUTION-POLICY.md`](NATIVE-EXECUTION-POLICY.md) for the thread policy,
 [`DYNAMIC-ONLY-EVIDENCE-20260919.json`](DYNAMIC-ONLY-EVIDENCE-20260919.json) for this
 source-only continuation, [`HOST-057-EVIDENCE-20260919.json`](HOST-057-EVIDENCE-20260919.json)
-for the fresh 0.57 compatibility/Gate evidence, and [`LEARNINGS.md`](LEARNINGS.md)
+for the accepted 0.57/Gate-1 snapshot,
+[`ACTIVATION-PREP-EVIDENCE-20260919.json`](ACTIVATION-PREP-EVIDENCE-20260919.json)
+for the current live read-only activation state, and [`LEARNINGS.md`](LEARNINGS.md)
 for corrections.
 
 Local development uses Node, Bun and the pinned dev dependencies. `npm run check`

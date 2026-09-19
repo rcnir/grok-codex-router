@@ -84,3 +84,24 @@ without changing its executor-profile/model selection or dispatch path.
 Pin both the pristine stock fingerprint and the deterministic patched fingerprint.
 That makes read-only `--check` able to authenticate either exact state while partial
 markers, stale backups or hand-edited patched images still fail closed.
+
+## 2026-09-19 — Pilot binding and activation boundary
+
+Binding an approved pilot is not activation. Keep `enabled:false` in source while
+pinning the one immutable agent ID and its intended Runtime model/effort; an
+explicit production config is the later activation switch. This lets source tests
+prove that the pilot is the sole eligible BOX root while Temporal, other BOX and
+every auxiliary workload remain stock before any live file changes.
+
+The accepted Runtime wrapper launches an absolute shared standalone Codex path.
+Therefore dynamic-only activation cannot be represented as a Runtime-Python-only
+deployment: the patched Codex executable and its generated schema must be staged
+and promoted with the Runtime. Switching the standalone `current` pointer affects
+future Codex launches outside Runtime too, although already-running unrelated App
+Server processes keep their open executable inode. That impact belongs in the
+Human Gate rather than being hidden behind the Runtime restart.
+
+Keep build/stage, Runtime/Codex promotion, and Grok-host patch/restart as separate
+gates. Staging can be rolled back by deleting new versioned paths; Runtime rollback
+restores pointers without overwriting a newer durable journal; host rollback uses
+the verified pristine backup and the same supervisor-controlled restart path.

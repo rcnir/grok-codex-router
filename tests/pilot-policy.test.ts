@@ -1,14 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { M1_PILOT_AGENT_ID } from "../src/config.js";
 import { shouldUseCodexRouter, type CodexRouterPilotPolicyInput } from "../src/pilot-policy.js";
 
 function eligible(overrides: Partial<CodexRouterPilotPolicyInput> = {}): CodexRouterPilotPolicyInput {
   return {
     enabled: true,
-    allowlistedAgentIds: new Set(["agent-a"]),
+    allowlistedAgentIds: new Set([M1_PILOT_AGENT_ID]),
     executionHarness: "box",
     sessionOptions: {
-      conversationId: "agent-a",
+      conversationId: M1_PILOT_AGENT_ID,
       transcriptId: "transcript-a",
       isSummarizationSession: false,
       isComputerUseSubagent: false,
@@ -39,7 +40,7 @@ test("pilot routing requires enabled, allowlisted lowercase box root identity", 
     sessionOptions: { ...eligible().sessionOptions, conversationId: "   " }
   })), false);
   assert.equal(shouldUseCodexRouter(eligible({
-    sessionOptions: { ...eligible().sessionOptions, conversationId: " agent-a " }
+    sessionOptions: { ...eligible().sessionOptions, conversationId: ` ${M1_PILOT_AGENT_ID} ` }
   })), false);
 });
 

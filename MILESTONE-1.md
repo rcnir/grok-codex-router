@@ -2,11 +2,13 @@
 
 ## Status and ownership
 
-Source candidate only. **Milestone 1 is ready for the Human Gate 1 pilot-create
-decision; Human Gate 1 is OPEN for that one decision only.**
-No live router package was installed, no pilot created, no pristine backup written
+Source candidate only. **Human Gate 1 is complete: one isolated BOX pilot was
+created and independently read back. The next boundary is production activation
+Gate 2A (build/stage only).**
+No live router package was installed and no pilot Turn was started. No pristine backup was written
 to the VM, no host source patched/restarted, no live Runtime replaced and no real
-App Server process or provider/model inference started by this task.
+provider/model inference started by this task. The existing persistent App Server
+remains the stock Codex 0.154.0 process.
 
 The fork is `rcnir/grok-codex-router`, with `upstream` pointing to
 `IgorWarzocha/grok-codex-router`. The implementation branch is
@@ -20,8 +22,8 @@ Neither branch is a live deployment or a change to Intelligence/D1/Cloudflare.
 The source-only continuation adds the pinned Codex thread-local
 `toolIsolation:"dynamicOnly"` contract, Runtime schema-backed capability and
 effective-policy recovery checks. The 400 selected Codex tests passed, including
-enabled MCP refresh and Legacy/Paginated persistent resume/fork. The current 0.57
-host compatibility port is independently accepted read-only in
+enabled MCP refresh and Legacy/Paginated persistent resume/fork. The 0.57
+host compatibility snapshot is independently accepted read-only in
 `HOST-057-EVIDENCE-20260919.json`; `DYNAMIC-ONLY-EVIDENCE-20260919.json` remains
 the Blocker 1 source record, and `EVIDENCE-M1-20260919.json` remains historical.
 
@@ -60,14 +62,18 @@ request identities, generations or tool sets fence the run.
 
 ## Routing policy
 
-Both `enabled:true` and membership in `pilot.agentIds` are necessary. A legacy
+Both `enabled:true` and membership in `pilot.agentIds` are necessary. The source
+allowlist now contains exactly the approved immutable pilot ID
+`97cf83a0-0401-4481-9f3f-8b321921f8b0`; its source route is fixed to
+`chatgpt-web/extra-high / xhigh`. `DEFAULT_CONFIG.enabled` remains `false`, so this
+binding alone cannot activate routing. A legacy
 entry in `agents` is a model route, **not** pilot authorization. The wrapper reads
 only the exact selected agent profile and requires lowercase `harness:"box"`.
 It rejects a group profile. Conversation/transcript identity and explicit root
 classifiers are required; missing or unknown classifiers fail closed. All excluded
 workloads return stock before creating a router session.
 
-Default configuration is disabled with an empty allowlist. The CLI's old
+Default configuration is disabled with that one inert pilot binding. The CLI's old
 install/on/recover/verify/restart/control verbs are blocked. `off` edits only router
 configuration, never Bot profiles. Retained control/supervisor/recovery/diagnostics
 and transport sources are upstream comparison surfaces, not activated services.
@@ -98,7 +104,7 @@ not counted a second time.
 
 ## 0.57 production compatibility and retained 0.53 support
 
-The current production contract was freshly measured read-only:
+The production contract accepted at Human Gate 1 was freshly measured read-only:
 
 ```
 Grok Bot: 0.57.0
@@ -132,7 +138,7 @@ Bytes: 26439011
 SHA256: 07835cd847c027aa2628741c2fb93a7c2ebbcb67a55c4861254dfc51af522b1d
 ```
 
-The built read-only check passed on the actual current host with
+The built read-only check passed on the then-current host with
 `--compat grok-bot-0.57-18cd065`. No backup or host write occurred. Unknown
 fingerprints, zero/duplicate required anchors, partial markers, missing/mismatched
 backup, and a non-deterministic marked image remain fail-closed.
@@ -142,25 +148,45 @@ target and remains `anchorProof:"BLOCKED"`; its legacy insertion seam is still
 covered by the original fixture suite. A custom fixture manifest still cannot
 override the canonical production host or an alias to it.
 
-## Human Gate 1 boundary
+## Human Gate 1 result and Gate 2 boundary
 
-Gate 1 is **OPEN for explicit Human approval to create one isolated BOX pilot**.
-This does not authorize host patching, Runtime/Codex deployment, App Server
-replacement, provider/model inference, Temporal profile changes or any other Bot.
+Gate 1 created exactly one pilot:
 
-Fresh read-only prerequisites passed: current 0.57 host fingerprint/anchors and
-router check, healthy/ready Runtime with persistence healthy and no fence or
+```text
+ID       97cf83a0-0401-4481-9f3f-8b321921f8b0
+name     ROCANIIRU Codex BOX M1 Pilot
+profile  harness:"box"
+running  false
+```
+
+The creation returned an empty transcript and no provider/model Turn was started.
+The user-facing Bot remained `harness:"temporal"`. The pilot must not be recreated,
+renamed or profile-mutated as part of M1 activation.
+
+At Human Gate 1, fresh read-only prerequisites passed: the then-current 0.57 host
+`18cd065` fingerprint/anchors and router check, healthy/ready Runtime with
+persistence healthy and no fence or
 uncertainty, UNKNOWN 0, pending input 0, Computer 0.2.3 on the same service identity
 with `clear/CLEAR`, and the existing user-facing Bot still
 `harness:"temporal"`. The current 0.57 coordinator's `createAgent` validator and
 BOX branch were read directly: explicit `creationRoute:{kind:"box"}` stays on the
 host-mediated BOX path and `harness:"box"` is a valid field.
 
-The proposed single pilot request is recorded in
-`HOST-057-EVIDENCE-20260919.json`. Creation must stop after returning its immutable
-agent ID and profile readback; subsequent host patch/provider acceptance remains a
-separate Human decision. Existing Temporal agents, conversations, automations,
-groups, other BOX agents and model routes are unchanged.
+Production activation is split into independently approved gates in
+`PRODUCTION-ACTIVATION-PREP-20260919.md`: 2A stages source/binaries/schemas without
+changing a current pointer or process; 2B promotes the patched Codex + Runtime;
+2C installs the router/config, writes the pristine host backup, applies the exact
+0.57 patch and performs one Sand-supervisor restart. The first pilot Turn remains
+a later separate Human decision.
+
+The final activation-preparation readback found an external Sand host upgrade that
+this task did not initiate: live host version is now `251860d`, stock
+`host-main.cjs` is 26,453,384 bytes / SHA-256
+`2354d46da4304d11110645f4e7fa565a15de1b30cd1d80971db2b8934a278161`,
+with zero router markers. The reviewed `grok-bot-0.57-18cd065` manifest fails
+closed on the byte fingerprint as intended. No `251860d` compatibility port is
+authorized by this milestone continuation, so the production activation Human
+Gate is **CLOSED** pending explicit current-host compatibility re-scope.
 
 ## Local checks
 
@@ -171,15 +197,19 @@ runner. Provider request/stream tests among the retained upstream tests are loca
 serialization/fake event tests, not paid provider calls.
 
 Blocker 1 source/local evidence remains in `DYNAMIC-ONLY-EVIDENCE-20260919.json`;
-the 0.57 port and fresh Gate evidence are in `HOST-057-EVIDENCE-20260919.json`.
+the 0.57 port and Gate 1 evidence are in `HOST-057-EVIDENCE-20260919.json`; current
+production-activation preparation and fresh read-only baselines are in
+`ACTIVATION-PREP-EVIDENCE-20260919.json` and
+`PRODUCTION-ACTIVATION-PREP-20260919.md`.
 
-Current regression acceptance passed 88 router tests plus telemetry ingestion and
+Current regression acceptance passed 89 router tests plus telemetry ingestion and
 `knip`, 219 Runtime Node tests, and 114 Runtime Python tests. The Runtime source was
 not changed by the 0.57 port. `git diff --check` passed.
 
 Fresh live read-only Runtime status is generation 12 / PID 883943,
 `started=true`, `ready=true`, persistence healthy, `fenced=false`,
-`uncertain=false`, UNKNOWN 0 and pending input 0. The current user-facing Bot
+`uncertain=false`, UNKNOWN 0, pending input 0, 25 retained Threads, no active Turn
+and no blocked Thread. The current user-facing Bot
 readback remains `harness:"temporal"`. Final Computer status is 0.2.3 on
 service identity `a6299bb2e1242f491855fd38608b0dc5f65c6f5f956f734cf5ba16aaf9527e41`
 with `clear/CLEAR`.

@@ -7,6 +7,7 @@ const CONTEXT_WINDOW_OPTIONS = [272_000, 472_000, 872_000] as const;
 export type ContextWindowTokens = typeof CONTEXT_WINDOW_OPTIONS[number];
 export const ROUTER_MODELS = ["gpt-5.6-sol", "gpt-5.6-luna", "gpt-5.6-terra"] as const;
 export type RouterModel = typeof ROUTER_MODELS[number];
+export const M1_PILOT_AGENT_ID = "97cf83a0-0401-4481-9f3f-8b321921f8b0";
 type TransportMode = "cached-websocket" | "websocket" | "sse";
 type WorkloadClass = "agent" | "summarization" | "subagent" | "browser" | "computer" | "automation" | "group";
 type RoutedWorkload = Exclude<WorkloadClass, "agent">;
@@ -65,8 +66,10 @@ export const DEFAULT_CONFIG = Object.freeze<RouterConfig>({
     "gpt-5.6-terra": 272_000
   },
   default: { model: "gpt-5.6-sol", reasoningEffort: "high" },
-  agents: {},
-  pilot: { agentIds: [] },
+  agents: {
+    [M1_PILOT_AGENT_ID]: { model: "chatgpt-web/extra-high", reasoningEffort: "xhigh" }
+  },
+  pilot: { agentIds: [M1_PILOT_AGENT_ID] },
   classes: {
     summarization: { model: "gpt-5.6-sol", reasoningEffort: "high" },
     subagent: { model: "gpt-5.6-sol", reasoningEffort: "high" },

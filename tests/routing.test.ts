@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   contextWindowForModel,
   DEFAULT_CONFIG,
+  M1_PILOT_AGENT_ID,
   parseContextWindow,
   resolveRoute,
   validateConfig
@@ -50,6 +51,15 @@ test("M1 defaults off even for legacy configs; only an explicit enabled flag can
     () => validateConfig({ ...existingConfig, enabled: "false" }),
     /enabled must be a boolean/
   );
+});
+
+test("M1 source allowlist is bound to the one approved immutable BOX pilot", () => {
+  assert.deepEqual(DEFAULT_CONFIG.pilot?.agentIds, [M1_PILOT_AGENT_ID]);
+  assert.equal(M1_PILOT_AGENT_ID, "97cf83a0-0401-4481-9f3f-8b321921f8b0");
+  assert.equal(DEFAULT_CONFIG.enabled, false);
+  assert.deepEqual(DEFAULT_CONFIG.agents, {
+    [M1_PILOT_AGENT_ID]: { model: "chatgpt-web/extra-high", reasoningEffort: "xhigh" }
+  });
 });
 
 test("auxiliary executors cannot replace the root turn continuation lane", () => {

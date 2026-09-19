@@ -4,10 +4,10 @@ import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
-import { DEFAULT_CONFIG, writeConfig, type RouterConfig } from "../src/config.js";
+import { DEFAULT_CONFIG, M1_PILOT_AGENT_ID, writeConfig, type RouterConfig } from "../src/config.js";
 import { createCodexRouterSession, shouldUseCodexRouter } from "../src/session.js";
 
-const options = { conversationId: "pilot", transcriptId: "transcript",
+const options = { conversationId: M1_PILOT_AGENT_ID, transcriptId: "transcript",
   isSummarizationSession: false, isSubagent: false, isComputerUseSubagent: false,
   isBrowserUseSubagent: false, isGroupMemberTurn: false, requestSource: "user" };
 
@@ -24,13 +24,13 @@ test("only explicit pilot IDs and lowercase BOX profile opt in; all native workl
     fs.rmSync(root, { recursive: true, force: true }); });
   const config: RouterConfig = structuredClone(DEFAULT_CONFIG);
   config.enabled = true;
-  config.pilot = { agentIds: ["pilot"] };
-  config.agents = { pilot: { model: "chatgpt-web/extra-high", reasoningEffort: "xhigh" },
+  config.pilot = { agentIds: [M1_PILOT_AGENT_ID] };
+  config.agents = { [M1_PILOT_AGENT_ID]: { model: "chatgpt-web/extra-high", reasoningEffort: "xhigh" },
     other: { model: "chatgpt-web/extra-high", reasoningEffort: "xhigh" } };
   config.runtime = { python: "/not-invoked/python", entrypoint: "/not-invoked/entrypoint.py",
     socket: "/run/rcnir-codex-runtime/mcp.sock", stateDirectory: path.join(root, "journal") };
   writeConfig(config);
-  for (const id of ["pilot", "other"]) {
+  for (const id of [M1_PILOT_AGENT_ID, "other"]) {
     fs.mkdirSync(path.join(root, "agents", id), { recursive: true });
     fs.writeFileSync(path.join(root, "agents", id, "profile.json"), JSON.stringify({ harness: "box" }));
   }
@@ -46,7 +46,7 @@ test("only explicit pilot IDs and lowercase BOX profile opt in; all native workl
   const executor = session.getExecutor([{ role: "user", content: "local only" }]);
   assert.equal(executor.getMessages().length, 1);
   assert.equal(fs.existsSync(path.join(root, "journal")), false, "session/executor construction is lazy and never invokes the Runtime");
-  fs.writeFileSync(path.join(root, "agents", "pilot", "profile.json"), JSON.stringify({ harness: "temporal" }));
+  fs.writeFileSync(path.join(root, "agents", M1_PILOT_AGENT_ID, "profile.json"), JSON.stringify({ harness: "temporal" }));
   assert.equal(shouldUseCodexRouter(options), false);
   assert.throws(() => createCodexRouterSession({ sessionOptions: options }), /PILOT_NOT_ALLOWLISTED/);
 });
