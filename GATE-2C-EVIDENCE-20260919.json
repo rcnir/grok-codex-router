@@ -1,0 +1,77 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-19T10:01:54Z",
+  "scope": "Milestone 1 Gate 2C attempt; pre-mutation fail-close on current host drift",
+  "router_source_commit": "71673207631de153e4d98854a2b76ec37d9dfaac",
+  "steps": {
+    "1_repack_current_router": "PASS",
+    "2_package_singleton_allowlist_check": "PASS",
+    "3_smoke_tests_knip_diff_check": "PASS",
+    "4_actual_host_final_check": "FAIL_CLOSED_CURRENT_HOST_DRIFT",
+    "5_router_install": "NOT_EXECUTED",
+    "6_production_config_install": "NOT_EXECUTED",
+    "7_pristine_backup_create": "NOT_EXECUTED",
+    "8_host_patch": "NOT_EXECUTED",
+    "9_post_patch_fingerprint_markers": "NOT_APPLICABLE",
+    "10_supervisor_restart": "NOT_EXECUTED",
+    "11_post_restart_readiness": "NOT_APPLICABLE",
+    "12_live_routing_readback": "NOT_APPLICABLE"
+  },
+  "router_package": {
+    "name": "rcnir-grok-codex-router-0.1.0-rcnir-m1.0.tgz",
+    "bytes": 155624,
+    "sha256": "b0716767531a13e1b97b1617ebcbc4271b7569eb69c741c46c249b6844e496fc",
+    "allowlist": ["507d1f34-56d5-4085-9b48-23d40cb9c914"],
+    "retired_temporal_pilot_present_in_route_map": false,
+    "route": {
+      "model": "chatgpt-web/extra-high",
+      "reasoningEffort": "xhigh"
+    },
+    "tests": {
+      "router": "97/97 PASS",
+      "telemetry": "PASS",
+      "knip": "PASS",
+      "diff_check": "PASS"
+    }
+  },
+  "production_config": {
+    "path_in_source": "M1-PRODUCTION-CONFIG-20260919.json",
+    "bytes": 1385,
+    "sha256": "e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f"
+  },
+  "requested_host_target": {
+    "version": "5ec1e7d",
+    "bytes": 26460874,
+    "sha256": "8b0e2747c0b7b91fca368c886880b24906a28214e2979029a60a98d8ab0c9bc0",
+    "expected_patched_bytes": 26461621,
+    "expected_patched_sha256": "58493df0bc8fa4b22d981a23835468fa4908a3f73c1819b27375eaaab13e018f"
+  },
+  "actual_current_host": {
+    "version": "a5b5d79",
+    "bytes": 26463140,
+    "sha256": "2fd89dc7097ef9eb9f6df8b7d77823f9b4b237b96556a6ae408c33927d0045c7",
+    "router_marker_occurrences": 0,
+    "state": "stock_unpatched",
+    "supervisor": {
+      "hostRunning": true,
+      "hostVersion": "a5b5d79",
+      "pendingUpgradeVersion": null,
+      "lastCommandId": "upgrade-a5b5d79",
+      "lastCommandKind": "upgrade"
+    }
+  },
+  "live_mutation_result": {
+    "router_install_exists": false,
+    "production_config_exists": false,
+    "router_state_exists": false,
+    "pristine_backup_exists": false,
+    "host_patch_performed": false,
+    "supervisor_restart_requested": false,
+    "rollback_required": false
+  },
+  "gate_2b_preserved": {
+    "runtime_current": "/opt/rocaniiru/codex-runtime/0.1.0-72c8032",
+    "standalone_current": "/home/box/.codex/packages/standalone/releases/0.154.0-rcnir-dynamic-only-3084657-x86_64-unknown-linux-musl"
+  },
+  "gate_2c": "FAIL_PRE_MUTATION_CURRENT_HOST_DRIFT"
+}

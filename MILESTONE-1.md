@@ -271,6 +271,31 @@ input 0, active turn 0, blocked thread 0, and
 signaled or adopted. No provider/model Turn was started and no host/router mutation
 occurred.
 
+Gate 2C was then authorized. Steps 1-3 passed: current router source was repacked,
+the package contains only replacement pilot
+`507d1f34-56d5-4085-9b48-23d40cb9c914`, the retired Temporal pilot is absent from
+the route map, and 97 router tests plus telemetry/knip/diff-check passed. The new
+package is 155624 bytes / SHA-256
+`b0716767531a13e1b97b1617ebcbc4271b7569eb69c741c46c249b6844e496fc`; the
+current production config SHA-256 is
+`e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f`.
+
+The mandatory actual-host check then failed closed **before any Gate-2C live
+mutation** because Sand had automatically advanced again from verified `5ec1e7d`
+to stock/unpatched `a5b5d79`:
+
+```text
+version  a5b5d79
+bytes    26463140
+sha256   2fd89dc7097ef9eb9f6df8b7d77823f9b4b237b96556a6ae408c33927d0045c7
+markers  0
+```
+
+The `5ec1e7d` manifest rejected the current host on exact byte fingerprint as
+intended. Router install, production config, router state, pristine backup, host
+patch and supervisor restart were all skipped; rollback was not required. Gate 2B
+remains live. See `GATE-2C-EVIDENCE-20260919.json`.
+
 The earlier activation-preparation readback found external Sand upgrades to
 `251860d` and later `5ec1e7d`; both were independently VERIFIED as above. Gate 2A
 completed build/stage and Gate 2B is now live. Gate 2C remains separately gated:
@@ -297,7 +322,7 @@ Current regression acceptance passed 97 router tests plus telemetry ingestion an
 `knip`, 219 Runtime Node tests, and 114 Runtime Python tests. The Runtime source was
 not changed by the host port. `git diff --check` passed.
 
-Fresh live read-only Runtime status is generation 12 / PID 883943,
+Fresh live Runtime status after Gate 2B is generation 13 / PID 1569085,
 `started=true`, `ready=true`, persistence healthy, `fenced=false`,
 `uncertain=false`, UNKNOWN 0, pending input 0, 25 retained Threads, no active Turn
 and no blocked Thread. The current user-facing Bot
