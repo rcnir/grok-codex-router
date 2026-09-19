@@ -572,8 +572,8 @@ Runtime independently reached terminal `completed` for session
 `grok:916cabe323e4803f8c6959b3:79adecc49a4520cfae80f734`, thread
 `01a0b9d5-681a-7080-b356-26846b895414`, Turn
 `01a0b9d5-70b9-7092-8775-8b24006cf6ab`, with durable terminal result available.
-Sand nevertheless settled the client Turn as retryable `SAND-E0406`; therefore
-M1 acceptance remains incomplete.
+Sand nevertheless settled the client Turn as retryable `SAND-E0406`; at that
+boundary M1 acceptance was still incomplete.
 
 Because the Runtime Turn was already terminal with pending/UNKNOWN/active all zero,
 recovery required no cancel or generation rotation. The session was archived and
@@ -581,6 +581,68 @@ UNKNOWN runHash
 `79adecc49a4520cfae80f73452f76dd663f21520efc201c56056122117f0fb7b`
 was reconciled to completed. See
 `PILOT-NORMALIZED-FINGERPRINT-EVIDENCE-20260919.json`.
+
+### Final confirmation-event acceptance
+
+Source commit `ee4f61ab2e1b1738139aaf4846e95fdb2abe37db` permits only the
+specific Runtime confirmation of an already answered dynamic tool request.
+`engine/serverRequestResponded` is accepted iff:
+
+- event `request_id` is a valid request identity;
+- `event.request_id === params.requestId`;
+- `params.method === "item/tool/call"`; and
+- the exact `[generation, request_id]` identity was already observed in this Turn.
+
+Mismatched request IDs, mismatched methods and unseen request identities remain
+`NATIVE_EXECUTION_REQUEST_FORBIDDEN`. Focused Runtime-router tests pass 43/43;
+the complete router suite passes 106/106 plus telemetry, knip and diff-check.
+
+Exact package is 161372 bytes / SHA-256
+`6392a8bf7819eb78a11b763580f2aba02c016225ee853d57b0e1dc2cedbc345f`.
+It was installed router-only and loaded with exactly one supervisor restart
+`grok-codex-router-1789826965580-3603ce7b`. Restart postflight preserved
+transcript count 8, send-acceptance count 6, router-session count 17 and Runtime
+cursor `64424509729`; there was zero automatic activity.
+
+Exactly one final acceptance Turn `t6u` was accepted, nonce
+`036d13fe-d07a-46dd-8734-3a10e1f7af28`, with no resend. Runtime session
+`grok:916cabe323e4803f8c6959b3:cad0472cb2c6e3ff3e91f752`, thread
+`01a0ba00-d186-75e2-a77a-266266e8202d`, Turn
+`01a0ba00-da6e-7583-83ee-014aee15f21d` crossed the complete dynamic-tool loop:
+
+```text
+item/tool/call                     request_id=1
+engine/serverRequestResponded      request_id=1 / params.method=item/tool/call
+SendToUser completed               delivery=t6s0
+turn/completed                     status=completed
+thread/archived
+```
+
+The user-facing transcript contains exactly:
+
+```text
+t6s0  ROCANIIRU_M1_CONFIRMATION_EVENT_PASS
+```
+
+Runtime operation proof is `ACK`, terminal status is `completed`, terminal
+result/output are available, and Sand durably settled the exact client nonce as
+`outcome:"success"` at `1789827049879`. Router journal independently moved
+runHash
+`cad0472cb2c6e3ff3e91f752c06a6dfec1a8f9601c0a7e6d5105b6c69b1acbba`
+to completed with `active:null`.
+
+Read-only routing still selects only canonical BOX pilot
+`507d1f34-56d5-4085-9b48-23d40cb9c914`; summarization, retired pilot,
+user-facing Temporal, subagent, browser, computer, automation and group all remain
+stock.
+
+**Milestone 1 pilot acceptance is complete.** See
+`PILOT-FINAL-ACCEPTANCE-EVIDENCE-20260919.json`.
+
+After the successful root Turn had ended, Sand memory extraction separately logged
+`INVOCATION_ID_REQUIRED` / `sand.memory.extraction_failed`. That ancillary
+post-turn failure is not attached to the successful client settlement and is not a
+Milestone 1 root-Turn acceptance blocker. It remains a separate follow-up.
 
 ## Local checks
 
@@ -597,15 +659,14 @@ in `PILOT-REPLACEMENT-EVIDENCE-20260919.json` and
 `GATE-2B-EVIDENCE-20260919.json`. The production plan is
 `PRODUCTION-ACTIVATION-PREP-20260919.md`.
 
-Current regression acceptance passed 103 router tests plus telemetry ingestion and
+Current regression acceptance passed 106 router tests plus telemetry ingestion and
 `knip`, 219 Runtime Node tests, and 114 Runtime Python tests. The Runtime source was
 not changed by the host port. `git diff --check` passed.
 
 Current Runtime is generation 15 / PID 1658692, `started=true`,
 `ready=true`, persistence healthy, `fenced=false`, `uncertain=false`,
-UNKNOWN 0 and dynamic-only enabled. After the normalized-fingerprint acceptance
-Turn and archive it retains 29 Threads with zero pending/UNKNOWN/active/blocked
-state. The current user-facing Bot
+UNKNOWN 0 and dynamic-only enabled. After final M1 acceptance and automatic archive
+it retains 30 Threads with zero pending/UNKNOWN/active/blocked state. The current user-facing Bot
 readback remains `harness:"temporal"`. Final Computer status is 0.2.3 on
 service identity `a6299bb2e1242f491855fd38608b0dc5f65c6f5f956f734cf5ba16aaf9527e41`
 with `clear/CLEAR`.

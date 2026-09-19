@@ -295,3 +295,29 @@ Event policy therefore has to classify by both method and identity, not by
 already allowed dynamic `item/tool/call`: event request_id must equal
 `params.requestId` and `params.method` must be `item/tool/call`. Other
 request-bearing event types remain fail-closed.
+
+## 2026-09-19 — Final acceptance needs four independent proofs
+
+The final pilot did not stop at visible text. Milestone 1 was accepted only after
+four independent facts agreed:
+
+1. the user-facing transcript contained the exact `SendToUser` delivery;
+2. Runtime operation proof reported the exact Turn terminal `completed`;
+3. Sand durably settled the exact client nonce with `outcome:"success"`; and
+4. router journal independently returned to `active:null` with the runHash in
+   `completed`.
+
+This combination distinguishes a true routed success from earlier cases where
+visible text came from stock inference, Runtime continued after Sand had failed, or
+delivery occurred before a later router fault.
+
+## 2026-09-19 — Keep post-turn ancillary failures separate from root-Turn acceptance
+
+After the successful final Turn and `AGENT_REQUEST_END`, Sand memory extraction
+attempted another router execution without an invocation ID and logged
+`sand.memory.extraction_failed (INVOCATION_ID_REQUIRED)`. The root Turn had
+already settled success, Runtime was terminal/archived, and the router journal was
+complete.
+
+Ancillary post-turn failures should be recorded and investigated, but should not be
+retroactively conflated with the independently proven root-Turn outcome.

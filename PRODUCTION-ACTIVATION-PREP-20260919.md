@@ -713,6 +713,36 @@ accept `engine/serverRequestResponded` only when its event request_id equals
 request_id-bearing non-`item/tool/call` events remain fail-closed. Then perform
 at most one further pilot Turn.
 
+That gate was subsequently completed. Source commit
+`ee4f61ab2e1b1738139aaf4846e95fdb2abe37db` implements the exact
+identity-checked exception and keeps wrong request ID, wrong original method and
+unseen request identities fail-closed. Focused Runtime-router tests pass 43/43 and
+the complete router suite passes 106/106 plus telemetry/knip/diff-check.
+
+Exact artifact is 161372 bytes / SHA-256
+`6392a8bf7819eb78a11b763580f2aba02c016225ee853d57b0e1dc2cedbc345f`.
+It was installed router-only and loaded by exactly one supervisor restart
+`grok-codex-router-1789826965580-3603ce7b`. Production config, host patch and
+Runtime source were not changed; restart postflight showed zero automatic activity.
+
+Exactly one final pilot Turn `t6u` was sent. It produced
+`t6s0 = ROCANIIRU_M1_CONFIRMATION_EVENT_PASS`, accepted the matching
+`engine/serverRequestResponded` event, reached durable Runtime terminal
+`completed`, automatically archived the Runtime session, and completed the router
+journal. Sand durably settled nonce
+`036d13fe-d07a-46dd-8734-3a10e1f7af28` with `outcome:"success"`.
+
+Final Runtime state is generation 15 / PID 1658692 / 30 retained Threads /
+pending 0 / UNKNOWN 0 / active 0 / blocked 0 with healthy persistence. Router
+journal is `active:null`, Computer is `clear/CLEAR`, and read-only routing still
+admits only the canonical BOX pilot.
+
+**Milestone 1 pilot acceptance is complete.** No main merge or later production
+phase is authorized by this acceptance gate. A separate post-turn memory extraction
+failure (`INVOCATION_ID_REQUIRED`) remains open for later investigation; it occurs
+after the successful root-Turn settlement and is not part of the M1 acceptance
+failure path.
+
 ## Approval boundaries
 
 Gate 2A produced the required Runtime/Codex hashes. The Human then authorized exactly one replacement

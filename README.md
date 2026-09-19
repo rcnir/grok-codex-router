@@ -5,7 +5,7 @@ It retains the upstream source layout and wire helpers, but its package entrypoi
 routes through the **existing** ROCANIIRU Runtime CLI/MCP boundary, not the private
 Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
 
-**Activated through Gate 2C; pilot now reaches Runtime, but Milestone 1 acceptance is not yet complete.** Human Gate 1 originally created isolated BOX pilot
+**Milestone 1 pilot acceptance is complete on the patched 0.57.0 / a5b5d79 production path.** Human Gate 1 originally created isolated BOX pilot
 `97cf83a0-0401-4481-9f3f-8b321921f8b0`; it later drifted durably Temporal. After
 same-ID repair was exhausted, the Human authorized exactly one replacement BOX
 pilot, `507d1f34-56d5-4085-9b48-23d40cb9c914`. Its durable profile is
@@ -137,6 +137,41 @@ The completed Runtime session was archived and exact UNKNOWN journal runHash
 was reconciled to completed. Current Runtime is generation 15 / PID 1658692 with
 29 retained Threads and zero pending/UNKNOWN/active/blocked work; router journal is
 `active:null`. See `PILOT-NORMALIZED-FINGERPRINT-EVIDENCE-20260919.json`.
+
+Source commit `ee4f61ab2e1b1738139aaf4846e95fdb2abe37db` then added the
+narrow confirmation-event exception: `engine/serverRequestResponded` is accepted
+only when event `request_id` equals `params.requestId`,
+`params.method === "item/tool/call"`, and that exact generation/request identity
+was already observed in the current Runtime Turn. All other request-bearing
+non-`item/tool/call` events remain fail-closed. Focused Runtime-router tests pass
+43/43 and the complete router suite passes 106/106 plus telemetry, knip and
+diff-check.
+
+Exact live package is 161372 bytes / SHA-256
+`6392a8bf7819eb78a11b763580f2aba02c016225ee853d57b0e1dc2cedbc345f`,
+loaded by exactly one restart `grok-codex-router-1789826965580-3603ce7b`.
+Restart postflight showed zero automatic activity.
+
+The one bounded final Turn `t6u` then passed end-to-end. Runtime accepted the
+dynamic `SendToUser` request, the identity-checked
+`engine/serverRequestResponded` confirmation, terminal `completed`, and
+automatic archive. Sand durably settled client nonce
+`036d13fe-d07a-46dd-8734-3a10e1f7af28` as `outcome:"success"`, and the
+user-facing transcript contains
+`t6s0 = ROCANIIRU_M1_CONFIRMATION_EVENT_PASS`. Router journal completed exact
+runHash
+`cad0472cb2c6e3ff3e91f752c06a6dfec1a8f9601c0a7e6d5105b6c69b1acbba`
+with `active:null`.
+
+**Milestone 1 pilot acceptance is complete.** Current Runtime remains generation
+15 / PID 1658692 with 30 retained Threads and zero pending/UNKNOWN/active/blocked
+work; Computer remains `clear/CLEAR`. See
+`PILOT-FINAL-ACCEPTANCE-EVIDENCE-20260919.json`.
+
+One separate post-turn follow-up remains: after `AGENT_REQUEST_END`, Sand memory
+extraction logged `INVOCATION_ID_REQUIRED`. It occurred after the successful
+root-Turn settlement and does not change the M1 acceptance result; no fix was
+applied in this gate.
 
 See [`MILESTONE-1.md`](MILESTONE-1.md) for the implementation contract and status,
 [`NATIVE-EXECUTION-POLICY.md`](NATIVE-EXECUTION-POLICY.md) for the thread policy,
