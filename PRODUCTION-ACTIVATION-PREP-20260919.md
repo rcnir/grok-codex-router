@@ -560,9 +560,24 @@ evidence unless a later separately approved cleanup removes it.
 
 ## After Gate 2C
 
-No provider/model call is implied by any of these gates. The first pilot Turn is a
-separate Human decision after the fully activated system is read back with zero
-pending/UNKNOWN state.
+No provider/model call was implied by Gates 2A-2C. The first pilot Turn was a
+separate Human decision after the fully activated system was read back with zero
+pending/UNKNOWN state. That separate approval was subsequently granted and exactly
+one pilot Turn was attempted.
+
+The transcript returned the expected acceptance token, but Runtime event/thread
+state remained unchanged, proving stock fallback rather than M1 routing. No retry
+was sent. The mismatch is now source-proven: ordinary 0.57 main-session options
+omit `isSummarizationSession`; dedicated summarization sessions explicitly set it
+to `true`; the live router policy rejected the omitted ordinary-root value.
+
+Source commit `3274d1781c8a1dd4ec670e6885c55bb57de7d037` is validated at 102/102 router tests plus telemetry/knip/
+diff-check. Candidate package: 157422 bytes / SHA-256
+`42ca75a055d93094d6e03c52bf90e3d3c23221cf3282d14bd89abb75068da6c5`.
+It is not live. The currently resident pilot worker remains PID `1609817`, so a
+future live package replacement must be followed by one supervisor restart before
+any retry Turn. That live hotfix/restart and any retry Turn require new Human
+approval.
 
 ## Approval boundaries
 

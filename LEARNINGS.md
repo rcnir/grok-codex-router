@@ -189,3 +189,18 @@ only the replacement BOX pilot is admitted while every retired/Temporal or auxil
 workload remains stock. Keeping the router state directory empty until the separate
 pilot-Turn approval provides a simple observable boundary between **activation**
 and **provider inference**.
+
+## 2026-09-19 — Fixture `false` is not equivalent to an omitted production field
+
+The first real pilot Turn exposed a shape mismatch that fixture-only testing had
+hidden. Tests supplied `isSummarizationSession:false` on the ordinary root path,
+but current 0.57 production `mainSessionOptions` omits the property entirely.
+Because the router policy intentionally failed closed on non-boolean classifiers,
+the missing property made every ordinary root Turn bypass the router even though
+the allowlist, BOX profile, host patch and production config were all correct.
+
+For optional discriminators, regression fixtures must reproduce the exact production
+presence/absence shape, not only an equivalent logical value. Here the safe contract
+is asymmetric: missing `isSummarizationSession` is the known ordinary-root shape;
+explicit `true` is summarization and stays stock; explicit non-boolean remains
+invalid and fail-closed. Other root classifiers remain required booleans.

@@ -1,0 +1,116 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-19T11:28:00Z",
+  "scope": "First Human-approved M1 pilot Turn after Gate 2C activation",
+  "pilot": {
+    "agent_id": "507d1f34-56d5-4085-9b48-23d40cb9c914",
+    "serverId": "4270685",
+    "harness": "box"
+  },
+  "preflight": {
+    "transcript_entries": 0,
+    "host_version": "a5b5d79",
+    "host_sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+    "router_state_files": 0,
+    "runtime_generation": 13,
+    "runtime_thread_count": 25,
+    "runtime_event_cursor": 55834575072,
+    "runtime_pending_inputs": 0,
+    "runtime_unknown_operations": 0,
+    "runtime_active_turns": 0,
+    "runtime_blocked_threads": 0,
+    "dynamic_only_tool_policy": true
+  },
+  "send": {
+    "count": 1,
+    "retry_count": 0,
+    "text": "This is the authorized M1 pilot first-turn acceptance check. Do not use any tools. Reply with exactly: ROCANIIRU_M1_PILOT_TURN_PASS",
+    "accepted_nonce": "87c9ce9f-36ec-4503-943c-409c13dfb88a",
+    "input_digest": "3594467d181b8394b90870be5587cf60c7ed1db1aaec21b106038c78c78d6f4b",
+    "user_entry_id": "t0u",
+    "accepted_at_ms": 1789816662885
+  },
+  "transcript_result": {
+    "user": {
+      "id": "t0u",
+      "timestamp_ms": 1789816662883,
+      "timestamp_jst": "2026-09-19T20:17:42.883+09:00"
+    },
+    "assistant": {
+      "id": "t0s0",
+      "timestamp_ms": 1789816665720,
+      "timestamp_jst": "2026-09-19T20:17:45.720+09:00",
+      "content": "ROCANIIRU_M1_PILOT_TURN_PASS"
+    },
+    "tool_entries": 0
+  },
+  "router_acceptance": {
+    "status": "FAIL_STOCK_FALLBACK",
+    "runtime_event_cursor_before": 55834575072,
+    "runtime_event_cursor_after": 55834575072,
+    "runtime_thread_count_before": 25,
+    "runtime_thread_count_after": 25,
+    "runtime_pilot_session_ids_after": [],
+    "router_state_files_after": 0,
+    "conclusion": "The user-visible Turn completed, but it did not enter the ROCANIIRU Runtime/Codex router path."
+  },
+  "actual_host_shape": {
+    "ordinary_main_session": {
+      "main_session_options_line": 680169,
+      "isSummarizationSession_present": false
+    },
+    "dedicated_summarization_sessions": {
+      "explicit_true_lines": [619318, 680235, 683942]
+    }
+  },
+  "root_cause": {
+    "status": "CONFIRMED",
+    "live_policy": "The live pilot policy required every workload classifier, including isSummarizationSession, to be a boolean. Undefined therefore failed closed.",
+    "mismatch": "Current 0.57 ordinary mainSessionOptions omits isSummarizationSession, while dedicated summarization sessions explicitly set it true.",
+    "effect": "Every ordinary pilot root Turn was classified as non-routable and fell through to stock inference."
+  },
+  "observer_client": {
+    "command": "groken ask --timeout 180",
+    "terminal_transcript_observed": true,
+    "runtime_idle_observed": true,
+    "sse_result": "READ_TIMEOUT_AFTER_TERMINAL_TRANSCRIPT",
+    "fallback": "poll",
+    "local_client_interrupted_after_terminal_proof": true,
+    "provider_turn_retried": false
+  },
+  "source_only_fix": {
+    "live_installed": false,
+    "source_commit": "3274d1781c8a1dd4ec670e6885c55bb57de7d037",
+    "behavior": "Allow isSummarizationSession to be absent for ordinary root turns; explicit true stays stock; explicit non-boolean stays fail-closed. Other root classifiers remain required booleans.",
+    "changed_files": [
+      "src/pilot-policy.ts",
+      "tests/pilot-policy.test.ts",
+      "tests/entrypoint.test.ts",
+      "tests/host-patch-a5b5d79.test.ts"
+    ],
+    "focused_tests": "11/11 PASS",
+    "router_tests": "102/102 PASS",
+    "telemetry": "PASS",
+    "knip": "PASS",
+    "diff_check": "PASS",
+    "candidate_package_bytes": 157422,
+    "candidate_package_sha256": "42ca75a055d93094d6e03c52bf90e3d3c23221cf3282d14bd89abb75068da6c5",
+    "candidate_package_smoke": {
+      "a5_root_omitted_summarization": true,
+      "explicit_summarization_routes": false,
+      "malformed_summarization_routes": false
+    }
+  },
+  "live_state_after_attempt": {
+    "host_sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+    "supervisor_last_command_kind": "restart",
+    "live_router_policy_is_old": true,
+    "pilot_worker_pid": 1609817,
+    "pilot_worker_still_running": true,
+    "second_pilot_turn_sent": false
+  },
+  "next_gate": {
+    "status": "HUMAN_APPROVAL_REQUIRED",
+    "scope": "Replace the live router package with the tested source-only fix, perform one supervisor restart to clear the resident worker/module cache, verify postflight, then optionally authorize exactly one pilot retry Turn."
+  }
+}

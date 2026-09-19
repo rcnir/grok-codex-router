@@ -6,8 +6,10 @@
 BOX pilot; Gate 2A staged the patched Codex/Runtime; Gate 2B promoted them; Gate 2C
 installed the router/config, wrote the pristine host backup, applied the verified
 `a5b5d79` host patch and performed exactly one Sand-supervisor restart.
-The first pilot Turn remains a separate Human decision and has **not** been started.
-No Gate-2C provider/model inference was performed.
+The first pilot Turn was later separately Human-approved and executed exactly once.
+It produced a stock-inference response but did **not** enter the Runtime/Codex route;
+no retry was sent. No Gate-2C provider/model inference was performed; the first
+post-Gate-2C pilot attempt is recorded separately below.
 
 The fork is `rcnir/grok-codex-router`, with `upstream` pointing to
 `IgorWarzocha/grok-codex-router`. The implementation branch is
@@ -329,6 +331,33 @@ same 25 Threads and zero pending/UNKNOWN/active/blocked work, and Computer remai
 BOX pilot; retired/user-facing Temporal agents and all auxiliary workloads remain
 stock. Router state remains empty, so no pilot Turn/provider inference was started.
 See `GATE-2C-EVIDENCE-20260919.json`.
+
+### First pilot Turn acceptance attempt
+
+The Human approved one first pilot Turn after Gate 2C. Preflight had an empty pilot
+transcript, patched host SHA `abdd0acc...dfb30`, Runtime generation 13 with 25
+Threads and event cursor `55834575072`, and zero pending/UNKNOWN/active/blocked
+work. Exactly one prompt was accepted as transcript entry `t0u`; the assistant
+returned exactly `ROCANIIRU_M1_PILOT_TURN_PASS` as `t0s0`.
+
+That user-visible success did **not** satisfy M1 acceptance. Runtime event cursor
+remained exactly `55834575072`, Thread count remained 25, no pilot Runtime session
+appeared and router state remained empty. Therefore the Turn took stock inference.
+No second Turn was sent.
+
+Read-only source/actual-host comparison found the cause. Ordinary `a5b5d79`
+`mainSessionOptions` omits `isSummarizationSession`, while dedicated summarization
+sessions explicitly set `isSummarizationSession:true`. The live pilot policy
+incorrectly required the omitted root value to be a boolean and therefore rejected
+every ordinary root Turn before routing.
+
+Source commit `3274d1781c8a1dd4ec670e6885c55bb57de7d037` now treats absent `isSummarizationSession` as the
+documented ordinary-root shape, still rejects explicit `true` to stock and
+fail-closes on an explicit non-boolean value. All other root classifiers remain
+required booleans. Focused tests pass 11/11 and the full router suite passes
+102/102 plus telemetry, knip and diff-check. The candidate package is 157422 bytes
+/ SHA-256 `42ca75a055d93094d6e03c52bf90e3d3c23221cf3282d14bd89abb75068da6c5`.
+It has **not** been installed live. See `PILOT-FIRST-TURN-EVIDENCE-20260919.json`.
 
 ## Local checks
 
