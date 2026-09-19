@@ -168,10 +168,49 @@ with `active:null`.
 work; Computer remains `clear/CLEAR`. See
 `PILOT-FINAL-ACCEPTANCE-EVIDENCE-20260919.json`.
 
-One separate post-turn follow-up remains: after `AGENT_REQUEST_END`, Sand memory
-extraction logged `INVOCATION_ID_REQUIRED`. It occurred after the successful
-root-Turn settlement and does not change the M1 acceptance result; no fix was
-applied in this gate.
+The separate post-turn memory follow-up was subsequently repaired during the
+broader production rollout. Root executors still require the externally supplied
+invocation ID. Only exact auxiliary Sand memory/episode inference shapes are
+allowed to derive a deterministic internal identity; malformed, root, tool-bearing
+or non-memory calls remain fail-closed.
+
+## Broader production rollout — 2026-09-20
+
+A fresh BOX production identity was created without introduction/kickstart or
+prior transcript:
+
+```text
+agent    349eff8b-f38e-4353-b9b3-09b09f93897e
+serverId 4308105
+name     ROCANIIRU Codex Production
+harness  box
+```
+
+Live config was widened from the M1 singleton pilot to exactly two BOX identities:
+the retained M1 pilot plus this production identity. Temporal/user-facing and all
+auxiliary workload classes remain stock. The live config is 1558 bytes / SHA-256
+`497fac06f57f5a1b96e1a1b73d38d8ee8b8816d11e450f508c7d21edb17573bf`.
+Config reload is per session, so that allowlist change required no host restart.
+
+The first production Turn delivered `ROCANIIRU_PRODUCTION_ROLLOUT_PASS`, settled
+`outcome:"success"`, reached Runtime terminal `completed`, archived, and
+completed the production router journal.
+
+Source commit `69a8be4a17f44d66d84b970797bfd40e2cb74067` then repaired the
+post-turn memory path. Focused Runtime-router tests pass 49/49 and the complete
+router suite passes 112/112 plus telemetry/knip/diff-check. Exact live package:
+163285 bytes / SHA-256
+`1cde6a171fda0b505e86b204f2b49d6de57b3cf30db3e094fb1193252c154808`,
+loaded by exactly one restart
+`grok-codex-router-1789830313479-833a613b`.
+
+The validation root Turn delivered `ROCANIIRU_MEMORY_EXTRACTION_PASS` and
+settled success. A separate auxiliary Runtime session then executed the Sand
+memory extraction to terminal `completed` and archived without a new
+`INVOCATION_ID_REQUIRED` or `sand.memory.extraction_failed`. Current Runtime
+is generation 15 / PID 1658692 with 33 retained Threads and zero
+pending/UNKNOWN/active/blocked work. See
+`PRODUCTION-ROLLOUT-EVIDENCE-20260920.json`.
 
 See [`MILESTONE-1.md`](MILESTONE-1.md) for the implementation contract and status,
 [`NATIVE-EXECUTION-POLICY.md`](NATIVE-EXECUTION-POLICY.md) for the thread policy,

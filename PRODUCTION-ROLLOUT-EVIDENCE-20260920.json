@@ -1,0 +1,143 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-19T15:39:50Z",
+  "scope": "Broader production BOX rollout plus post-turn memory auxiliary repair",
+  "production_agent": {
+    "id": "349eff8b-f38e-4353-b9b3-09b09f93897e",
+    "name": "ROCANIIRU Codex Production",
+    "server_id": "4308105",
+    "harness": "box",
+    "profile_sha256": "cff6164c5afd3b8fae515d48993e26c9ba0386e0be48e9a53af5440bdf80a7e7",
+    "created_fresh": true,
+    "creation_route": "box",
+    "introduction_suppressed": true,
+    "kickstart_requested": false,
+    "initial_transcript_entries": 0
+  },
+  "production_config": {
+    "file": "PRODUCTION-ROLLOUT-CONFIG-20260919.json",
+    "bytes": 1558,
+    "sha256": "497fac06f57f5a1b96e1a1b73d38d8ee8b8816d11e450f508c7d21edb17573bf",
+    "allowlisted_agent_ids": [
+      "507d1f34-56d5-4085-9b48-23d40cb9c914",
+      "349eff8b-f38e-4353-b9b3-09b09f93897e"
+    ],
+    "live_update_requires_restart": false,
+    "routing_readback": {
+      "pilot": true,
+      "production": true,
+      "retired_pilot": false,
+      "user_facing_temporal_bot": false,
+      "groken_temporal_bot": false,
+      "summarization": false,
+      "subagent": false,
+      "browser": false,
+      "computer": false,
+      "automation": false,
+      "group": false
+    }
+  },
+  "first_production_acceptance": {
+    "send_count": 1,
+    "client_resend_count": 0,
+    "client_nonce": "3fb87323-6181-414a-a233-0cf6dc2a3a27",
+    "user_entry_id": "t0u",
+    "assistant_entry_id": "t0s0",
+    "assistant_entry_content": "ROCANIIRU_PRODUCTION_ROLLOUT_PASS",
+    "sand_settlement": {
+      "outcome": "success",
+      "settled_at_ms": 1789829831855
+    },
+    "runtime_session_id": "grok:f95234e93432c976c7df40d4:5e45ebb0dce0b01cce5d9059",
+    "runtime_thread_id": "01a0ba2b-4085-7650-9027-fa6fb4e4be14",
+    "runtime_turn_id": "01a0ba2b-493f-7e02-95a3-99a1e6471cb8",
+    "runtime_terminal_status": "completed",
+    "runtime_session_archived": true,
+    "router_completed_run_hash": "5e45ebb0dce0b01cce5d905993cdd93e21636a38b91d45e530c154ea4a31d0ab"
+  },
+  "memory_follow_up_before_fix": {
+    "reproduced_on_pilot": true,
+    "reproduced_on_production": true,
+    "fault_code": "INVOCATION_ID_REQUIRED",
+    "host_log_failure_lines": [
+      7004,
+      7005,
+      7077,
+      7078
+    ],
+    "root_cause": "Sand memory extraction calls an auxiliary executor with invocationId undefined; the router previously required an external invocation id for every executor."
+  },
+  "memory_fix": {
+    "source_commit": "69a8be4a17f44d66d84b970797bfd40e2cb74067",
+    "behavior": "Root executor still requires external invocationId. Only auxiliary executorOrdinal > 0 with exactly two memory messages, exact SAND memory marker, providerOptions.cursor.inferenceReason=memory-extraction, and no tool set receives a deterministic internal invocation identity.",
+    "focused_runtime_router_tests": "49/49 PASS",
+    "full_router_tests": "112/112 PASS",
+    "telemetry": "PASS",
+    "knip": "PASS",
+    "diff_check": "PASS",
+    "package_bytes": 163285,
+    "package_sha256": "1cde6a171fda0b505e86b204f2b49d6de57b3cf30db3e094fb1193252c154808",
+    "supervisor_restart_id": "grok-codex-router-1789830313479-833a613b",
+    "supervisor_restart_count": 1,
+    "post_restart_automatic_activity": 0
+  },
+  "memory_validation_turn": {
+    "send_count": 1,
+    "client_resend_count": 0,
+    "client_nonce": "8b3db591-3d23-463e-89d3-fa422ea37447",
+    "user_entry_id": "t1u",
+    "assistant_entry_id": "t1s0",
+    "assistant_entry_content": "ROCANIIRU_MEMORY_EXTRACTION_PASS",
+    "sand_settlement": {
+      "outcome": "success",
+      "settled_at_ms": 1789830467044
+    },
+    "root_runtime": {
+      "session_id": "grok:f95234e93432c976c7df40d4:3b6d6b2ccf45cc625afdc4df",
+      "thread_id": "01a0ba34-5e74-70a1-a60d-86657636f05b",
+      "turn_id": "01a0ba34-6779-7951-a960-c2d494383708",
+      "terminal_event_sequence": 64424509829,
+      "archive_event_sequence": 64424509831,
+      "archived_status": "notLoaded",
+      "completed_run_hash": "3b6d6b2ccf45cc625afdc4dfdd51abfa6c894265e5cb314d8d8f2db65c013e7e"
+    },
+    "memory_auxiliary_runtime": {
+      "session_id": "grok:f95234e93432c976c7df40d4:a919763e5ad043d3ad72b3dc",
+      "thread_id": "01a0ba34-f6d7-78f3-b53e-08665cbf3d32",
+      "turn_id": "01a0ba34-fafe-7663-b248-b590ed85317e",
+      "terminal_event_sequence": 64424509857,
+      "archive_event_sequence": 64424509859,
+      "archived_status": "notLoaded",
+      "completed_run_hash": "a919763e5ad043d3ad72b3dcf61a446233bfaaad9cabbb55453924578c636b1c"
+    },
+    "new_invocation_id_required_failures_after_validation_route": 0,
+    "validation_route_log_line": 7112,
+    "latest_historical_memory_failure_log_line": 7078
+  },
+  "final_live_state": {
+    "host_version": "a5b5d79",
+    "host_sha256": "abdd0acc11b94fbf9f0b6004a6e0aac27eb4e2fb305b36829b6f57f72e8dfb30",
+    "live_config_sha256": "497fac06f57f5a1b96e1a1b73d38d8ee8b8816d11e450f508c7d21edb17573bf",
+    "runtime_generation": 15,
+    "runtime_child_pid": 1658692,
+    "runtime_thread_count": 33,
+    "runtime_latest_event": 64424509859,
+    "runtime_pending_inputs": 0,
+    "runtime_unknown_operations": 0,
+    "runtime_active_turns": 0,
+    "runtime_blocked_threads": 0,
+    "runtime_persistence": "healthy",
+    "dynamic_only_tool_policy": true,
+    "production_router_journal_active": null,
+    "computer_mutation_state": "clear",
+    "computer_execution_state": "CLEAR",
+    "supervisor_pending_upgrade_version": null,
+    "supervisor_pending_command": false
+  },
+  "broader_production_rollout_complete": true,
+  "memory_extraction_follow_up_complete": true,
+  "grok_bot_update": {
+    "performed": false,
+    "reason": "Supervisor advertises no pending provider upgrade target."
+  }
+}

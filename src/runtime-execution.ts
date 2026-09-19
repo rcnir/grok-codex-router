@@ -10,7 +10,7 @@ import {
   normalizedTranscript,
   type RuntimeToolSet
 } from "./runtime-wire.js";
-import { isRecord, type JsonObject } from "./sand-values.js";
+import { isRecord, unwrapSandValue, type JsonObject } from "./sand-values.js";
 
 interface RuntimeEvent {
   sequence: number;
@@ -47,6 +47,24 @@ function count(value: unknown): number {
 
 function transcriptFingerprint(messages: unknown[]): string {
   return fingerprint(normalizedTranscript(messages));
+}
+
+const MEMORY_MARKERS = ["<<SAND_MEMORY_EXTRACTION>>", "<<SAND_MEMORY_EPISODE>>"] as const;
+
+function memoryInvocationId(messages: unknown[], tools: unknown, executorOrdinal: number): string | undefined {
+  if (executorOrdinal <= 0 || tools != null || messages.length !== 2) return undefined;
+  const first = unwrapSandValue(messages[0]);
+  const second = unwrapSandValue(messages[1]);
+  const systemContent = isRecord(first) ? first.content : undefined;
+  if (!isRecord(first) || !isRecord(second) || first.role !== "system" || second.role !== "user" ||
+      typeof systemContent !== "string") return undefined;
+  const marker = MEMORY_MARKERS.find((value) => systemContent.startsWith(value));
+  if (!marker) return undefined;
+  const providerOptions = isRecord(second.providerOptions) ? second.providerOptions : undefined;
+  const cursor = providerOptions && isRecord(providerOptions.cursor) ? providerOptions.cursor : undefined;
+  if (cursor?.inferenceReason !== "memory-extraction") return undefined;
+  return "memory:" + executorOrdinal + ":" +
+    fingerprint({ marker, transcript: normalizedTranscript(messages) });
 }
 
 function usageDelta(current: Tokens, previous: Tokens): NormalizedUsage {
@@ -103,7 +121,9 @@ export class RuntimeExecution {
     if (this.busy) throw new RuntimeFault("CONCURRENT_STREAM_REFUSED");
     if (this.failed) throw new RuntimeFault("UNKNOWN_RESEND_BLOCKED", true);
     if (this.finished) throw new RuntimeFault("COMPLETED_EXECUTOR_NO_REPLAY");
-    if (!invocationId) throw new RuntimeFault("INVOCATION_ID_REQUIRED");
+    const effectiveInvocationId = invocationId ??
+      memoryInvocationId(messages, tools, this.options.executorOrdinal);
+    if (!effectiveInvocationId) throw new RuntimeFault("INVOCATION_ID_REQUIRED");
     if (signal?.aborted && !this.isStarted()) throw new RuntimeFault("CANCELLED_BEFORE_ADMISSION");
     this.busy = true;
     try {
@@ -121,7 +141,7 @@ export class RuntimeExecution {
         const status = await this.readStatus(true);
         const requestedToolIsolation = "dynamicOnly" as const;
         productionThreadPolicy.verify(status, requestedToolIsolation);
-        this.sessionId = this.journal.begin(invocationId, this.options.executorOrdinal);
+        this.sessionId = this.journal.begin(effectiveInvocationId, this.options.executorOrdinal);
         const runtime = status.runtime as JsonObject;
         this.generation = count(runtime.generation);
         this.cursor = runtime.latest_event == null ? 0 : count(runtime.latest_event);
@@ -140,7 +160,7 @@ export class RuntimeExecution {
         }
         this.threadId = identifier(opened.thread_id, "THREAD_ID_MISSING");
         this.journal.bind({ threadId: this.threadId });
-        if (signal?.aborted) return await this.closeWithoutTurn(invocationId);
+        if (signal?.aborted) return await this.closeWithoutTurn(effectiveInvocationId);
         if (input.priorItems.length) {
           const injected = await this.mutate(`${this.sessionId}:inject`, "runtime_session_inject_items", {
             session_id: this.sessionId, operation_id: `${this.sessionId}:inject`, items: input.priorItems
@@ -150,7 +170,7 @@ export class RuntimeExecution {
             throw new RuntimeFault("TRANSCRIPT_INJECT_ACK_MISMATCH", true);
           }
         }
-        if (signal?.aborted) return await this.closeWithoutTurn(invocationId);
+        if (signal?.aborted) return await this.closeWithoutTurn(effectiveInvocationId);
         this.turnOperationId = `${this.sessionId}:turn`;
         const started = await this.mutate(this.turnOperationId, "runtime_turn_start", {
           session_id: this.sessionId, operation_id: this.turnOperationId,
@@ -168,7 +188,7 @@ export class RuntimeExecution {
       } else if (messages.length !== this.consumedMessages && !signal?.aborted) {
         throw new RuntimeFault("UNEXPECTED_MESSAGES_DURING_TURN");
       }
-      return await this.observe(invocationId, signal);
+      return await this.observe(effectiveInvocationId, signal);
     } catch (error) {
       this.failed = true;
       try { this.journal.fence(!(error instanceof RuntimeFault) || error.uncertain); }

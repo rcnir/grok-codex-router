@@ -732,16 +732,60 @@ Exactly one final pilot Turn `t6u` was sent. It produced
 journal. Sand durably settled nonce
 `036d13fe-d07a-46dd-8734-3a10e1f7af28` with `outcome:"success"`.
 
-Final Runtime state is generation 15 / PID 1658692 / 30 retained Threads /
+At the M1 final-acceptance boundary Runtime state was generation 15 / PID 1658692 / 30 retained Threads /
 pending 0 / UNKNOWN 0 / active 0 / blocked 0 with healthy persistence. Router
-journal is `active:null`, Computer is `clear/CLEAR`, and read-only routing still
-admits only the canonical BOX pilot.
+journal was `active:null`, Computer was `clear/CLEAR`, and read-only routing still
+admitted only the canonical BOX pilot.
 
 **Milestone 1 pilot acceptance is complete.** No main merge or later production
 phase is authorized by this acceptance gate. A separate post-turn memory extraction
 failure (`INVOCATION_ID_REQUIRED`) remains open for later investigation; it occurs
 after the successful root-Turn settlement and is not part of the M1 acceptance
 failure path.
+
+## Broader production rollout — completed 2026-09-20
+
+Human approval subsequently authorized broader production rollout and the separate
+memory-extraction follow-up.
+
+Fresh production BOX identity:
+
+```text
+349eff8b-f38e-4353-b9b3-09b09f93897e
+serverId 4308105
+harness  box
+```
+
+The live router config now allowlists exactly the M1 pilot plus that production BOX
+identity. Readback is `pilot=true / production=true`; retired/user-facing
+Temporal, Groken Temporal, summarization, subagent, browser, computer, automation
+and group remain false. Config SHA-256 is
+`497fac06f57f5a1b96e1a1b73d38d8ee8b8816d11e450f508c7d21edb17573bf`.
+
+The production acceptance Turn settled success and archived normally. The same
+Turn reproduced the already known post-turn
+`sand.memory.extraction_failed (INVOCATION_ID_REQUIRED)`, confirming it was an
+independent auxiliary-path defect rather than a pilot artifact.
+
+Commit `69a8be4a17f44d66d84b970797bfd40e2cb74067` keeps root invocation
+identity mandatory and admits invocation-ID synthesis only for auxiliary
+executorOrdinal > 0 with the exact Sand memory/episode marker,
+`providerOptions.cursor.inferenceReason="memory-extraction"`, exactly two prompt
+messages and no tools. Tests pass 49/49 focused and 112/112 complete plus
+telemetry/knip/diff-check.
+
+Exact package is 163285 bytes / SHA-256
+`1cde6a171fda0b505e86b204f2b49d6de57b3cf30db3e094fb1193252c154808`.
+It was loaded by one restart
+`grok-codex-router-1789830313479-833a613b`.
+
+The bounded validation root Turn settled success, and the subsequent memory
+auxiliary created its own Runtime session/Thread/Turn, reached terminal
+`completed`, archived, and added a distinct completed router runHash. No new
+`INVOCATION_ID_REQUIRED` or `sand.memory.extraction_failed` occurred after
+that validation route. Final Runtime is generation 15 / PID 1658692 /
+33 retained Threads / pending 0 / UNKNOWN 0 / active 0 / blocked 0 with healthy
+persistence. See `PRODUCTION-ROLLOUT-EVIDENCE-20260920.json`.
 
 ## Approval boundaries
 
