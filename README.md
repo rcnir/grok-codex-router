@@ -5,7 +5,7 @@ It retains the upstream source layout and wire helpers, but its package entrypoi
 routes through the **existing** ROCANIIRU Runtime CLI/MCP boundary, not the private
 Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
 
-**Not deployed.** Human Gate 1 originally created isolated BOX pilot
+**Activated through Gate 2B.** Human Gate 1 originally created isolated BOX pilot
 `97cf83a0-0401-4481-9f3f-8b321921f8b0`; it later drifted durably Temporal. After
 same-ID repair was exhausted, the Human authorized exactly one replacement BOX
 pilot, `507d1f34-56d5-4085-9b48-23d40cb9c914`. Its durable profile is
@@ -21,10 +21,12 @@ thread-local
 `toolIsolation:"dynamicOnly"` Codex source patch and Runtime/router capability
 wiring remain separate from host compatibility. The pilot is now the only source
 allowlist identity and its fixed route is `chatgpt-web/extra-high / xhigh`, while
-the source default remains `enabled:false`. No host patch, Runtime/Codex deploy,
-provider/model inference or profile correction has been performed. Gate 2B is now
-authorized; Gate 2C remains separate. Gate 2A artifacts, current host
-proof and harness authority are documented in `GATE-2A-EVIDENCE-20260919.json`,
+the source default remains `enabled:false`. No host patch, router live install,
+provider/model inference or profile correction has been performed. Gate 2B has
+promoted the Gate-2A patched Codex/Runtime candidate successfully; Gate 2C remains
+separate and has not been executed. Gate 2A/2B artifacts, current host proof and
+harness authority are documented in `GATE-2A-EVIDENCE-20260919.json`,
+`GATE-2B-EVIDENCE-20260919.json`,
 `HOST-5EC1E7D-EVIDENCE-20260919.json`, `PILOT-HARNESS-EVIDENCE-20260919.json`,
 `PILOT-REPLACEMENT-EVIDENCE-20260919.json` and
 `PRODUCTION-ACTIVATION-PREP-20260919.md`.

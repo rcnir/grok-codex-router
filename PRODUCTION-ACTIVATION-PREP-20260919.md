@@ -26,7 +26,7 @@ production config artifact is `M1-PRODUCTION-CONFIG-20260919.json`; it alone set
 `enabled:true` for activation.
 
 The router artifact actually staged during Gate 2A (source commit `c3dc4b629...`)
-and its activation config are:
+is retained only as historical staging evidence:
 
 ```text
 router tarball
@@ -34,18 +34,23 @@ router tarball
   bytes   154140
   sha256  b720fc269d047f05cce7ce9d5cf1fe0b20c5fda9807f79242216dbf868262f5f
 
-production config
-  M1-PRODUCTION-CONFIG-20260919.json
-  bytes   1385
-  sha256  acc6b5a4e90cb2496d4370d8a90dbe6a9d3d733ff5e5d7ecedc208c113d47f42
 ```
 
-The router package smoke test loads the packed artifact without installing
-`node_modules`: the one pilot admits and resolves to
-`chatgpt-web/extra-high / xhigh`; another BOX and every auxiliary workload are
-stock passthrough. Later documentation/evidence commits do not silently replace
-this staged package. Because current host/profile facts drifted after Gate 2A, a
-Gate-2C package must be repacked and reaccepted after those blockers are resolved.
+That tarball still contains the retired pilot ID and **must not** be installed at
+Gate 2C. The current source/config bind replacement pilot
+`507d1f34-56d5-4085-9b48-23d40cb9c914`; current config identity is:
+
+```text
+M1-PRODUCTION-CONFIG-20260919.json
+  bytes   1385
+  sha256  e71e8ded7d656e9a2015ee33712b9998f568422ac1c11c1f5169557b74c7155f
+```
+
+Source regression proves that replacement BOX pilot routes to
+`chatgpt-web/extra-high / xhigh`, the retired Temporal pilot does not route, and
+all auxiliary workloads remain stock. Gate 2C therefore requires a fresh router
+tarball packed and smoke-tested from the current source after this Gate-2B record;
+the historical Gate-2A tarball is not a valid live-install artifact anymore.
 
 Runtime source remains `rcnir/execution-runtime` commit
 `72c80325e0a36c4068e8f02f4b750fc4bd8db26e`. The exact `codex-runtime` archive
@@ -228,8 +233,10 @@ Use one new scratch root:
    After every part verifies, concatenate in numeric order, verify the complete
    base64-text SHA, decode **once** to a temporary binary, verify raw bytes/SHA,
    then rename into the scratch artifact. No append to the final artifact and no
-   unverified decode is allowed. The 1,385-byte UTF-8 production config is staged
-   as one create-only scratch file and verified against SHA `acc6b5a4...`.
+   unverified decode is allowed. The Gate-2A-time 1,385-byte UTF-8 production
+   config was staged as one create-only scratch file and verified against SHA
+   `acc6b5a4...`; it is historical and was later superseded by the replacement
+   pilot config identity recorded above.
 2. Extract the Runtime archive and verify commit/archive plus
    `dynamic-only.patch`/`manifest.json` digests above. Clone public `openai/codex`,
    check out exactly `6b9826e3...`, and run:
@@ -462,11 +469,38 @@ old Runtime through `service.sh start`, and prove the same Thread set plus healt
 zero-pending/zero-UNKNOWN state. Never `pkill`, never start a second Runtime/App
 Server, and never restore the saved pre-promotion journal over the current one.
 
+### Gate 2B execution result
+
+Gate 2B was explicitly authorized and completed successfully. The Runtime-owned
+service was stopped once, both `current` pointers were atomically switched, and the
+candidate Runtime was started once. Postflight:
+
+```text
+Runtime current       /opt/rocaniiru/codex-runtime/0.1.0-72c8032
+standalone/current    0.154.0-rcnir-dynamic-only-3084657-x86_64-unknown-linux-musl
+Codex SHA256          790879dcee4a675f34cc1aba9a2ab3fd0edb447588cf97f5cb111967b12fc8e7
+Runtime-owned PID     1569085
+generation            13
+retained Threads      25, exact same Thread-ID set
+UNKNOWN               0
+pending input         0
+active / blocked      0 / 0
+persistence           healthy, not fenced/uncertain
+dynamicOnly           true
+unrelated App Server  PID 1188039 unchanged
+```
+
+No state journal rollback occurred. The post-start `state.json` advanced naturally
+from 829029 bytes / SHA `1be40ad...` to 829200 bytes / SHA `e66f1228...` while the
+retained Thread set stayed identical. Full evidence is in
+`GATE-2B-EVIDENCE-20260919.json`.
+
 ## Gate 2C — router install, config, host patch and Sand restart
 
-This gate remains closed until Gate 2B passes and the pilot is authoritatively BOX.
-It does not include any provider or model inference. Host compatibility itself has
-now been re-established for the current stock target `grok-bot-0.57-5ec1e7d`.
+Gate 2B has passed and the replacement pilot is authoritatively BOX. Gate 2C is now
+the next production mutation boundary but remains **closed pending separate Human
+approval**. It does not include any provider or model inference. Host compatibility
+is established for `grok-bot-0.57-5ec1e7d`.
 
 Preflight rechecks:
 
@@ -564,15 +598,15 @@ Gate 2A returned the measured Linux Codex SHA/bytes, schema SHA, candidate
 and pilot-profile postconditions changed externally, so those measured candidate
 identities are retained but do not by themselves open Gate 2B.
 
-### Later approval: Gate 2B
+### Completed: Gate 2B
 
-Gate 2B is now explicitly authorized by the Human after replacement-pilot
-acceptance. It authorizes the one clean Runtime stop, two atomic pointer switches,
-and one Runtime start described above. It never touches the Grok host/router and
-does not start a Turn.
+Gate 2B completed successfully with the candidate Runtime/Codex live, the same 25
+retained Threads, zero pending/UNKNOWN work and `dynamic_only_tool_policy=true`.
+It did not touch the Grok host/router or start a Turn.
 
 ### Later approval: Gate 2C
 
-Only after Gate 2B acceptance, Gate 2C may authorize router/config installation,
-one pristine host backup, the verified deterministic `5ec1e7d` patch and one
-supervisor-owned Sand restart. Gate 2C still does not start the pilot Turn.
+Gate 2C now requires its own explicit Human approval. It may authorize
+router/config installation, one pristine host backup, the verified deterministic
+`5ec1e7d` patch and one supervisor-owned Sand restart. Gate 2C still does not start
+the pilot Turn.

@@ -227,8 +227,9 @@ the Runtime candidate passed 114 Python tests and its generated schema reports
 `93fcd1f5a09f8192669e7ab24c65e35b8ef988456351895928ad103ecaf38d49`.
 No current pointer or process changed.
 
-Gate 2B remains closed, but the host side of that drift is now resolved by the
-verified `5ec1e7d` port above. The remaining blocker is the immutable pilot:
+Before the Human scope change, Gate 2B remained closed even after the host side of
+the drift was resolved by the verified `5ec1e7d` port. The then-remaining blocker
+was the original immutable pilot:
 official roster and durable profile both report `harness:"temporal"`, with
 `serverId:"4168251"`. Current 0.57 `updateAgent` cannot change harness,
 `restoreTemporalAgentRouting` only re-applies Temporal routing projection, and no
@@ -260,12 +261,22 @@ durable profile. The retired `97cf…` pilot remains Temporal and is no longer
 allowlisted. The user-facing Bot remains Temporal. Source/config now bind exactly
 the replacement ID and regression tests prove the retired ID stays on stock.
 
-The earlier activation-preparation readback found an external Sand upgrade to
-`251860d`; that stock host was independently VERIFIED as above. Gate 2A subsequently
-completed build/stage only. Its final postflight then observed a second external
-upgrade to stock `5ec1e7d` and an external pilot-profile change to
-`harness:"temporal"`. Gate 2B/2C are therefore closed again; staged candidates are
-retained, but neither new production fact is silently accepted or mutated.
+Gate 2B then completed successfully. Runtime `current` moved from
+`0.1.0-3c4f121` to `0.1.0-72c8032` and standalone `current` moved from stock Codex
+0.154.0 to the Gate-2A patched release. Runtime-owned App Server PID changed
+`883943 -> 1569085` and generation `12 -> 13`; the exact 25-Thread set remained
+unchanged. Postflight is healthy/not fenced/not uncertain with UNKNOWN 0, pending
+input 0, active turn 0, blocked thread 0, and
+`dynamic_only_tool_policy=true`. Unrelated App Server PID `1188039` was not
+signaled or adopted. No provider/model Turn was started and no host/router mutation
+occurred.
+
+The earlier activation-preparation readback found external Sand upgrades to
+`251860d` and later `5ec1e7d`; both were independently VERIFIED as above. Gate 2A
+completed build/stage and Gate 2B is now live. Gate 2C remains separately gated:
+the historical Gate-2A router tarball predates the replacement-pilot binding and
+must be repacked/reaccepted from the current source before any router install or
+host patch is authorized.
 
 ## Local checks
 
@@ -276,9 +287,10 @@ runner. Provider request/stream tests among the retained upstream tests are loca
 serialization/fake event tests, not paid provider calls.
 
 Blocker 1 source/local evidence remains in `DYNAMIC-ONLY-EVIDENCE-20260919.json`;
-the 0.57 port and Gate 1 evidence are in `HOST-057-EVIDENCE-20260919.json`; current
-production-activation preparation and fresh read-only baselines are in
-`ACTIVATION-PREP-EVIDENCE-20260919.json` and
+host compatibility is recorded in `HOST-057-EVIDENCE-20260919.json` and
+`HOST-5EC1E7D-EVIDENCE-20260919.json`; replacement-pilot and Gate 2B evidence are
+in `PILOT-REPLACEMENT-EVIDENCE-20260919.json` and
+`GATE-2B-EVIDENCE-20260919.json`. The production plan is
 `PRODUCTION-ACTIVATION-PREP-20260919.md`.
 
 Current regression acceptance passed 97 router tests plus telemetry ingestion and

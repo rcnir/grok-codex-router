@@ -1,0 +1,90 @@
+{
+  "format_version": 1,
+  "recorded_at_utc": "2026-09-19T09:33:10Z",
+  "scope": "Milestone 1 Gate 2B Runtime/Codex promotion",
+  "replacement_pilot": {
+    "id": "507d1f34-56d5-4085-9b48-23d40cb9c914",
+    "durable_harness": "box",
+    "serverId": "4270685",
+    "is_running": false,
+    "turn_started": false
+  },
+  "preflight": {
+    "runtime_current": "/opt/rocaniiru/codex-runtime/0.1.0-3c4f121",
+    "standalone_current": "/home/box/.codex/packages/standalone/releases/0.154.0-x86_64-unknown-linux-musl",
+    "runtime_owned_app_server_pid": 883943,
+    "unrelated_app_server_pid": 1188039,
+    "generation": 12,
+    "thread_count": 25,
+    "thread_set_sha256": "405346cb5303cf3b747d080272edce65d66cf2f342b47e2568e7f7b3b85b387b",
+    "unknown_operation_count": 0,
+    "pending_input_count": 0,
+    "active_turn_count": 0,
+    "blocked_thread_count": 0,
+    "persistence": "healthy",
+    "fenced": false,
+    "uncertain": false,
+    "candidate_codex_bytes": 1283274448,
+    "candidate_codex_sha256": "790879dcee4a675f34cc1aba9a2ab3fd0edb447588cf97f5cb111967b12fc8e7",
+    "candidate_schema_digest": "93fcd1f5a09f8192669e7ab24c65e35b8ef988456351895928ad103ecaf38d49",
+    "candidate_dynamic_only_tool_policy": true,
+    "state_json_bytes": 829029,
+    "state_json_sha256": "1be40ad48c92fca2fa4f0b80bffba6e9561e8f224c65e06aa0c510b1b77b6369"
+  },
+  "promotion": {
+    "promotion_lock": "/var/lib/rcnir-codex-runtime/promotion.lock",
+    "sequence": "one clean Runtime stop -> two atomic current-pointer switches -> one Runtime start",
+    "runtime_current_to": "/opt/rocaniiru/codex-runtime/0.1.0-72c8032",
+    "standalone_current_to": "/home/box/.codex/packages/standalone/releases/0.154.0-rcnir-dynamic-only-3084657-x86_64-unknown-linux-musl",
+    "atomic_pointer_pattern": "new symlink -> owner-preserving lchown -> os.replace -> fsync(parent)",
+    "unrelated_app_server_signaled": false,
+    "state_json_restored_from_backup": false,
+    "rollback_triggered": false
+  },
+  "postflight": {
+    "status": "PASS",
+    "runtime_current": "/opt/rocaniiru/codex-runtime/0.1.0-72c8032",
+    "standalone_current": "/home/box/.codex/packages/standalone/releases/0.154.0-rcnir-dynamic-only-3084657-x86_64-unknown-linux-musl",
+    "runtime_owned_app_server_pid": 1569085,
+    "unrelated_app_server_pid": 1188039,
+    "generation": 13,
+    "thread_count": 25,
+    "thread_set_sha256": "405346cb5303cf3b747d080272edce65d66cf2f342b47e2568e7f7b3b85b387b",
+    "unknown_operation_count": 0,
+    "pending_input_count": 0,
+    "active_turn_count": 0,
+    "blocked_thread_count": 0,
+    "persistence": "healthy",
+    "fenced": false,
+    "uncertain": false,
+    "capabilities": {
+      "developer_instructions": true,
+      "dynamic_only_tool_policy": true,
+      "dynamic_tools": true,
+      "inject_items": true,
+      "operation_result": true,
+      "reasoning_summary": true,
+      "structured_input": true
+    },
+    "current_codex_sha256": "790879dcee4a675f34cc1aba9a2ab3fd0edb447588cf97f5cb111967b12fc8e7",
+    "native_descriptor": "present",
+    "runtime_socket": "present",
+    "state_json_bytes": 829200,
+    "state_json_sha256": "e66f1228e4c390759161300a6a6b482cc21740277db583f1553134d8674cf94b",
+    "replacement_pilot_still_box": true,
+    "replacement_pilot_turn_started": false,
+    "retired_pilot_still_temporal": true,
+    "user_facing_bot_still_temporal": true
+  },
+  "first_attempt_note": {
+    "status": "PRE_MUTATION_ABORT",
+    "reason": "The first promotion-script invocation rejected stock Runtime because dynamic_only_tool_policy is omitted rather than explicitly false. The assertion failed before service stop or pointer mutation; current pointers/processes were read back unchanged before the corrected run."
+  },
+  "next_gate": {
+    "gate_2c": "CLOSED_PENDING_SEPARATE_HUMAN_APPROVAL",
+    "router_live_install": false,
+    "host_backup_write": false,
+    "host_patch_or_restart": false,
+    "pilot_turn_started": false
+  }
+}
