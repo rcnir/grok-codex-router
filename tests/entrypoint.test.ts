@@ -8,7 +8,7 @@ import { DEFAULT_CONFIG, M1_PILOT_AGENT_ID, writeConfig, type RouterConfig } fro
 import { createCodexRouterSession, shouldUseCodexRouter } from "../src/session.js";
 
 const options = { conversationId: M1_PILOT_AGENT_ID, transcriptId: "transcript",
-  isSummarizationSession: false, isSubagent: false, isComputerUseSubagent: false,
+  isSubagent: false, isComputerUseSubagent: false,
   isBrowserUseSubagent: false, isGroupMemberTurn: false, requestSource: "user" };
 
 test("root entrypoint imports no private provider transport, OAuth or control bootstrap", () => {
@@ -35,6 +35,7 @@ test("only explicit pilot IDs and lowercase BOX profile opt in; all native workl
     fs.writeFileSync(path.join(root, "agents", id, "profile.json"), JSON.stringify({ harness: "box" }));
   }
   assert.equal(shouldUseCodexRouter(options), true);
+  assert.equal(shouldUseCodexRouter({ ...options, isSummarizationSession: false }), true);
   assert.equal(shouldUseCodexRouter({ ...options, conversationId: "other" }), false);
   for (const flag of ["isSummarizationSession", "isSubagent", "isComputerUseSubagent", "isBrowserUseSubagent", "isGroupMemberTurn"]) {
     assert.equal(shouldUseCodexRouter({ ...options, [flag]: true }), false, flag);

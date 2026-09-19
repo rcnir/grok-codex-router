@@ -13,7 +13,6 @@ function eligible(overrides: Partial<CodexRouterPilotPolicyInput> = {}): CodexRo
     sessionOptions: {
       conversationId: M1_PILOT_AGENT_ID,
       transcriptId: "transcript-a",
-      isSummarizationSession: false,
       isComputerUseSubagent: false,
       isBrowserUseSubagent: false,
       isSubagent: false,
@@ -68,9 +67,21 @@ test("all non-root workload classes stay on stock inference", () => {
   }
 });
 
-test("missing or non-boolean root classifiers and unknown request source fail closed", () => {
+test("a5b5d79 root shape may omit summarization classifier but explicit summarization stays stock", () => {
+  assert.equal(shouldUseCodexRouter(eligible()), true);
+  assert.equal(shouldUseCodexRouter(eligible({
+    sessionOptions: { ...eligible().sessionOptions, isSummarizationSession: false }
+  })), true);
+  assert.equal(shouldUseCodexRouter(eligible({
+    sessionOptions: { ...eligible().sessionOptions, isSummarizationSession: true }
+  })), false);
+  assert.equal(shouldUseCodexRouter(eligible({
+    sessionOptions: { ...eligible().sessionOptions, isSummarizationSession: "false" }
+  })), false);
+});
+
+test("missing or non-boolean required root classifiers and unknown request source fail closed", () => {
   const flags = [
-    "isSummarizationSession",
     "isComputerUseSubagent",
     "isBrowserUseSubagent",
     "isSubagent",

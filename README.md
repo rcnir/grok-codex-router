@@ -5,11 +5,12 @@ It retains the upstream source layout and wire helpers, but its package entrypoi
 routes through the **existing** ROCANIIRU Runtime CLI/MCP boundary, not the private
 Responses endpoint, OAuth stores, WebSocket or SSE transports described below.
 
-**Activated through Gate 2C; first pilot Turn not started.** Human Gate 1 originally created isolated BOX pilot
+**Activated through Gate 2C; first pilot Turn attempted, router acceptance not yet passed.** Human Gate 1 originally created isolated BOX pilot
 `97cf83a0-0401-4481-9f3f-8b321921f8b0`; it later drifted durably Temporal. After
 same-ID repair was exhausted, the Human authorized exactly one replacement BOX
 pilot, `507d1f34-56d5-4085-9b48-23d40cb9c914`. Its durable profile is
-`harness:"box"`, serverId `4270685`, and no Turn has been started. Gate 2A built and staged the patched
+`harness:"box"`, serverId `4270685`. It had no Turn at replacement creation;
+the later single acceptance attempt is described below. Gate 2A built and staged the patched
 Codex/Runtime candidates without changing a current pointer or process. Its final
 read-only postflight observed provider-owned host drift and a
 durable pilot profile of `harness:"temporal"`. The host drift is now resolved:
@@ -27,11 +28,18 @@ the singleton pilot route. Gate 2B promoted the patched Codex/Runtime successful
 After the first Gate-2C attempt failed closed on provider host drift, `a5b5d79`
 compatibility was VERIFIED, current source was freshly repacked/reaccepted, and
 Gate 2C completed: router/config installed, pristine stock backup written, exact
-host patch applied, and one supervisor restart completed. No pilot Turn or
-provider/model inference was started. Gate artifacts, current host proof and harness authority
+host patch applied, and one supervisor restart completed. The Human then approved
+exactly one first pilot Turn. It returned the expected text, but Runtime event/thread
+state did not move, proving that Turn fell through to stock inference instead of the
+M1 router. No retry was sent. Root cause is the live policy treating omitted
+`isSummarizationSession` as invalid even though ordinary 0.57 main-session options
+omit that field; dedicated summarization sessions set it explicitly to `true`.
+A tested source-only fix is prepared but is **not live**. Gate artifacts, current
+host proof and harness authority
 are documented in `GATE-2A-EVIDENCE-20260919.json`,
 `GATE-2B-EVIDENCE-20260919.json`,
 `GATE-2C-EVIDENCE-20260919.json`,
+`PILOT-FIRST-TURN-EVIDENCE-20260919.json`,
 `HOST-5EC1E7D-EVIDENCE-20260919.json`, `HOST-A5B5D79-EVIDENCE-20260919.json`,
 `PILOT-HARNESS-EVIDENCE-20260919.json`,
 `PILOT-REPLACEMENT-EVIDENCE-20260919.json` and

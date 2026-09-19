@@ -23,14 +23,19 @@ function nonEmptyString(value: unknown): string | undefined {
 }
 
 function isAuxiliaryWorkload(options: PilotSessionOptions): boolean {
-  const flags = [
-    options.isSummarizationSession,
+  // Current 0.57 mainSessionOptions omits this field for ordinary root turns;
+  // dedicated summarization sessions set it explicitly to true.
+  const summarization = options.isSummarizationSession;
+  if (summarization !== undefined && typeof summarization !== "boolean") return true;
+  if (summarization === true) return true;
+
+  const requiredRootFlags = [
     options.isComputerUseSubagent,
     options.isBrowserUseSubagent,
     options.isSubagent,
     options.isGroupMemberTurn
   ];
-  if (flags.some((value) => typeof value !== "boolean" || value)) return true;
+  if (requiredRootFlags.some((value) => typeof value !== "boolean" || value)) return true;
   if (typeof options.requestSource !== "string" || !options.requestSource) return true;
   return options.requestSource.toLowerCase().includes("automation");
 }
