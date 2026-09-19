@@ -3,7 +3,13 @@ import type { RouterResult, StreamPart, NormalizedUsage } from "./response.js";
 import { RuntimeFault, type RuntimeBoundary, type RuntimeTool } from "./runtime-client.js";
 import { productionThreadPolicy } from "./native-execution-policy.js";
 import { RunJournal, canonicalJson, fingerprint, type PendingToolIdentity } from "./runtime-state.js";
-import { dynamicTools, initialRuntimeInput, hostToolResults, type RuntimeToolSet } from "./runtime-wire.js";
+import {
+  dynamicTools,
+  initialRuntimeInput,
+  hostToolResults,
+  normalizedTranscript,
+  type RuntimeToolSet
+} from "./runtime-wire.js";
 import { isRecord, type JsonObject } from "./sand-values.js";
 
 interface RuntimeEvent {
@@ -37,6 +43,10 @@ function identifier(value: unknown, code: string): string {
 function count(value: unknown): number {
   if (!Number.isSafeInteger(value) || (value as number) < 0) throw new RuntimeFault("INVALID_USAGE", true);
   return value as number;
+}
+
+function transcriptFingerprint(messages: unknown[]): string {
+  return fingerprint(normalizedTranscript(messages));
 }
 
 function usageDelta(current: Tokens, previous: Tokens): NormalizedUsage {
@@ -103,7 +113,7 @@ export class RuntimeExecution {
         throw new RuntimeFault("DYNAMIC_TOOL_SET_CHANGED");
       }
       if (this.consumedPrefixHash !== undefined &&
-          fingerprint(messages.slice(0, this.consumedMessages)) !== this.consumedPrefixHash) {
+          transcriptFingerprint(messages.slice(0, this.consumedMessages)) !== this.consumedPrefixHash) {
         throw new RuntimeFault("TRANSCRIPT_PREFIX_CHANGED");
       }
       if (!this.isStarted()) {
@@ -152,7 +162,7 @@ export class RuntimeExecution {
         this.turnId = identifier(started.turn_id, "TURN_ID_MISSING");
         this.journal.bind({ turnId: this.turnId });
         this.consumedMessages = messages.length;
-        this.consumedPrefixHash = fingerprint(messages);
+        this.consumedPrefixHash = transcriptFingerprint(messages);
       } else if (this.pending.length && !signal?.aborted) {
         await this.replyToTools(messages);
       } else if (messages.length !== this.consumedMessages && !signal?.aborted) {
@@ -214,7 +224,7 @@ export class RuntimeExecution {
     // Grok may omit the assistant echo. It cannot replace an echo with different
     // content; the original exact pending call identities remain authoritative.
     if (incoming.assistantEchoes.length && (incoming.assistantEchoes.length !== this.echoHashes.length ||
-        incoming.assistantEchoes.some((message, index) => fingerprint(message) !== this.echoHashes[index]))) {
+        incoming.assistantEchoes.some((message, index) => transcriptFingerprint([message]) !== this.echoHashes[index]))) {
       throw new RuntimeFault("ASSISTANT_TOOL_ECHO_MISMATCH");
     }
     const byId = new Map(incoming.results.map((row) => [row.callId, row]));
@@ -252,7 +262,7 @@ export class RuntimeExecution {
     this.echoHashes = [];
     this.journal.pending([]);
     this.consumedMessages = messages.length;
-    this.consumedPrefixHash = fingerprint(messages);
+    this.consumedPrefixHash = transcriptFingerprint(messages);
   }
 
   private event(raw: unknown): RuntimeEvent {
@@ -389,7 +399,7 @@ export class RuntimeExecution {
         this.journal.pending(this.pending.map(({ arguments: _arguments, ...identity }) => identity));
         const result = this.result(parts, "", summary, invocationId, this.pending, "tool-calls");
         const messages = result.response.messages as JsonObject[];
-        this.echoHashes = messages.map(fingerprint);
+        this.echoHashes = messages.map((message) => transcriptFingerprint([message]));
         return result;
       }
       if (!batch.events.length) await this.readStatus(false);

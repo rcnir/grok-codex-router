@@ -438,6 +438,25 @@ test("changed consumed history rejects before any reply even with correct pendin
   assert.equal(runtime.calls.filter((row) => row.name === "runtime_respond").length, 0);
 });
 
+test("host-only non-JSON metadata is excluded from transcript and assistant-echo fingerprints", async (t) => {
+  const { runtime, execution } = fixture(t);
+  runtime.onStart = (rt) => rt.tool();
+  const initial = [
+    { ...user[0], hostOnlyCallback: () => "ignored" },
+    { ...user[1], hostOnlyCallback: () => "ignored" }
+  ];
+  const first = await execution.run(initial, [definition], "non-json-host-metadata");
+  const echo = responseMessages(first) as JsonObject[];
+  const echoed = echo.map((message) => ({ ...message, hostOnlyCallback: () => "ignored-again" }));
+  const final = await execution.run([
+    ...initial,
+    ...echoed,
+    { ...resultMessage(), hostOnlyCallback: () => "ignored-result" }
+  ], [definition], "reply");
+  assert.equal(final.response.finishReason, "stop");
+  assert.equal(runtime.calls.filter((row) => row.name === "runtime_respond").length, 1);
+});
+
 test("unrecognized current-user content part is not silently dropped", async (t) => {
   const { runtime, execution } = fixture(t);
   const messages = [{ role: "user", content: [{ type: "text", text: "visible" },

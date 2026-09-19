@@ -8,6 +8,11 @@ export interface RuntimeToolSet {
   hostNames: Map<string, string>;
 }
 
+export interface NormalizedTranscript {
+  developerInstructions: string;
+  items: JsonObject[];
+}
+
 export function dynamicTools(tools: unknown): RuntimeToolSet {
   if (tools == null) return { definitions: [], hostNames: new Map() };
   if (!Array.isArray(tools)) throw new RuntimeFault("INVALID_GROK_TOOL_SET");
@@ -96,6 +101,29 @@ function validateTranscript(messages: JsonObject[]): Map<string, string> {
   return callIds;
 }
 
+function normalizedTranscriptFromPlain(plain: JsonObject[]): NormalizedTranscript {
+  const callIds = validateTranscript(plain);
+  const converted = convertMessages(plain);
+  const items = converted.input.map((item) => {
+    if (!isRecord(item) || ![undefined, "message", "function_call", "function_call_output"]
+      .includes(item.type as string | undefined)) {
+      throw new RuntimeFault("UNSUPPORTED_TRANSCRIPT_ITEM");
+    }
+    if (item.type === "function_call" || item.type === "function_call_output") {
+      if (typeof item.call_id !== "string" || !callIds.has(item.call_id)) {
+        throw new RuntimeFault("TRANSCRIPT_CALL_ID_UNMAPPED");
+      }
+      return { ...item, call_id: callIds.get(item.call_id)! };
+    }
+    return item.type === "message" ? item : { type: "message", ...item };
+  });
+  return { developerInstructions: converted.instructions, items };
+}
+
+export function normalizedTranscript(messages: unknown[]): NormalizedTranscript {
+  return normalizedTranscriptFromPlain(records(messages));
+}
+
 function userInput(content: unknown): JsonObject[] {
   if (!Array.isArray(content) || content.length === 0) throw new RuntimeFault("CURRENT_USER_INPUT_REQUIRED");
   return content.map((part) => {
@@ -131,22 +159,14 @@ export function initialRuntimeInput(messages: unknown[]): {
   } else if (typeof last.content !== "string" || !last.content) {
     throw new RuntimeFault("UNSUPPORTED_USER_INPUT");
   }
-  const callIds = validateTranscript(plain);
-  const converted = convertMessages(plain);
-  const current = converted.input.at(-1);
+  const normalized = normalizedTranscriptFromPlain(plain);
+  const current = normalized.items.at(-1);
   if (!isRecord(current) || current.role !== "user") throw new RuntimeFault("CURRENT_USER_INPUT_REQUIRED");
-  const priorItems = converted.input.slice(0, -1).map((item) => {
-    // Raw reasoning and encrypted/private state are never accepted as transcript.
-    if (!isRecord(item) || ![undefined, "message", "function_call", "function_call_output"].includes(item.type as string | undefined)) {
-      throw new RuntimeFault("UNSUPPORTED_TRANSCRIPT_ITEM");
-    }
-    if (item.type === "function_call" || item.type === "function_call_output") {
-      if (typeof item.call_id !== "string" || !callIds.has(item.call_id)) throw new RuntimeFault("TRANSCRIPT_CALL_ID_UNMAPPED");
-      return { ...item, call_id: callIds.get(item.call_id)! };
-    }
-    return { type: "message", ...item };
-  });
-  return { developerInstructions: converted.instructions, priorItems, currentInput: userInput(current.content) };
+  return {
+    developerInstructions: normalized.developerInstructions,
+    priorItems: normalized.items.slice(0, -1),
+    currentInput: userInput(current.content)
+  };
 }
 
 function validImage(url: string): boolean {
