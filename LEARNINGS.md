@@ -236,3 +236,25 @@ is `BLOCKED`, and Runtime retains the active Turn/pending input. Acceptance must
 therefore require both positive Runtime traversal and successful terminal
 delivery/cleanup. A successful provider/tool event by itself is not a terminal
 acceptance signal.
+
+## 2026-09-19 — Recover orphaned Runtime Turns by generation, never by replaying tool responses
+
+When Sand had already abandoned the client Turn but Runtime still held a dynamic
+tool request, the existing cancellation contract mattered: canceling while waiting
+for tool results must not synthesize or replay a `runtime_respond`. The safe
+recovery was exact-turn interrupt, observe terminal `interrupted`, archive the
+session, then rotate only the App Server child generation so stale pending requests
+from the old generation disappear. The durable router run can then be closed only
+after those external terminal/archive facts are proven.
+
+## 2026-09-19 — A real contract gap can still be non-causal
+
+The inner router PromptSession lacked `getResolvedModelId()`, while current host
+code expects that surface through its sanitizing wrapper. Adding it was correct and
+fully tested, but the same SAND-E0406 sequence reproduced afterward. Treating every
+real incompatibility as *the* root cause would have produced another false closure.
+
+The live stream first-token deadline was also measured at 150000ms, so the observed
+~9s failure is not the first-token watchdog. The next diagnostic must expose the
+sanitized router `RuntimeFault.code` directly rather than infer it from the outer
+SAND-E0406 classification.

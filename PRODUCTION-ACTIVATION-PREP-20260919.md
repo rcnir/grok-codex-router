@@ -622,6 +622,36 @@ Milestone 1 pilot acceptance therefore remains incomplete. A new Human approval 
 required before any Runtime recovery/cancellation, router change, further restart,
 further pilot Turn or later production phase.
 
+That recovery was subsequently approved and completed. The orphaned Runtime Turn
+was interrupted once, archived, and the App Server child alone advanced generation
+13 -> 14, clearing its stale pending request while preserving retained Threads.
+The exact blocked router run was then moved to completed with `active:null`.
+
+Source commit `6711ae13987cb5b4852ee3298b136d47ddadf366` adds the missing
+inner-session `getResolvedModelId()` contract. Its 158520-byte artifact /
+SHA-256 `e134ef299343149a83496c000d24403a1dc72adbebaef7317ebfc9f9582299c9`
+was installed router-only and loaded by one restart
+`grok-codex-router-1789821001599-02908436`. Post-restart automatic-activity
+baselines were unchanged.
+
+One bounded Turn `t3u` then reproduced `SAND-E0406`. Runtime again continued
+independently and eventually generated the expected dynamic `SendToUser` call, so
+the resolved-model method was not the primary failure. Live stream deadlines are
+150000ms first-token / 90000ms idle, excluding the stream first-token watchdog from
+the observed ~9s failure.
+
+That orphan was also interrupted once, archived, and cleared through Runtime App
+Server generation 15; the router journal is `active:null`. Final Runtime state is
+generation 15 / PID 1658692 / 27 retained Threads / pending 0 / UNKNOWN 0 /
+active 0 / blocked 0 with healthy persistence.
+
+The next source-only diagnostic is commit
+`36e8d3808661e3cbd69331b7ecd5ca494ac9d41f`: it logs only sanitized
+`RuntimeFault.code` and `uncertain`. Candidate package is 158651 bytes /
+SHA-256 `f9e990c1ce01fc87e0ec8dc628a5f63e20ca13569d773be7c0d247e96b116b14`
+and is not live. A new Human approval is required before deploying that diagnostic
+or sending another pilot Turn.
+
 ## Approval boundaries
 
 Gate 2A produced the required Runtime/Codex hashes. The Human then authorized exactly one replacement

@@ -64,10 +64,36 @@ are documented in `GATE-2A-EVIDENCE-20260919.json`,
 `PILOT-FIRST-TURN-EVIDENCE-20260919.json`,
 `PILOT-RETRY-EVIDENCE-20260919.json`,
 `PILOT-ACCEPTANCE-EVIDENCE-20260919.json`,
+`PILOT-CONTRACT-REPAIR-EVIDENCE-20260919.json`,
 `HOST-5EC1E7D-EVIDENCE-20260919.json`, `HOST-A5B5D79-EVIDENCE-20260919.json`,
 `PILOT-HARNESS-EVIDENCE-20260919.json`,
 `PILOT-REPLACEMENT-EVIDENCE-20260919.json` and
 `PRODUCTION-ACTIVATION-PREP-20260919.md`.
+
+The later recovery gate first interrupted and archived that orphaned Runtime Turn,
+then advanced only the Runtime App Server child from generation 13 to 14 so the
+stale pending server request disappeared. The blocked router journal was closed
+against the independently proven interrupted/archived Runtime state.
+
+An actual host-contract gap was then repaired: the inner router session now exposes
+`getResolvedModelId()` with the same fixed route as `getModelId()`. Source
+`6711ae13987cb5b4852ee3298b136d47ddadf366` packaged to 158520 bytes /
+SHA-256 `e134ef299343149a83496c000d24403a1dc72adbebaef7317ebfc9f9582299c9`
+and is live after exactly one supervisor restart
+`grok-codex-router-1789821001599-02908436`.
+
+The one bounded post-repair Turn still reproduced `SAND-E0406`, so that contract
+gap was not the primary failure. Its Runtime Turn was likewise interrupted,
+archived, and cleared through App Server generation 15; router journal is again
+`active:null`, Runtime has 27 retained Threads with zero pending/UNKNOWN/active/
+blocked work, and Computer remains `clear/CLEAR`.
+
+Current source-only commit `36e8d3808661e3cbd69331b7ecd5ca494ac9d41f`
+adds only sanitized `RuntimeFault.code` / `uncertain` logging. Its candidate
+package is 158651 bytes / SHA-256
+`f9e990c1ce01fc87e0ec8dc628a5f63e20ca13569d773be7c0d247e96b116b14`;
+it is **not live**. The next bounded diagnostic must capture the exact router fault
+before any further production fix.
 
 See [`MILESTONE-1.md`](MILESTONE-1.md) for the implementation contract and status,
 [`NATIVE-EXECUTION-POLICY.md`](NATIVE-EXECUTION-POLICY.md) for the thread policy,

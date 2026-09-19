@@ -438,6 +438,52 @@ restart or later production phase was performed. See
 `PILOT-ACCEPTANCE-EVIDENCE-20260919.json`. Milestone 1 pilot acceptance remains
 **incomplete** and any further live mutation requires a new Human approval.
 
+### Recovery and PromptSession contract probe
+
+The next approved recovery interrupted the exact orphaned Runtime Turn once,
+observed terminal `interrupted`, archived its Runtime session, and restarted only
+the Runtime App Server child. Generation changed 13 -> 14, PID
+`1569085 -> 1649828`, while all 26 retained Threads remained durable and stale
+pending/UNKNOWN state returned to zero. The router journal was then closed by
+moving exact runHash
+`ce9db519eabb16246e86d7f948ae379e0f1b4d08c7f16efcdc73f27c54a94792`
+from `active:BLOCKED` into `completed`.
+
+Host-source inspection showed that the inner PromptSession surface should expose
+`getResolvedModelId()`. Source commit
+`6711ae13987cb5b4852ee3298b136d47ddadf366` adds that fixed-route method.
+Focused tests pass 3/3; the full router suite remains 102/102 plus telemetry, knip
+and diff-check. Exact package: 158520 bytes / SHA-256
+`e134ef299343149a83496c000d24403a1dc72adbebaef7317ebfc9f9582299c9`.
+It was installed router-only and loaded by exactly one supervisor restart
+`grok-codex-router-1789821001599-02908436`; host/config/Runtime source were
+unchanged and restart postflight showed zero automatic activity.
+
+Exactly one Turn `t3u` was accepted with nonce
+`fea97a2b-99c2-49ea-933e-ccff1d1391af`. The same pattern recurred:
+Sand settled `SAND-E0406` before any user delivery, while Runtime independently
+continued generation-14 Turn
+`01a0b9a6-0ab3-7451-893b-bcdd64546678` and later produced the expected
+`SendToUser(ROCANIIRU_M1_PILOT_FINAL_PASS)`. Therefore
+`getResolvedModelId()` was a real contract gap but not the primary failure.
+
+Live Statsig bootstrap resolves the stream deadline to 150000ms first-token /
+90000ms idle, excluding the first-token watchdog as the ~9s SAND-E0406 source.
+The exact inner RuntimeFault is not persisted in current host logs.
+
+The t3 orphan was then recovered once using the same contract: interrupt, terminal
+`interrupted`, archive, App Server child generation 14 -> 15
+(`1649828 -> 1658692`) to discard the stale pending request, then exact router
+journal closure. Current Runtime is generation 15 with 27 retained Threads,
+pending/UNKNOWN/active/blocked all zero and healthy persistence.
+
+Source-only commit `36e8d3808661e3cbd69331b7ecd5ca494ac9d41f` adds sanitized
+fault observability: only `RuntimeFault.code` and `uncertain` are logged at the
+router execution boundary. Tests remain 102/102 plus telemetry/knip/diff-check.
+Candidate package is 158651 bytes / SHA-256
+`f9e990c1ce01fc87e0ec8dc628a5f63e20ca13569d773be7c0d247e96b116b14`
+and is **not live**. See `PILOT-CONTRACT-REPAIR-EVIDENCE-20260919.json`.
+
 ## Local checks
 
 `npm run knip` checks active and retained source. `npm run check` builds, runs local
@@ -457,11 +503,10 @@ Current regression acceptance passed 102 router tests plus telemetry ingestion a
 `knip`, 219 Runtime Node tests, and 114 Runtime Python tests. The Runtime source was
 not changed by the host port. `git diff --check` passed.
 
-Current Runtime remains generation 13 / PID 1569085, `started=true`,
+Current Runtime is generation 15 / PID 1658692, `started=true`,
 `ready=true`, persistence healthy, `fenced=false`, `uncertain=false`,
-UNKNOWN 0 and dynamic-only enabled. The acceptance Turn added one `grok:` Thread,
-so current count is 26 with one active Turn and one pending dynamic input; this state
-is intentionally left untouched pending new Human approval. The current user-facing Bot
+UNKNOWN 0 and dynamic-only enabled. It retains 27 Threads with zero pending,
+active or blocked work after bounded recovery. The current user-facing Bot
 readback remains `harness:"temporal"`. Final Computer status is 0.2.3 on
 service identity `a6299bb2e1242f491855fd38608b0dc5f65c6f5f956f734cf5ba16aaf9527e41`
 with `clear/CLEAR`.
