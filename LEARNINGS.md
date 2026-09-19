@@ -321,3 +321,31 @@ complete.
 
 Ancillary post-turn failures should be recorded and investigated, but should not be
 retroactively conflated with the independently proven root-Turn outcome.
+
+## 2026-09-20 — Auxiliary memory inference needs identity without weakening the root fence
+
+Sand's memory extractor intentionally calls a fresh auxiliary PromptExecutor with
+no invocation ID. Requiring the root-Turn identity contract on that auxiliary path
+prevented memory extraction, but globally making invocation IDs optional would
+weaken replay fencing.
+
+The safe distinction is structural: the root executor still requires an external
+invocation ID. Only auxiliary executors with the exact Sand
+`<<SAND_MEMORY_EXTRACTION>>` or `<<SAND_MEMORY_EPISODE>>` system marker,
+the exact `providerOptions.cursor.inferenceReason="memory-extraction"`, exactly
+two prompt messages and no tools derive a deterministic internal invocation
+identity from the normalized prompt and executor ordinal.
+
+This preserves completed-run replay protection while allowing the post-turn
+memory/episode workloads the host intentionally invokes without a request ID.
+
+## 2026-09-20 — Broader production rollout should add a fresh BOX identity, not mutate Temporal
+
+The existing user-facing and auxiliary Bots remain Temporal and cannot safely be
+reinterpreted in place as the BOX execution harness. Broader production used a
+fresh BOX identity with no introduction, kickstart or transcript, then widened the
+live allowlist from one reviewed BOX identity to exactly two. Temporal and
+auxiliary workload classes stayed stock.
+
+This keeps the accepted pilot as an audit/control identity while giving production
+traffic its own durable agent/profile/journal identity.
